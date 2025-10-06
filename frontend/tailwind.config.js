@@ -5,7 +5,17 @@ module.exports = {
     "./app/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      lineHeight: {
+        '140': '1.4',
+      },
+      letterSpacing: {
+        '10': '0.1em',
+      },
+      fontFamily: {
+        abhaya : ['"Abhaya Libre"', 'serif'],
+      }
+    },
   },
   plugins: [],
 };
