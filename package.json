@@ -1,6 +1,10 @@
 {
   "dependencies": {
     "@next/font": "^14.2.15",
-    "font": "^0.0.4"
+    "font": "^0.0.4",
+    "react-icons": "^5.5.0"
+  },
+  "devDependencies": {
+    "@svgr/webpack": "^8.1.0"
   }
 }

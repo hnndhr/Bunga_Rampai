@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image'; // <-- DITAMBAHKAN
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -13,10 +14,13 @@ export default function Navbar() {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-3">
-            <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center">
-              <svg viewBox="0 0 24 24" className="w-6 h-6" fill="currentColor">
-                <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 2.18l8 3.6v8.72c0 4.35-3 8.38-8 9.5-5-1.12-8-5.15-8-9.5V7.78l8-3.6z"/>
-              </svg>
+            <div className="w-10 h-10 rounded-lg flex items-center justify-center -translate-y-1">
+              <Image
+                src="/images/rnd_logo.png"
+                alt="rnd logo"
+                width={40}
+                height={40}
+              />
             </div>
             <span className="text-white text-3xl font-abhaya leading-140 tracking-10">
               BUNGA RAMPAI
@@ -27,7 +31,7 @@ export default function Navbar() {
           <div className="hidden font-abhaya text-xl leading-140 tracking-10 md:flex items-center space-x-8">
             <Link 
               href="/" 
-              className="text-white hover:text-yellow-400 transition-colors "
+              className="text-white hover:text-yellow-400 transition-colors"
             >
               Home
             </Link>
