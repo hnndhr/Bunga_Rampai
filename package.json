@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@next/font": "^14.2.15",
+    "clsx": "^2.1.1",
     "font": "^0.0.4",
     "react-icons": "^5.5.0"
   },
