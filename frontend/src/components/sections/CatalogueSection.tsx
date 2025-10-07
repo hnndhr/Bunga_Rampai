@@ -1,38 +1,60 @@
-'use client';
+"use client";
 
-import React from 'react';
+import { Import } from "lucide-react";
+import clsx from "clsx";
 
 export default function CatalogueSection() {
-  return (
-    <section 
-      id="catalogue" 
-      className="min-h-screen flex items-center justify-center bg-slate-800 py-20"
-    >
-      <div className="container mx-auto px-6">
-        <div className="text-center max-w-4xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-            Our Catalogue
-          </h2>
-          <p className="text-gray-300 text-lg mb-12">
-            Discover our collection of resources and materials
-          </p>
+  const imagePanels = [
+    { style: { backgroundPosition: "0% 50%" }, offset: false },
+    { style: { backgroundPosition: "50% 50%" }, offset: true },
+    { style: { backgroundPosition: "100% 50%" }, offset: false },
+  ];
 
-          {/* Placeholder Content - Replace with your actual catalogue */}
-          <div className="grid md:grid-cols-3 gap-6">
-            {[1, 2, 3].map((item) => (
-              <div 
-                key={item}
-                className="bg-slate-900 p-6 rounded-lg hover:bg-slate-700 transition-colors cursor-pointer"
-              >
-                <div className="w-full h-48 bg-slate-600 rounded-lg mb-4" />
-                <h3 className="text-white font-semibold text-xl mb-2">
-                  Item {item}
-                </h3>
-                <p className="text-gray-400 text-sm">
-                  Description for catalogue item {item}
-                </p>
-              </div>
-            ))}
+  return (
+    // === UBAH KELAS DI SINI UNTUK MEMBUAT GRADASI MENYATU ===
+    <section className="bg-gradient-to-b from-emerald-900 to-slate-900 text-white py-24">
+      <div className="container mx-auto pl-32">
+        <div className="flex flex-col lg:flex-row items-center gap-16">
+          {/* BAGIAN KIRI: Teks */}
+          <div className="lg:w-1/2 space-y-6 text-center lg:text-left">
+            <h2 className="text-4xl md:text-5xl font-bold">BUNGA RAMPAI</h2>
+            <p className="text-gray-300 leading-relaxed">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
+              maximus metus id sapien finibus, sed sollicitudin nisi sodales.
+              Pellentesque ac diam sit amet lorem volutpat sagittis vitae in
+              mauris. Aenean nunc ligula, mattis ut efficitur a, lobortis a dui.
+              Etiam tincidunt sit amet velit hendrerit, sed mollis dolor
+              lobortis.
+            </p>
+            <p className="text-gray-300 leading-relaxed">
+              Maecenas non rutrum augue. Duis nec iaculis dui, ut ultrices quam.
+              Donec consequat ante ante, in venenatis quam imperdiet eget.
+              Curatur ac massa in lorem cursus consectetur.
+            </p>
+          </div>
+
+          {/* BAGIAN KANAN: Gambar Terpotong */}
+          <div className="lg:w-1/2">
+            <div className="flex items-center justify-center gap-3">
+              {imagePanels.map((panel, index) => (
+                <div
+                  key={index}
+                  className={clsx(
+                    "rounded-lg bg-cover shadow-lg transition-transform duration-300 hover:scale-105",
+                    {
+                      // Box tengah (index 1) lebih tinggi
+                      "h-96 w-1/4": index === 1,
+                      // Box samping (index 0 dan 2) lebih pendek
+                      "h-72 w-1/5": index !== 1,
+                    }
+                  )}
+                  style={{
+                    backgroundImage: "url('/images/flower-image.jpg')",
+                    ...panel.style,
+                  }}
+                ></div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
