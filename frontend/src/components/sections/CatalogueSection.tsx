@@ -19,17 +19,15 @@ export default function CatalogueSection() {
           <div className="lg:w-1/2 space-y-6 text-center lg:text-left">
             <h2 className="text-4xl md:text-5xl font-bold">BUNGA RAMPAI</h2>
             <p className="text-gray-300 leading-relaxed">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-              maximus metus id sapien finibus, sed sollicitudin nisi sodales.
-              Pellentesque ac diam sit amet lorem volutpat sagittis vitae in
-              mauris. Aenean nunc ligula, mattis ut efficitur a, lobortis a dui.
-              Etiam tincidunt sit amet velit hendrerit, sed mollis dolor
-              lobortis.
+              Bunga Rampai adalah website yang merangkum berbagai hasil riset dan survei dari Kementerian Riset dan Data selama satu periode kepengurusan. 
+              Melalui platform ini, kami ingin menghadirkan data dan temuan riset dengan cara yang lebih terbuka, 
+              mudah diakses, dan relevan bagi siapa pun yang ingin mengenal lebih jauh hasil kerja kami.
             </p>
             <p className="text-gray-300 leading-relaxed">
-              Maecenas non rutrum augue. Duis nec iaculis dui, ut ultrices quam.
-              Donec consequat ante ante, in venenatis quam imperdiet eget.
-              Curatur ac massa in lorem cursus consectetur.
+              Semua informasi disajikan dalam bentuk infografis yang menarik dan informatif, 
+              agar pembaca bisa memahami isi data dengan cepat tanpa harus membaca laporan panjang. 
+              Dengan pendekatan visual ini, Bunga Rampai diharapkan menjadi ruang yang tidak hanya membagikan hasil penelitian, 
+              tapi juga menumbuhkan rasa ingin tahu dan apresiasi terhadap data dan riset itu sendiri.
             </p>
           </div>
 
