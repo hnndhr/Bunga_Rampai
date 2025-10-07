@@ -35,7 +35,7 @@ export default function HeroSection() {
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900"></div>
 
       {/* Decorative Blur Elements */}
-      <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-600/20 rounded-full blur-3xl" />
+      <div className="absolute bottom-40 left-0 w-64 h-64 bg-emerald-600/20 rounded-full blur-3xl" />
       <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl" />
 
       {/* Kontainer Konten Utama */}
