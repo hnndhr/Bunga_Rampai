@@ -1,59 +1,37 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import clsx from 'clsx';
-// Import Framer Motion
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
-// Komponen baru khusus untuk menganimasikan judul
 const AnimatedTitle = ({ isScrolled }: { isScrolled: boolean }) => {
   const text = "BUNGA RAMPAI";
   
-  // Varian untuk kontainer (pembungkus semua huruf)
   const containerVariants = {
-    visible: { 
-      transition: { 
-        staggerChildren: 0.04, // Jeda antar animasi setiap huruf (muncul)
-      } 
-    },
-    hidden: { 
-      transition: { 
-        staggerChildren: 0.02, // Jeda antar animasi setiap huruf (hilang)
-        staggerDirection: -1,  // Menghilang dari huruf terakhir
-      } 
-    },
+    visible: { transition: { staggerChildren: 0.04 } },
+    hidden: { transition: { staggerChildren: 0.02, staggerDirection: -1 } },
   };
 
-  // Varian untuk setiap huruf
   const childVariants = {
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { type: "spring" as const, damping: 12, stiffness: 200 },
-    },
-    hidden: {
-      opacity: 0,
-      y: 20,
-      transition: { type: "spring" as const, damping: 12, stiffness: 200 },
-    },
+    visible: { opacity: 1, y: 0, transition: { type: "spring" as const, damping: 12, stiffness: 200 } },
+    hidden: { opacity: 0, y: 40, transition: { type: "spring" as const, damping: 12, stiffness: 200 } },
   };
 
   return (
     <motion.div
-      className="text-white text-3xl font-abhaya leading-140 tracking-10 inline-flex overflow-hidden"
+      className={clsx(
+        "text-white text-3xl font-abhaya leading-140 tracking-10 inline-flex overflow-hidden ml-3",
+        { "pointer-events-none": isScrolled }
+      )}
       variants={containerVariants}
       initial="visible"
       animate={isScrolled ? "hidden" : "visible"}
     >
       {text.split("").map((char, index) => (
-        <motion.span
-          key={index}
-          variants={childVariants}
-          className="inline-block"
-        >
+        <motion.span key={index} variants={childVariants} className="inline-block">
           {char === " " ? "\u00A0" : char}
         </motion.span>
       ))}
@@ -88,19 +66,24 @@ export default function Navbar() {
         )}
       >
         <div className="flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-3">
-            <div className="w-10 h-10 rounded-lg flex items-center justify-center -translate-y-1">
-              <Image
-                src="/images/rnd_logo.png"
-                alt="rnd logo"
-                width={40}
-                height={40}
-              />
-            </div>
-            
-            {/* Menggunakan komponen animasi yang baru */}
-            <AnimatedTitle isScrolled={isScrolled} />
-          </Link>
+          <div className="flex items-center">
+            <Link href="/">
+              <div className="w-10 h-10 rounded-lg flex items-center justify-center -translate-y-1">
+                <Image
+                  src="/images/rnd_logo.png"
+                  alt="rnd logo"
+                  width={40}
+                  height={40}
+                />
+              </div>
+            </Link>
+            <Link 
+              href="/" 
+              className={clsx({ "pointer-events-none": isScrolled })}
+            >
+              <AnimatedTitle isScrolled={isScrolled} />
+            </Link>
+          </div>
 
           <div className="hidden font-abhaya text-xl leading-140 tracking-10 md:flex items-center space-x-8">
             <Link href="/" className="text-white hover:text-yellow-400 transition-colors">

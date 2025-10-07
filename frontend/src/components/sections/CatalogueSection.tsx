@@ -1,6 +1,5 @@
 "use client";
 
-import { Import } from "lucide-react";
 import clsx from "clsx";
 
 export default function CatalogueSection() {
@@ -11,9 +10,12 @@ export default function CatalogueSection() {
   ];
 
   return (
-    // === UBAH KELAS DI SINI UNTUK MEMBUAT GRADASI MENYATU ===
-    <section className="bg-gradient-to-b from-emerald-900 to-slate-900 text-white py-24">
-      <div className="container mx-auto pl-32">
+    // REVERSE: gradient dari emerald-900 ke slate-900 (kebalikan dari Hero)
+    <section className="relative bg-gradient-to-br from-emerald-900 via-emerald-800 to-slate-900 text-white py-24 overflow-hidden">
+      {/* REVERSE Decorative Blur Elements - posisi dibalik dari Hero */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-slate-900 via-slate-800 to-emerald-900"></div>
+
+      <div className="container mx-auto pl-32 relative z-10">
         <div className="flex flex-col lg:flex-row items-center gap-16">
           {/* BAGIAN KIRI: Teks */}
           <div className="lg:w-1/2 space-y-6 text-center lg:text-left">
@@ -40,9 +42,7 @@ export default function CatalogueSection() {
                   className={clsx(
                     "rounded-lg bg-cover shadow-lg transition-transform duration-300 hover:scale-105",
                     {
-                      // Box tengah (index 1) lebih tinggi
                       "h-96 w-1/4": index === 1,
-                      // Box samping (index 0 dan 2) lebih pendek
                       "h-72 w-1/5": index !== 1,
                     }
                   )}
