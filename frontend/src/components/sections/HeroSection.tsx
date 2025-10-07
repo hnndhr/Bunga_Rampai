@@ -2,6 +2,7 @@
 
 import React from "react";
 import { ChevronDown } from "lucide-react";
+import ShinyText from "../ShinyText";
 
 export default function HeroSection() {
   const scrollToNext = () => {
@@ -43,9 +44,12 @@ export default function HeroSection() {
         {/* === BAGIAN TENGAH: Teks Utama === */}
         {/* Dibuat agar tumbuh (flex-grow) dan menengahkan isinya sendiri */}
         <div className="flex-grow flex flex-col items-center justify-center">
-          <p className="text-gray-300 text-lg mb-6 animate-fade-in">
-            Welcome to Bunga Rampai
-          </p>
+          <ShinyText
+            text="Welcome to Bunga Rampai"
+            disabled={false}
+            speed={3}
+            className="ShinyText mb-4 text-lg md:text-2xl font-light"
+          />
 
           {/* UBAH: Margin bawah yang besar dihapus */}
           <h1 className="text-5xl md:text-7xl font-bold leading-tight">
