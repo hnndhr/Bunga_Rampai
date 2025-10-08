@@ -2,7 +2,7 @@
 
 import React from "react";
 import { ChevronDown } from "lucide-react";
-import ShinyText from "../ShinyText";
+import ShinyText from "../ui/ShinyText";
 
 export default function HeroSection() {
   const scrollToNext = () => {

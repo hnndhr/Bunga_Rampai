@@ -4,6 +4,7 @@ import Footer from '../components/layout/Footer';
 import HeroSection from '../components/sections/HeroSection';
 import CatalogueSection from '../components/sections/CatalogueSection';
 import AboutSection from '../components/sections/AboutSection';
+import OurSurveysSection from '@/components/sections/OurSurveysSection';
 
 export default function HomePage() {
   return (
@@ -11,7 +12,7 @@ export default function HomePage() {
       <Navbar />
       <HeroSection />
       <CatalogueSection />
-      <AboutSection />
+      <OurSurveysSection/>
       <Footer />
     </main>
   );
