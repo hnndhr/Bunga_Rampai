@@ -1,11 +1,16 @@
-"use client"
+"use client";
 
-import { useEffect, useState, useRef } from 'react';
-import { motion, PanInfo, useMotionValue, useTransform } from 'framer-motion';
-import React from 'react';
-import { ChevronLeft, ChevronRight, BarChart3, FileText, PieChart } from 'lucide-react';
-import { SurveyCard, surveyCards } from '../ui/SurveyCard';
-
+import { useEffect, useState, useRef } from "react";
+import { motion, PanInfo, useMotionValue, useTransform } from "framer-motion";
+import React from "react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  BarChart3,
+  FileText,
+  PieChart,
+} from "lucide-react";
+import { SurveyCard, surveyCards } from "../ui/SurveyCard";
 
 // Survey Card Component
 interface SurveyCardComponentProps {
@@ -13,28 +18,31 @@ interface SurveyCardComponentProps {
   width: number;
 }
 
-const SurveyCardComponent: React.FC<SurveyCardComponentProps> = ({ card, width }) => {
+const SurveyCardComponent: React.FC<SurveyCardComponentProps> = ({
+  card,
+  width,
+}) => {
   return (
-    <div 
+    <div
       className="relative overflow-hidden rounded-2xl bg-slate-800 border border-slate-700"
-      style={{ width: `${width}px`, height: '400px' }}
+      style={{ width: `${width}px`, height: "420px" }}
     >
       <div className="absolute inset-0">
-        <img 
-          src={card.image} 
+        <img
+          src={card.image}
           alt={card.title}
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/80 to-slate-900/40" />
       </div>
-      
+
       <div className="relative h-full flex flex-col justify-between p-6">
         <div className="flex justify-start">
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600/80 backdrop-blur-sm">
             {card.icon}
           </span>
         </div>
-        
+
         <div className="space-y-2">
           <h3 className="text-xl font-bold text-white leading-tight">
             {card.title}
@@ -62,9 +70,7 @@ export default function OurSurveysSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const numCards = surveyCards.length;
 
-  const baseWidth = 400;
-  const containerPadding = 40;
-  const itemWidth = baseWidth - containerPadding * 2;
+  const itemWidth = 320;
   const trackItemOffset = itemWidth + GAP;
 
   // === AUTO SLIDE ===
@@ -96,7 +102,10 @@ export default function OurSurveysSection() {
     const offset = info.offset.x;
     const velocity = info.velocity.x;
 
-    if (Math.abs(offset) > DRAG_BUFFER || Math.abs(velocity) > VELOCITY_THRESHOLD) {
+    if (
+      Math.abs(offset) > DRAG_BUFFER ||
+      Math.abs(velocity) > VELOCITY_THRESHOLD
+    ) {
       if (offset < 0 || velocity < 0) {
         setCurrentIndex((prev) => (prev + 1) % numCards);
       } else {
@@ -106,19 +115,15 @@ export default function OurSurveysSection() {
   };
 
   // === BUTTON HANDLERS ===
-  const handlePrev = () => setCurrentIndex((prev) => (prev - 1 + numCards) % numCards);
+  const handlePrev = () =>
+    setCurrentIndex((prev) => (prev - 1 + numCards) % numCards);
   const handleNext = () => setCurrentIndex((prev) => (prev + 1) % numCards);
-
-  // === HITUNG POSISI X ===
-  const offsetX = useTransform(x, (latest) => latest - currentIndex * trackItemOffset);
 
   return (
     <div className="min-h-screen bg-slate-900 flex items-center justify-center p-8">
       <div className="max-w-7xl w-full">
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-white mb-4">
-            Our Surveys
-          </h1>
+        <div className="text-center mb-8">
+          <h1 className="text-5xl font-bold text-white mb-2 pt-8">Our Surveys</h1>
           <p className="text-slate-400 text-lg">
             Explore our research and survey findings
           </p>
@@ -134,45 +139,53 @@ export default function OurSurveysSection() {
 
           <div
             ref={containerRef}
-            className="relative overflow-hidden rounded-3xl"
+            className="relative overflow-hidden"
             style={{
-              width: `${baseWidth}px`,
-              height: '500px'
+              width: `${itemWidth}px`,
+              height: "420px",
             }}
           >
             <motion.div
-              className="flex h-full"
+              className="flex absolute left-0 top-0"
               drag="x"
               dragConstraints={{
                 left: -trackItemOffset * (surveyCards.length - 1),
-                right: 0
+                right: 0,
               }}
               style={{
-                width: itemWidth,
                 gap: `${GAP}px`,
-                perspective: 1200,
-                perspectiveOrigin: `${currentIndex * trackItemOffset + itemWidth / 2}px 50%`,
-                x
+                x,
               }}
               onDragEnd={handleDragEnd}
               animate={{ x: -(currentIndex * trackItemOffset) }}
+              transition={SPRING_OPTIONS}
             >
               {surveyCards.map((card, index) => {
                 const range = [
-                  -(index + 1) * trackItemOffset, 
-                  -index * trackItemOffset, 
-                  -(index - 1) * trackItemOffset
+                  -(index + 1) * trackItemOffset,
+                  -index * trackItemOffset,
+                  -(index - 1) * trackItemOffset,
                 ];
                 const outputRange = [75, 0, -75];
-                const rotateY = useTransform(x, range, outputRange, { clamp: false });
+                const rotateY = useTransform(x, range, outputRange, {
+                  clamp: false,
+                });
                 const scale = useTransform(
                   x,
-                  [-(index + 1) * trackItemOffset, -index * trackItemOffset, -(index - 1) * trackItemOffset],
+                  [
+                    -(index + 1) * trackItemOffset,
+                    -index * trackItemOffset,
+                    -(index - 1) * trackItemOffset,
+                  ],
                   [0.85, 1, 0.85]
                 );
                 const opacity = useTransform(
                   x,
-                  [-(index + 1) * trackItemOffset, -index * trackItemOffset, -(index - 1) * trackItemOffset],
+                  [
+                    -(index + 1) * trackItemOffset,
+                    -index * trackItemOffset,
+                    -(index - 1) * trackItemOffset,
+                  ],
                   [0.5, 1, 0.5]
                 );
 
@@ -182,10 +195,10 @@ export default function OurSurveysSection() {
                     className="shrink-0 cursor-grab active:cursor-grabbing"
                     style={{
                       width: itemWidth,
-                      height: '100%',
+                      height: "100%",
                       rotateY,
                       scale,
-                      opacity
+                      opacity,
                     }}
                   >
                     <SurveyCardComponent card={card} width={itemWidth} />
@@ -193,14 +206,7 @@ export default function OurSurveysSection() {
                 );
               })}
             </motion.div>
-
-            <div className="absolute bottom-6 left-0 right-0 text-center z-20">
-              <p className="text-white text-sm font-medium">
-                Click to view article details
-              </p>
-            </div>
           </div>
-
           <button
             onClick={handleNext}
             className="h-12 w-12 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-white hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all z-10"
@@ -208,19 +214,23 @@ export default function OurSurveysSection() {
             <ChevronRight className="h-6 w-6" />
           </button>
         </div>
-
+        <div className="flex items-end justify-center text-center pointer-events-none pt-3">
+          <p className="text-white text-sm font-medium">
+            Click to view article details
+          </p>
+        </div>
         <div className="flex justify-center gap-2 mt-8">
           {surveyCards.map((_, index) => (
             <motion.button
               key={index}
               onClick={() => setCurrentIndex(index)}
               className={`h-2 rounded-full transition-all ${
-                currentIndex === index 
-                  ? 'w-8 bg-blue-600' 
-                  : 'w-2 bg-slate-600 hover:bg-slate-500'
+                currentIndex === index
+                  ? "w-8 bg-blue-600"
+                  : "w-2 bg-slate-600 hover:bg-slate-500"
               }`}
               animate={{
-                scale: currentIndex === index ? 1.1 : 1
+                scale: currentIndex === index ? 1.1 : 1,
               }}
               transition={{ duration: 0.2 }}
             />
