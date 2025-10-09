@@ -61,11 +61,11 @@ export default function Navbar() {
           "container mx-auto transition-all duration-1000",
           {
             "px-6 py-4": !isScrolled,
-            "max-w-screen-md rounded-full bg-slate-800/80 backdrop-blur-sm mt-4 px-8 py-2": isScrolled,
+            "max-w-screen-sm rounded-full bg-slate-800/80 backdrop-blur-sm mt-4 px-8 py-2": isScrolled,
           }
         )}
       >
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between -space-x-16">
           <div className="flex items-center">
             <Link href="/">
               <div className="w-10 h-10 rounded-lg flex items-center justify-center -translate-y-1">

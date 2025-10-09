@@ -1,82 +1,59 @@
-'use client';
+"use client";
 
-import React from 'react';
+import clsx from "clsx";
 
-export default function AboutSection() {
+export default function CatalogueSection() {
+  const imagePanels = [
+    { style: { backgroundPosition: "0% 50%" }, offset: false },
+    { style: { backgroundPosition: "50% 50%" }, offset: true },
+    { style: { backgroundPosition: "100% 50%" }, offset: false },
+  ];
+
   return (
-    <section 
-      id="about" 
-      className="min-h-screen flex items-center justify-center bg-slate-900 py-20"
-    >
-      <div className="container mx-auto px-6">
-        <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              About Us
-            </h2>
-            <p className="text-gray-300 text-lg">
-              Learn more about our mission and vision
+    // REVERSE: gradient dari emerald-900 ke slate-900 (kebalikan dari Hero)
+    <section className="relative min-h-screen flex items-center justify-center text-white py-24 overflow-hidden">
+      {/* REVERSE Decorative Blur Elements - posisi dibalik dari Hero */}
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-950 via-slate-800 to-gray-900"></div>
+
+      <div className="container mx-auto pr-32 pl-16 relative z-10">
+        <div className="flex flex-col lg:flex-row items-center gap-16">
+          {/* BAGIAN KANAN: Gambar Terpotong */}
+          <div className="lg:w-1/2">
+            <div className="flex items-center justify-center gap-3">
+              {imagePanels.map((panel, index) => (
+                <div
+                  key={index}
+                  className={clsx(
+                    "rounded-lg bg-cover shadow-lg transition-transform duration-300 hover:scale-105",
+                    {
+                      "h-[420px] w-[180px]": index === 1,
+                      "h-[320px] w-[155px]": index !== 1,
+                    }
+                  )}
+                  style={{
+                    backgroundImage: "url('/images/flower-image.jpg')",
+                    ...panel.style,
+                  }}
+                ></div>
+              ))}
+            </div>
+          </div>
+
+          {/* BAGIAN KIRI: Teks */}
+          <div className="lg:w-1/2 space-y-6 text-center lg:text-left">
+            <h2 className="text-4xl md:text-5xl font-bold">Kementerian Riset dan Data</h2>
+            <p className="text-gray-300 leading-relaxed">
+              Kementerian Riset dan Data merupakan kementerian yang mengelola dan 
+              mengembangkan database BEM UNS melalui riset dan survei yang dilakukan 
+              secara mandiri maupun kolaboratif. Selain mendukung kebutuhan data 
+              internal organisasi, kementerian ini juga bertanggung jawab dalam 
+              memberikan informasi yang relevan untuk pengawalan isu strategis dan 
+              insidental. Di era digital, kementerian ini berperan sebagai pusat 
+              edukasi dan publikasi data, menyajikan informasi yang akurat dan 
+              bermanfaat bagi mahasiswa UNS. Dengan pendekatan yang responsif dan 
+              inovatif, kementerian ini berkomitmen untuk mengoptimalkan pengelolaan 
+              data sebagai landasan strategis dalam berbagai aktivitas organisasi.
             </p>
-          </div>
-
-          {/* Placeholder Content - Replace with your actual about content */}
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-slate-800 p-8 rounded-lg">
-              <h3 className="text-2xl font-bold text-yellow-400 mb-4">
-                Our Mission
-              </h3>
-              <p className="text-gray-300 leading-relaxed">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-              </p>
-            </div>
-
-            <div className="bg-slate-800 p-8 rounded-lg">
-              <h3 className="text-2xl font-bold text-yellow-400 mb-4">
-                Our Vision
-              </h3>
-              <p className="text-gray-300 leading-relaxed">
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco 
-                laboris nisi ut aliquip ex ea commodo consequat.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-12 bg-slate-800 p-8 rounded-lg">
-            <h3 className="text-2xl font-bold text-white mb-4 text-center">
-              Our Values
-            </h3>
-            <div className="grid md:grid-cols-3 gap-6 mt-6">
-              <div className="text-center">
-                <div className="w-16 h-16 bg-yellow-400 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <span className="text-2xl font-bold text-slate-900">1</span>
-                </div>
-                <h4 className="text-white font-semibold mb-2">Innovation</h4>
-                <p className="text-gray-400 text-sm">
-                  Driving forward with creative solutions
-                </p>
-              </div>
-
-              <div className="text-center">
-                <div className="w-16 h-16 bg-yellow-400 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <span className="text-2xl font-bold text-slate-900">2</span>
-                </div>
-                <h4 className="text-white font-semibold mb-2">Integrity</h4>
-                <p className="text-gray-400 text-sm">
-                  Building trust through transparency
-                </p>
-              </div>
-
-              <div className="text-center">
-                <div className="w-16 h-16 bg-yellow-400 rounded-full mx-auto mb-4 flex items-center justify-center">
-                  <span className="text-2xl font-bold text-slate-900">3</span>
-                </div>
-                <h4 className="text-white font-semibold mb-2">Excellence</h4>
-                <p className="text-gray-400 text-sm">
-                  Delivering quality in everything we do
-                </p>
-              </div>
-            </div>
           </div>
         </div>
       </div>

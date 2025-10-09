@@ -13,6 +13,7 @@ export default function HomePage() {
       <HeroSection />
       <CatalogueSection />
       <OurSurveysSection/>
+      <AboutSection/>
       <Footer />
     </main>
   );

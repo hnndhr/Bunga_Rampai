@@ -120,7 +120,7 @@ export default function OurSurveysSection() {
   const handleNext = () => setCurrentIndex((prev) => (prev + 1) % numCards);
 
   return (
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center p-8">
+    <div className="min-h-screen bg-gradient-to-b from-slate-800 via-gray-900 to-gray-950 flex items-center justify-center p-8">
       <div className="max-w-7xl w-full">
         <div className="text-center mb-8">
           <h1 className="text-5xl font-bold text-white mb-2 pt-8">Our Surveys</h1>

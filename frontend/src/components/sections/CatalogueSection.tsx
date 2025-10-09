@@ -13,7 +13,7 @@ export default function CatalogueSection() {
     // REVERSE: gradient dari emerald-900 ke slate-900 (kebalikan dari Hero)
     <section className="relative min-h-screen bg-gradient-to-br flex items-center justify-center from-emerald-900 via-emerald-800 to-slate-900 text-white py-24 overflow-hidden">
       {/* REVERSE Decorative Blur Elements - posisi dibalik dari Hero */}
-      <div className="absolute inset-0 bg-gradient-to-tr from-slate-900 via-slate-800 to-emerald-900"></div>
+      <div className="absolute inset-0 bg-gradient-to-tr from-slate-800 via-slate-800 to-emerald-900"></div>
 
       <div className="container mx-auto pl-32 relative z-10">
         <div className="flex flex-col lg:flex-row items-center gap-16">
