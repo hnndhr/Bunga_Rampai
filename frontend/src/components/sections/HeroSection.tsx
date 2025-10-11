@@ -8,12 +8,11 @@ export default function HeroSection() {
   const scrollToNext = () => {
     const start = window.pageYOffset;
     const target = window.innerHeight;
-    const duration = 800; // ms
+    const duration = 800;
     const startTime = performance.now();
 
-    const easeInOutQuad = (t: number) => {
-      return t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
-    };
+    const easeInOutQuad = (t: number) =>
+      t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 
     const scroll = (currentTime: number) => {
       const elapsed = currentTime - startTime;
@@ -21,54 +20,52 @@ export default function HeroSection() {
 
       window.scrollTo(0, start + (target - start) * easeInOutQuad(progress));
 
-      if (progress < 1) {
-        requestAnimationFrame(scroll);
-      }
+      if (progress < 1) requestAnimationFrame(scroll);
     };
 
     requestAnimationFrame(scroll);
   };
 
   return (
-    // UBAH: Arah flex menjadi kolom (vertikal)
-    <section className="relative min-h-screen flex flex-col overflow-hidden">
-      {/* Gradient Background */}
+    <section className="relative h-[100dvh] flex flex-col overflow-hidden">
+      {/* === Gradient Background === */}
       <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900"></div>
 
-      {/* Decorative Blur Elements */}
-      <div className="absolute bottom-40 left-0 w-64 h-64 bg-emerald-600/20 rounded-full blur-3xl" />
-      <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/20 rounded-full blur-3xl" />
+      {/* === Decorative Blur Elements === */}
+      <div className="absolute bottom-20 left-0 w-40 h-40 sm:w-64 sm:h-64 bg-emerald-600/20 rounded-full blur-3xl" />
+      <div className="absolute top-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-blue-600/20 rounded-full blur-3xl" />
 
-      {/* Kontainer Konten Utama */}
-      <div className="relative z-10 container mx-auto px-6 text-center flex flex-col flex-grow">
-        {/* === BAGIAN TENGAH: Teks Utama === */}
-        {/* Dibuat agar tumbuh (flex-grow) dan menengahkan isinya sendiri */}
-        <div className="flex-grow flex flex-col items-center justify-center">
+      {/* === Konten Utama === */}
+      <div className="relative z-10 container mx-auto px-4 sm:px-6 text-center flex flex-col flex-grow">
+        {/* Tengah: Teks Utama */}
+        <div className="flex-grow flex flex-col items-center justify-center px-2">
           <ShinyText
             text="Welcome to Bunga Rampai"
             disabled={false}
             speed={3}
-            className="ShinyText mb-4 text-lg md:text-2xl font-light"
+            className="mb-4 text-base sm:text-lg md:text-2xl font-light text-balance"
           />
 
-          {/* UBAH: Margin bawah yang besar dihapus */}
-          <h1 className="text-5xl md:text-7xl font-bold leading-tight">
-            <span className="text-white block mb-2">EXPLORING FACTS,</span>
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold leading-tight text-balance max-w-[90%] mx-auto">
+            <span className="text-white block mb-1 sm:mb-2">
+              EXPLORING FACTS,
+            </span>
             <span className="text-yellow-400 block">BUILDING THE FUTURE</span>
           </h1>
         </div>
 
-        {/* === BAGIAN BAWAH: Tombol Scroll === */}
-        {/* Diberi padding bawah agar tidak terlalu mepet */}
-        <div className="pb-12">
+        {/* Bawah: Tombol Scroll */}
+        <div className="pb-10 sm:pb-12">
           <div className="animate-bounce">
-            <p className="text-gray-300 text-sm mb-4">Get to Know Us More</p>
+            <p className="text-gray-300 text-xs sm:text-sm mb-3 sm:mb-4">
+              Get to Know Us More
+            </p>
             <button
               onClick={scrollToNext}
-              className="w-12 h-12 rounded-full border-2 border-white flex items-center justify-center mx-auto hover:bg-white/10 transition-colors duration-700"
+              className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border-2 border-white flex items-center justify-center mx-auto hover:bg-white/10 active:bg-white/20 transition-colors duration-700"
               aria-label="Scroll down"
             >
-              <ChevronDown className="text-white" size={24} />
+              <ChevronDown className="text-white" size={22} />
             </button>
           </div>
         </div>
