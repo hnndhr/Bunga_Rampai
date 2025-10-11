@@ -61,11 +61,16 @@ export default function Navbar() {
           "container mx-auto transition-all duration-1000",
           {
             "px-6 py-4": !isScrolled,
-            "max-w-screen-sm rounded-full bg-slate-800/80 backdrop-blur-sm mt-4 px-8 py-2": isScrolled,
+            // kalau scroll & bukan mobile menu terbuka, baru rounded
+            "bg-slate-800/80 backdrop-blur-sm mt-4 px-8 py-2": isScrolled,
+            "rounded-full": isScrolled && (!isMenuOpen || typeof window !== "undefined" && window.innerWidth >= 768),
+            "max-w-screen-md md:max-w-screen-sm": isScrolled,
           }
         )}
       >
+
         <div className="flex items-center justify-between -space-x-16">
+          {/* Logo & Title */}
           <div className="flex items-center">
             <Link href="/">
               <div className="w-10 h-10 rounded-lg flex items-center justify-center -translate-y-1">
@@ -85,6 +90,7 @@ export default function Navbar() {
             </Link>
           </div>
 
+          {/* Menu Desktop */}
           <div className="hidden font-abhaya text-xl leading-140 tracking-10 md:flex items-center space-x-8">
             <Link href="/" className="text-white hover:text-yellow-400 transition-colors">
               Home
@@ -97,6 +103,7 @@ export default function Navbar() {
             </Link>
           </div>
 
+          {/* Menu Mobile */}
           <button 
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="md:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-colors"
@@ -106,9 +113,18 @@ export default function Navbar() {
           </button>
         </div>
 
-        {isMenuOpen && !isScrolled && (
+        {/* Dropdown menu saat mobile */}
+        {isMenuOpen && (
           <div className="md:hidden mt-4 pb-4 space-y-4 animate-fade-in">
-            {/* ... link mobile menu ... */}
+            <Link href="/" className="block text-white hover:text-yellow-400 transition-colors">
+              Home
+            </Link>
+            <Link href="/catalogue" className="block text-gray-300 hover:text-yellow-400 transition-colors">
+              Catalogue
+            </Link>
+            <Link href="/about" className="block text-gray-300 hover:text-yellow-400 transition-colors">
+              About Us
+            </Link>
           </div>
         )}
       </div>
