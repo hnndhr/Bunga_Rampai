@@ -10,7 +10,7 @@ import {
   FileText,
   PieChart,
 } from "lucide-react";
-import { SurveyCard, surveyCards } from "../ui/SurveyCard";
+import { SurveyCard, surveyCards } from "../ui/SurveyCardData";
 
 // Survey Card Component
 interface SurveyCardComponentProps {

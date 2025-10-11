@@ -8,10 +8,9 @@ import { FaInstagram, FaTiktok, FaWhatsapp } from "react-icons/fa6";
 export default function Footer() {
   return (
     <footer className="bg-gray-900 text-white py-12">
-      <div className="container mx-auto px-6">
+      <div className="container mx-auto px-20">
         {/* === KONTENER UTAMA: Menggunakan flex dan justify-between === */}
         <div className="flex flex-col md:flex-row justify-between items-start gap-1 mx-3 mt-3 my-5">
-          
           {/* KOLOM KIRI: Logo & Info (tidak berubah) */}
           <div className="space-y-4 md:w-1/3">
             <div className="flex items-center space-x-3">
@@ -52,23 +51,31 @@ export default function Footer() {
 
           {/* === KELOMPOK KOLOM KANAN: Navigasi & Privasi dibungkus dalam satu div === */}
           <div className="flex flex-col md:flex-row gap-10 md:gap-16">
-            
             {/* Kolom Navigasi */}
             <div>
               <h3 className="font-bold text-lg mb-4">Navigation</h3>
               <ul className="space-y-3 text-sm">
                 <li>
-                  <Link href="/catalogues" className="text-gray-400 hover:text-white transition-colors">
+                  <Link
+                    href="/catalogues"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
                     Catalogues
                   </Link>
                 </li>
                 <li>
-                  <Link href="/about" className="text-gray-400 hover:text-white transition-colors">
+                  <Link
+                    href="/about"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
                     About Us
                   </Link>
                 </li>
                 <li>
-                  <Link href="/faq" className="text-gray-400 hover:text-white transition-colors">
+                  <Link
+                    href="/faq"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
                     FAQ
                   </Link>
                 </li>
@@ -80,23 +87,31 @@ export default function Footer() {
               <h3 className="font-bold text-lg mb-4">Our Privacy</h3>
               <ul className="space-y-3 text-sm">
                 <li>
-                  <Link href="/privacy-policy" className="text-gray-400 hover:text-white transition-colors">
+                  <Link
+                    href="/privacy-policy"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
                     Privacy Policy
                   </Link>
                 </li>
                 <li>
-                  <Link href="/terms" className="text-gray-400 hover:text-white transition-colors">
+                  <Link
+                    href="/terms"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
                     Terms and Condition
                   </Link>
                 </li>
                 <li>
-                  <Link href="/sop" className="text-gray-400 hover:text-white transition-colors">
+                  <Link
+                    href="/sop"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
                     Standard Operational
                   </Link>
                 </li>
               </ul>
             </div>
-
           </div>
         </div>
 
@@ -104,7 +119,8 @@ export default function Footer() {
         <div className="border-t border-gray-800 pt-8">
           <div className="text-center">
             <p className="text-sm text-gray-500">
-              Kementerian Riset dan Data BEM UNS
+              Kementerian Riset dan Data
+              BEM UNS
             </p>
           </div>
         </div>

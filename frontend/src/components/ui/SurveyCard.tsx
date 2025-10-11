@@ -1,38 +1,39 @@
-import { BarChart3, FileText, PieChart } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
-// Survey Card Interface
-export interface SurveyCard {
-  title: string;
-  description: string;
-  id: number;
-  icon: React.ReactNode;
+type SurveyCardProps = {
   image: string;
-}
+  title: string;
+  category: string;
+};
 
-// Survey Cards Data
-export const surveyCards: SurveyCard[] = [
-  {
-    title: "COVID-19 Impact Survey",
-    description: "Perilaku remaja selama pandemi COVID-19 di Jawa Tengah",
-    id: 1,
-    icon: <BarChart3 className="h-4 w-4 text-white" />,
-    image:
-      "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=400&h=500&fit=crop",
-  },
-  {
-    title: "COVID-19 Impact Survey",
-    description: "Perilaku remaja selama pandemi COVID-19 di Jawa Tengah",
-    id: 2,
-    icon: <BarChart3 className="h-4 w-4 text-white" />,
-    image:
-      "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=400&h=500&fit=crop",
-  },
-  {
-    title: "COVID-19 Impact Survey",
-    description: "Perilaku remaja selama pandemi COVID-19 di Jawa Tengah",
-    id: 2,
-    icon: <BarChart3 className="h-4 w-4 text-white" />,
-    image:
-      "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=400&h=500&fit=crop",
-  },
-];
+export default function SurveyCard({ image, title, category }: SurveyCardProps) {
+  return (
+    <Link
+      href="#"
+      className="block group overflow-hidden rounded-2xl shadow-xl transition-transform duration-500 hover:scale-105"
+    >
+      <div className="relative h-[480px] w-full">
+        <Image
+          src={image}
+          alt={title}
+          fill
+          className="object-cover transition-transform duration-700 group-hover:scale-110"
+          sizes="(max-width: 768px) 100vw, 400px"
+        />
+        {/* Overlay gradien agar teks terbaca */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+
+        {/* Teks di bawah */}
+        <div className="absolute bottom-0 left-0 p-6 text-white">
+          <span className="text-sm font-semibold uppercase tracking-wider text-yellow-400">
+            {category}
+          </span>
+          <h3 className="text-2xl font-bold mt-2 leading-tight drop-shadow-md">
+            {title}
+          </h3>
+        </div>
+      </div>
+    </Link>
+  );
+}
