@@ -38,7 +38,7 @@ export default function OurSurveysSection() {
       </div>
 
       <p className="text-sm text-gray-300 -bottom-20 mt-[-3rem]">
-        Scroll or drag to explore the gallery
+        Click to view article details 
       </p>
     </section>
   );
