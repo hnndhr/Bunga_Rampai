@@ -20,9 +20,9 @@ export default function CataloguePage() {
       <header className="relative h-screen flex items-center justify-center">
         <div 
           className="absolute inset-0 bg-cover bg-center" 
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=400&h=500&fit=crop')" }}
+          style={{ backgroundImage: "url('/images/bunga.png')" }}
         >
-          <div className="absolute inset-0 bg-black/60"></div>
+          <div className="absolute inset-0 bg-black/10"></div>
           <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0D1117] to-transparent"></div>
         </div>
         <Navbar />
@@ -35,7 +35,7 @@ export default function CataloguePage() {
       </header>
 
       {/* Catalog Section */}
-      <section className="bg-[#161B22] py-16 px-6">
+      <section className="bg-gradient-to-b from-slate-800 via-gray-800 to-gray-900 py-16 px-6">
         <div className="container mx-auto max-w-6xl">
           <h2 className="text-4xl font-bold text-white mb-8">Katalog Survei</h2>
           
