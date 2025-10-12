@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { motion, PanInfo, useMotionValue, useTransform } from "framer-motion";
+import { motion, PanInfo, Transition, useMotionValue, useTransform } from "framer-motion";
 import React from "react";
 import {
   ChevronLeft,
@@ -61,7 +61,7 @@ const SurveyCardComponent: React.FC<SurveyCardComponentProps> = ({
 const DRAG_BUFFER = 0;
 const VELOCITY_THRESHOLD = 500;
 const GAP = 24;
-const SPRING_OPTIONS = { type: "spring", stiffness: 300, damping: 30 };
+const SPRING_OPTIONS: Transition = { type: "spring", stiffness: 300, damping: 30 };
 
 export default function OurSurveysSection() {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
