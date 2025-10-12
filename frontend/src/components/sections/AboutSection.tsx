@@ -5,7 +5,7 @@ export default function CatalogueSection() {
     // Background gradasi tetap elegan dan lembut
     <section className="relative min-h-screen flex items-center justify-center text-white py-24 overflow-hidden">
       {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-gray-950 via-slate-800 to-gray-900"></div>
+      <div className="absolute inset-0 bg-gradient-to-b from-gray-900 via-slate-800 to-gray-900"></div>
 
       <div className="container mx-auto px-8 md:px-16 lg:px-32 relative z-10">
         {/* Flex arah dibalik di mobile biar teks dulu */}

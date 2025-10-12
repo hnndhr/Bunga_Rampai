@@ -61,7 +61,6 @@ export default function Navbar() {
           "container mx-auto transition-all duration-1000",
           {
             "px-6 py-4": !isScrolled,
-            // kalau scroll & bukan mobile menu terbuka, baru rounded
             "bg-slate-800/80 backdrop-blur-sm mt-4 px-8 py-2": isScrolled,
             "rounded-full": isScrolled && (!isMenuOpen || typeof window !== "undefined" && window.innerWidth >= 768),
             "max-w-screen-md md:max-w-screen-sm": isScrolled,
