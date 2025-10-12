@@ -98,7 +98,7 @@ export default function Navbar() {
             <Link href="/catalogue" className="text-gray-300 hover:text-yellow-400 transition-colors font-medium">
               Catalogue
             </Link>
-            <Link href="/about" className="text-gray-300 hover:text-yellow-400 transition-colors font-medium">
+            <Link href="/about-us" className="text-gray-300 hover:text-yellow-400 transition-colors font-medium">
               About Us
             </Link>
           </div>
