@@ -1,36 +1,43 @@
 "use client";
+import { useState } from "react";
+import dynamic from "next/dynamic";
+import Card from "../ui/CardOurSurvey"; // pastikan path-nya benar
+import OurSurveyCard from "../ui/CardOurSurvey";
 
-import React from "react";
-import CircularGallery from "../ui/CircularGallery";
-import { surveyCards } from "../ui/SurveyCardData";
+const Carroussel = dynamic(() => import("../ui/Carroussel"), { ssr: false });
 
 export default function OurSurveysSection() {
-  // Mapping data ke format yang diminta CircularGallery
-  const galleryItems = surveyCards.map((card) => ({
-    image: card.image,
-  }));
+  const [cards] = useState([
+    {
+      key: 1,
+      content: <OurSurveyCard imageSrc="/images/1.jpg" />,
+    },
+    {
+      key: 2,
+      content: <OurSurveyCard imageSrc="../images/flower-image.jpg" />,
+    },
+    {
+      key: 3,
+      content: <OurSurveyCard imageSrc="/images/1.jpg" />,
+    },
+  ]);
 
   return (
-    <section className="relative min-h-screen bg-gradient-to-b from-slate-800 via-gray-800 to-gray-900 flex flex-col items-center justify-center text-center px-6 py-24">
-      {/* Section Title */}
-      <div className="mb-5 max-w-3xl">
-        <h2 className="text-5xl font-bold text-white mb-4">Our Surveys</h2>
-      </div>
+    <section className="w-full bg-gradient-to-t from-gray-900 to-slate-800 pt-20 text-center text-white">
+      <h2 className="text-4xl md:text-5xl font-bold">Our Surveys</h2>
 
-      {/* Circular Gallery */}
-      <div className="w-full max-w-6xl h-[600px]">
-        <CircularGallery
-          items={galleryItems}
-          bend={0}
-          textColor="#ffffff"
-          borderRadius={0.05}
-          scrollSpeed={1}
-          scrollEase={0.05}
+      <div className="relative flex justify-center">
+        <Carroussel
+          cards={cards}
+          height="600px"
+          width="80%"
+          margin="0"
+          offset={1}
+          showArrows={false}
         />
       </div>
 
-      {/* Optional footer text */}
-      <p className="text-slate-400 text-sm">
+      <p className="text-sm text-gray-300 -bottom-20 mt-[-3rem]">
         Scroll or drag to explore the gallery
       </p>
     </section>

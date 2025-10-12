@@ -17,7 +17,7 @@ module.exports = {
   		fontFamily: {
   			abhaya: [
   				'Abhaya Libre','serif'
-  			]
+  			],
   		},
   		borderRadius: {
   			lg: 'var(--radius)',

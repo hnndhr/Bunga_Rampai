@@ -15,8 +15,8 @@ const AnimatedTitle = ({ isScrolled }: { isScrolled: boolean }) => {
     hidden: { transition: { staggerChildren: 0.02, staggerDirection: -1 } },
   };
   const childVariants = {
-    visible: { opacity: 1, y: 0, transition: { type: "spring", damping: 12, stiffness: 200 } },
-    hidden: { opacity: 0, y: 40, transition: { type: "spring", damping: 12, stiffness: 200 } },
+    visible: { opacity: 1, y: 0, transition: { type: "spring" as const, damping: 12, stiffness: 200 } },
+    hidden: { opacity: 0, y: 40, transition: { type: "spring" as const, damping: 12, stiffness: 200 } },
   };
 
   return (

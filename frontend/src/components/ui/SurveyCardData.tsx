@@ -11,19 +11,19 @@ export interface SurveyCard {
 export const surveyCards: SurveyCard[] = [
   {
     id: 1,
-    icon: <BarChart3 className="h-4 w-4 text-white" />,
+    icon: <BarChart3 className="h-full w-4 text-white" />,
     image:
       "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=400&h=500&fit=crop",
   },
   {
     id: 2,
-    icon: <BarChart3 className="h-4 w-4 text-white" />,
+    icon: <BarChart3 className="h-full w-4 text-white" />,
     image:
       "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=400&h=500&fit=crop",
   },
   {
     id: 2,
-    icon: <BarChart3 className="h-4 w-4 text-white" />,
+    icon: <BarChart3 className="h-full w-4 text-white" />,
     image:
       "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=400&h=500&fit=crop",
   },
