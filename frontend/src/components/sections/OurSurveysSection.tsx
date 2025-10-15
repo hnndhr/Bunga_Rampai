@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import Card from "../ui/CardOurSurvey"; // pastikan path-nya benar
 import OurSurveyCard from "../ui/CardOurSurvey";
+import CarrousselCustom from "../ui/CarrousselCustom";
 
 const Carroussel = dynamic(() => import("../ui/Carroussel"), { ssr: false });
 
@@ -10,35 +10,28 @@ export default function OurSurveysSection() {
   const [cards] = useState([
     {
       key: 1,
-      content: <OurSurveyCard imageSrc="/images/1.jpg" />,
+      content: <OurSurveyCard imageSrc="/images/contoh.png" />,
     },
     {
       key: 2,
-      content: <OurSurveyCard imageSrc="../images/flower-image.jpg" />,
+      content: <OurSurveyCard imageSrc="/images/infografis.png" />,
     },
     {
       key: 3,
-      content: <OurSurveyCard imageSrc="/images/1.jpg" />,
+      content: <OurSurveyCard imageSrc="/images/infografis.png" />,
     },
   ]);
 
   return (
-    <section className="w-full bg-gradient-to-t from-gray-900 to-slate-800 pt-20 text-center text-white">
-      <h2 className="text-4xl md:text-5xl font-bold">Our Surveys</h2>
+    <section className="w-full bg-gradient-to-t from-gray-900 to-slate-800 py-16 text-center text-white">
+      <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-20">Our Surveys</h2>
 
-      <div className="relative flex justify-center">
-        <Carroussel
-          cards={cards}
-          height="600px"
-          width="80%"
-          margin="0"
-          offset={1}
-          showArrows={false}
-        />
+      <div className="relative flex justify-center px-4">
+        <CarrousselCustom cards={cards} />
       </div>
 
-      <p className="text-sm text-gray-300 -bottom-20 mt-[-3rem]">
-        Click to view article details 
+      <p className="text-xs sm:text-sm text-gray-300 mt-6">
+        Click to view article details
       </p>
     </section>
   );

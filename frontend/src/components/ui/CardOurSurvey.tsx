@@ -1,8 +1,6 @@
 import React from "react";
 
 export default function OurSurveyCard({ imageSrc }: { imageSrc: string }) {
-  const CARDBORDERRADIUS = 20;
-
   return (
     <div
       className="
@@ -10,10 +8,12 @@ export default function OurSurveyCard({ imageSrc }: { imageSrc: string }) {
         overflow-hidden 
         shadow-2xl 
         rounded-[20px]
-        bg-gray-200
-        aspect-[210/297]
+        aspect-[2828/4000]
         w-[22vw]
         max-w-[800px]
+        flex
+        items-center
+        justify-center
       "
     >
       <img
@@ -22,8 +22,7 @@ export default function OurSurveyCard({ imageSrc }: { imageSrc: string }) {
         className="
           w-full 
           h-full 
-          object-fit
-          overflow-hidden
+          object-contain
           object-center 
           rounded-[20px]
         "

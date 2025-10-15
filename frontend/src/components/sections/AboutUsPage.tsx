@@ -17,7 +17,7 @@ export default function AboutUsPage() {
         <div className="absolute bottom-16 left-44 px-2 max-w-2xl text-start">
           <h1 className="text-5xl font-bold text-white uppercase tracking-wider">Kementerian Riset dan Data</h1>
           <p className="mt-4 max-w-2xl mx-auto text-gray-300">
-Kementerian Riset dan Data bertugas mengelola database BEM UNS melalui riset dan survei, serta menyajikan informasi akurat untuk mendukung isu strategis. Kementerian ini menjadi pusat edukasi dan publikasi data bagi mahasiswa UNS.          </p>
+              Kementerian Riset dan Data bertugas mengelola database BEM UNS melalui riset dan survei, serta menyajikan informasi akurat untuk mendukung isu strategis. Kementerian ini menjadi pusat edukasi dan publikasi data bagi mahasiswa UNS.          </p>
         </div>
       </header>
       </main>)}

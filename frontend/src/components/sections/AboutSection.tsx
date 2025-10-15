@@ -15,16 +15,16 @@ export default function CatalogueSection() {
             <div className="w-full h-[220px] md:h-[320px] lg:h-[420px] rounded-2xl overflow-hidden shadow-xl">
               <img
                 src="/images/1.jpg"
-                alt="Ilustrasi Bunga Rampai"
+                alt="Member Kementerian Riset dan Data"
                 className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
               />
             </div>
           </div>
 
           {/* BAGIAN KANAN: Teks */}
-          <div className="lg:w-1/2 space-y-5 text-center lg:text-left">
-            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
-              KEMENTERIAN RISET DAN DATA
+          <div className="lg:w-1/2 space-y-4 text-center lg:text-left">
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight ">
+              KEMENTERIAN <br></br>RISET DAN DATA
             </h2>
             <p className="text-gray-300 text-base leading-relaxed">
               Kementerian Riset dan Data merupakan kementerian yang mengelola dan
