@@ -34,8 +34,8 @@ export default function VisionMission() {
           <div className="lg:w-5/12 ">
             <div className="w-full h-32 aspect-[6/3] overflow-hidden shadow-md">
               <img
-                src="../images/eye.png"
-                alt="Vision - Eye close-up"
+                src="../images/vision.jpg"
+                alt="Vision - Peak of the mountain"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -50,8 +50,8 @@ export default function VisionMission() {
           <div className="lg:w-5/12">
             <div className="w-full h-32 aspect-[6/3] overflow-hidden shadow-md">
               <img
-                src="../images/eye.png"
-                alt="Mission - Team collaboration"
+                src="../images/mission2.jpeg"
+                alt="Mission - Beach path"
                 className="w-full h-full object-cover"
               />
             </div>
