@@ -32,7 +32,7 @@ export default function VisionMission() {
             </p>
           </div>
           <div className="lg:w-5/12 ">
-            <div className="w-full h-40 aspect-[6/3] overflow-hidden shadow-md">
+            <div className="w-full h-32 aspect-[6/3] overflow-hidden shadow-md">
               <img
                 src="../images/eye.png"
                 alt="Vision - Eye close-up"
@@ -48,7 +48,7 @@ export default function VisionMission() {
         {/* Mission Content - Text Right, Image Left */}
         <div className="flex flex-col lg:flex-row items-end gap-4">
           <div className="lg:w-5/12">
-            <div className="w-full h-40 aspect-[6/3] overflow-hidden shadow-md">
+            <div className="w-full h-32 aspect-[6/3] overflow-hidden shadow-md">
               <img
                 src="../images/eye.png"
                 alt="Mission - Team collaboration"
