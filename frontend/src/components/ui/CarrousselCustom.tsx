@@ -113,7 +113,6 @@ export default function CarrousselCustom({ cards, height = "600px" }: Carroussel
               <div
                 className={`
                   rounded-[20px] shadow-2xl overflow-hidden aspect-[2828/4000]
-                  w-[70vw] sm:w-[50vw] md:w-[35vw] lg:w-[25vw]
                 `}
               >
                 {card.content}
