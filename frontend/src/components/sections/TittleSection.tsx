@@ -12,8 +12,8 @@ import {
 import { useRouter } from "next/navigation";
 import Footer from "../layout/Footer";
 
-export default function Article() {
-  const router = useRouter(); // ✅ Inisialisasi router
+export default function Title() {
+  const router = useRouter(); 
 
   return (
     <div className="min-h-screen bg-white">
@@ -32,7 +32,7 @@ export default function Article() {
         {/* Back Button */}
         <div className="absolute top-12 left-4 md:left-8 lg:left-20 z-30">
           <button
-            onClick={() => router.back()} // ✅ Tombol back dinamis
+            onClick={() => router.back()} 
             aria-label="Go back"
             className="flex items-center justify-center w-8 h-8 text-gray-300 hover:text-white transition-colors"
           >
