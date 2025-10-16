@@ -1,5 +1,6 @@
 import Navbar from "../layout/Navbar"
 import VisionMissionSection from "./VisiMisiSection"
+import Members from "./Members"
 
 export default function AboutUsPage() {
   return (
@@ -20,4 +21,6 @@ export default function AboutUsPage() {
               Kementerian Riset dan Data bertugas mengelola database BEM UNS melalui riset dan survei, serta menyajikan informasi akurat untuk mendukung isu strategis. Kementerian ini menjadi pusat edukasi dan publikasi data bagi mahasiswa UNS.          </p>
         </div>
       </header>
+      <VisionMissionSection />
+      <Members />
       </main>)}
