@@ -35,7 +35,7 @@ export default function CataloguePage() {
       </header>
 
       {/* Catalog Section */}
-      <section className="bg-gradient-to-br from-slate-800 via-gray-800 to-gray-900 py-16 px-6">
+      <section className="bg-gradient-to-b from-gray-900 via-slate-800 to-gray-900 py-16 px-6">
         <div className="container mx-auto max-w-6xl">
           <h2 className="text-4xl font-bold text-white mb-8">Katalog Survei</h2>
           
