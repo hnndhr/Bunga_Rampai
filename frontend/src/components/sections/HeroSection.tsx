@@ -29,12 +29,8 @@ export default function HeroSection() {
   return (
     <section className="relative h-[100dvh] flex flex-col overflow-hidden">
       {/* === Gradient Background === */}
-      <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-900"></div>
-
-      {/* === Decorative Blur Elements === */}
-      <div className="absolute bottom-20 left-0 w-40 h-40 sm:w-64 sm:h-64 bg-emerald-600/20 rounded-full blur-3xl" />
-      <div className="absolute top-0 right-0 w-64 h-64 sm:w-96 sm:h-96 bg-blue-600/20 rounded-full blur-3xl" />
-
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-950 via-slate-800 to-emerald-900"></div>
+      
       {/* === Konten Utama === */}
       <div className="relative z-10 container mx-auto px-4 sm:px-6 text-center flex flex-col flex-grow">
         {/* Tengah: Teks Utama */}
