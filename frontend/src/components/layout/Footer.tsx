@@ -27,21 +27,27 @@ export default function Footer() {
             <p className="text-gray-400 text-sm leading-relaxed">
               Exploring Facts, Building the Future
             </p>
-            <div className="flex space-x-4 pt-2">
+            <div className="flex space-x-4 pt-2 pb-5">
               <Link
-                href="#"
+                href="https://www.instagram.com/datalks.uns/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 <FaInstagram size={28} />
               </Link>
               <Link
-                href="#"
+                href="https://www.tiktok.com/@rndbemuns?_t=ZS-90afh0Q42Q1&_r=1"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 <FaTiktok size={24} />
               </Link>
               <Link
-                href="#"
+                href="https://wa.me/6285713715834"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="text-gray-400 hover:text-white transition-colors"
               >
                 <FaWhatsapp size={28} />
@@ -57,15 +63,15 @@ export default function Footer() {
               <ul className="space-y-3 text-sm">
                 <li>
                   <Link
-                    href="/catalogues"
+                    href="/catalogue"
                     className="text-gray-400 hover:text-white transition-colors"
                   >
-                    Catalogues
+                    Catalogue
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="/about"
+                    href="/about-us"
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     About Us
