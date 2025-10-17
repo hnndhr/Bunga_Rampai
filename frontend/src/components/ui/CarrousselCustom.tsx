@@ -108,15 +108,16 @@ export default function CarrousselCustom({
                 stiffness: 100,
                 damping: 19,
               }}
-              onClick={() => {
-                const isActive = i === index;
-                const isAdjacent =
-                  i === (index + 1) % cards.length ||
-                  i === (index - 1 + cards.length) % cards.length;
+onClick={() => {
+  if (i === index && card.link) {
+    router.push(card.link); // klik card tengah
+  } else if (i === (index + 1) % cards.length) {
+    setIndex((index + 1) % cards.length); // klik kanan → geser kanan
+  } else if (i === (index - 1 + cards.length) % cards.length) {
+    setIndex((index - 1 + cards.length) % cards.length); // klik kiri → geser kiri
+  }
+}}
 
-                if (isActive && card.link) router.push(card.link);
-                else if (isAdjacent) setIndex(i);
-              }}
             >
               <div
                 className={`

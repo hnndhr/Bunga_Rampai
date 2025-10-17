@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import OurSurveyCard from "../ui/CardOurSurvey";
+import OurSurveyCard from "../ui/OurSurveyCard";
 import CarrousselCustom from "../ui/CarrousselCustom";
 
 //Home -> Our Survey (Rand.3)
@@ -9,20 +9,12 @@ import CarrousselCustom from "../ui/CarrousselCustom";
 const Carroussel = dynamic(() => import("../ui/Carroussel"), { ssr: false });
 
 export default function OurSurveysSection() {
-  const [cards] = useState([
-    {
-      key: 1,
-      content: <OurSurveyCard imageSrc="/images/contoh.png" />,
-    },
-    {
-      key: 2,
-      content: <OurSurveyCard imageSrc="/images/infografis.png" />,
-    },
-    {
-      key: 3,
-      content: <OurSurveyCard imageSrc="/images/infografis.png" />,
-    },
-  ]);
+const [cards] = useState([
+  { key: 1, content: <OurSurveyCard imageSrc="/images/contoh.png" />, link: "/article" },
+  { key: 2, content: <OurSurveyCard imageSrc="/images/infografis.png" />, link: "/article" },
+  { key: 3, content: <OurSurveyCard imageSrc="/images/infografis.png" />, link: "/article" },
+]);
+
 
   return (
     <section className="w-full bg-gradient-to-t from-gray-900 to-slate-800 py-16 text-center text-white">
