@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 
+//About Us -> Member
+
 export default function Members() {
   const members = [
     {

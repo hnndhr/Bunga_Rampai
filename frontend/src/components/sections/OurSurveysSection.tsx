@@ -4,6 +4,8 @@ import dynamic from "next/dynamic";
 import OurSurveyCard from "../ui/CardOurSurvey";
 import CarrousselCustom from "../ui/CarrousselCustom";
 
+//Home -> Our Survey (Rand.3)
+
 const Carroussel = dynamic(() => import("../ui/Carroussel"), { ssr: false });
 
 export default function OurSurveysSection() {

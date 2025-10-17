@@ -1,6 +1,10 @@
 import React from "react";
 
-export default function OurSurveyCard({ imageSrc }: { imageSrc: string }) {
+export default function OurSurveyCard({
+  imageSrc,
+}: {
+  imageSrc: string;
+}) {
   return (
     <div
       className="

@@ -2,6 +2,8 @@
 
 import clsx from "clsx";
 
+//Home -> Bunga Rampai
+
 export default function IntroSection() {
   const imagePanels = [
     { style: { backgroundPosition: "0% 50%" }, offset: false },

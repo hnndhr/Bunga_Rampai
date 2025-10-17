@@ -3,8 +3,8 @@ import Navbar from '@/components/layout/Navbar';
 import SurveyCard from '@/components/ui/SurveyPageCard';
 import FilterBar from '../ui/FilterBar';
 
-// Data survei bisa berasal dari API atau database
-// Di sini kita gunakan data statis sebagai contoh
+//Catalogue -> Katalog survey
+
 const surveyData = [
   { id: 1, title: "Survei Statistik Karyawan", image: "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=400&h=500&fit=crop" },
   { id: 2, title: "Survei Preferensi dan Minat", image: "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=400&h=500&fit=crop" },

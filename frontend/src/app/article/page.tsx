@@ -1,6 +1,6 @@
 import React from 'react';
 import Footer from '@/components/layout/Footer';
-import Title from '@/components/sections/TittleSection';
+import Title from '@/components/sections/ArticleTitleSection';
 
 export default function HomePage() {
   return (

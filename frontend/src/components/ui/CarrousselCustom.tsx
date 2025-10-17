@@ -16,7 +16,10 @@ interface CarrousselCustomProps {
   height?: string;
 }
 
-export default function CarrousselCustom({ cards, height = "600px" }: CarrousselCustomProps) {
+export default function CarrousselCustom({
+  cards,
+  height = "600px",
+}: CarrousselCustomProps) {
   const [index, setIndex] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
   const router = useRouter();
@@ -30,7 +33,8 @@ export default function CarrousselCustom({ cards, height = "600px" }: Carroussel
   }, []);
 
   const next = () => setIndex((prev) => (prev + 1) % cards.length);
-  const prev = () => setIndex((prev) => (prev - 1 + cards.length) % cards.length);
+  const prev = () =>
+    setIndex((prev) => (prev - 1 + cards.length) % cards.length);
 
   const bind = useDrag(
     ({ movement: [mx], last }) => {
@@ -56,45 +60,40 @@ export default function CarrousselCustom({ cards, height = "600px" }: Carroussel
     >
       <AnimatePresence initial={false}>
         {cards.map((card, i) => {
-          const diff = (i - index + cards.length) % cards.length;
+          // --- hitung diff yang simetris antara -half..+half ---
+          let diff = i - index;
+          const half = Math.floor(cards.length / 2);
+
+          if (diff > half) diff -= cards.length;
+          if (diff < -half) diff += cards.length;
+
+          // --- variabel dasar ---
           let x = 0,
             scale = 1,
             opacity = 1,
             zIndex = 1,
             blur = "0px";
 
-          const offset = isMobile ? 180 : 400;
-          const sideScale = isMobile ? 0.9 : 0.85;
+          const baseOffset = isMobile ? 180 : 400;
+          const baseScale = isMobile ? 1 : 0.85;
 
-          if (diff === 0) {
-            x = 0;
-            scale = 1;
-            opacity = 1;
-            zIndex = 10;
-          } else if (diff === 1 || diff === -cards.length + 1) {
-            x = offset;
-            scale = sideScale;
-            opacity = 0.6;
-            zIndex = 5;
-            blur = "2px";
-          } else if (diff === cards.length - 1 || diff === -1) {
-            x = -offset;
-            scale = sideScale;
-            opacity = 0.6;
-            zIndex = 5;
-            blur = "2px";
-          } else {
-            opacity = 0;
-            scale = 0.7;
-            zIndex = 0;
-          }
+          // --- interpolasi posisi, skala, dan opacity ---
+          const distance = Math.abs(diff);
+          const t = Math.min(distance / half, 1);
+
+          x = diff * baseOffset * 1; // geser kiri/kanan halus
+          scale = 1 - t * 0.25; // perlahan mengecil
+          opacity = 1 - t * 0.5; // perlahan memudar
+          blur = `${t * 3}px`; // blur makin jauh
+          zIndex = 10 - distance;
 
           return (
             <motion.div
               key={card.key}
-              className="absolute cursor-grab transition-transform flex items-center justify-center"
+              layout
+              className="absolute cursor-grab flex items-center justify-center"
               style={{
-                transformStyle: "preserve-3d",
+                transformStyle: "initial",
                 zIndex,
                 filter: `blur(${blur})`,
               }}
@@ -104,10 +103,19 @@ export default function CarrousselCustom({ cards, height = "600px" }: Carroussel
                 opacity,
                 y: 0,
               }}
-              transition={{ type: "spring", stiffness: 100, damping: 100 }}
+              transition={{
+                type: "spring",
+                stiffness: 100,
+                damping: 19,
+              }}
               onClick={() => {
-                if (diff === 0 && card.link) router.push(card.link);
-                else if (diff === 1 || diff === cards.length - 1) setIndex(i);
+                const isActive = i === index;
+                const isAdjacent =
+                  i === (index + 1) % cards.length ||
+                  i === (index - 1 + cards.length) % cards.length;
+
+                if (isActive && card.link) router.push(card.link);
+                else if (isAdjacent) setIndex(i);
               }}
             >
               <div
