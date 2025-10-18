@@ -9,8 +9,8 @@ import Members from "./members/Members-PHT";
 export default function AboutUsPage() {
   const images = [
     "/images/1.jpg",
-    "/images/mission.jpeg",
-    "/images/mission2.jpeg",
+    "/images/16.jpg",
+    "/images/13.jpg",
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
