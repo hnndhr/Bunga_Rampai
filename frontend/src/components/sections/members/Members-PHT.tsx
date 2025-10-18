@@ -21,10 +21,25 @@ export default function MembersPHT() {
       image: "/images/members/Laili_Bebas.jpg",
     },
     {
+      name: "Arya Maulana Putra",
+      role: "Sekretaris Menteri",
+      image: "/images/members/Arya_Bebas.jpg",
+    },
+    {
+      name: "Erlina Dwi Cahyani",
+      role: "Direktur Jenderal",
+      image: "/images/members/Erlina_Bebas.jpg",
+    },
+    {
       name: "Lintang Hikaru",
       role: "Direktur Jenderal",
       image: "/images/members/Lintang_Bebas.jpg",
       desc: "Dengan tangan kami perkuatkan kejelasan Media Branding, tim kreatif yang memperkuat peran Riset dan Data dalam membangun identitas kementerian.",
+    },    
+    {
+      name: "Muhammad Syahrul",
+      role: "Direktur Jenderal",
+      image: "/images/members/Syahrul_Bebas.jpg",
     },
   ];
 
@@ -38,7 +53,7 @@ export default function MembersPHT() {
 
       <div className="relative z-10 container mx-auto px-6 lg:px-16">
         {/* === Baris Pertama: teks - foto - teks === */}
-        <div className="grid grid-cols-1 md:grid-cols-3 items-center text-center md:text-center mb-16 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 items-center text-center md:text-left mb-16 gap-8">
           {/* Teks kiri */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -46,7 +61,7 @@ export default function MembersPHT() {
             transition={{ duration: 0.6 }}
             className="text-white"
           >
-            <h2 className="text-3xl md:text-4xl font-bold leading-tight">
+            <h2 className="text-3xl md:text-4xl font-bold text-center eading-tight">
               Petinggi <br /> Kementerian
             </h2>
           </motion.div>
