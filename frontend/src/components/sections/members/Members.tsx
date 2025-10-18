@@ -18,7 +18,6 @@ export default function Members() {
       {/* tampilkan section sesuai halaman */}
       {sections[page - 1]}
 
-      {/* pagination di bawah */}
       <Pagination
         totalPages={sections.length}
         currentPage={page}
