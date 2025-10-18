@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Navbar from "../layout/Navbar";
 import VisionMissionSection from "./VisiMisiSection";
-import Members from "./Members";
+import Members from "./members/Members-PHT";
 
 //About Us - Landing Page
 
@@ -59,10 +59,6 @@ export default function AboutUsPage() {
           </p>
         </div>
       </header>
-
-      {/* Section lain */}
-      <VisionMissionSection />
-      <Members />
     </main>
   );
 }
