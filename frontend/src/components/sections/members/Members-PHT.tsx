@@ -2,10 +2,11 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import Pagination from "../../layout/Pagination";
 
 //About Us -> Member
 
-export default function Members() {
+export default function MembersPHT() {
   const members = [
     {
       name: "Fathiya Noor Jannah",
@@ -23,25 +24,10 @@ export default function Members() {
       image: "/images/members/Laili_Bebas.jpg",
     },
     {
-      name: "Arya Maulana Putra",
-      role: "Sekretaris Menteri",
-      image: "/images/members/Arya_Bebas.jpg",
-    },
-    {
-      name: "Erlina Dwi Cahyani",
-      role: "Direktur Jenderal",
-      image: "/images/members/Erlina_Bebas.jpg",
-    },
-    {
       name: "Lintang Hikaru",
       role: "Direktur Jenderal",
       image: "/images/members/Lintang_Bebas.jpg",
       desc: "Dengan tangan kami perkuatkan kejelasan Media Branding, tim kreatif yang memperkuat peran Riset dan Data dalam membangun identitas kementerian.",
-    },
-    {
-      name: "Muhammad Syahrul",
-      role: "Direktur Jenderal",
-      image: "/images/members/Syahrul_Bebas.jpg",
     },
   ];
 
@@ -96,13 +82,6 @@ export default function Members() {
               </div>
             </motion.div>
           ))}
-        </div>
-
-        {/* === Pagination Dots (opsional, hanya dekoratif) === */}
-        <div className="flex justify-center mt-12 space-x-2">
-          <span className="w-8 h-1 rounded-full bg-gray-500"></span>
-          <span className="w-4 h-1 rounded-full bg-gray-700"></span>
-          <span className="w-4 h-1 rounded-full bg-gray-700"></span>
         </div>
       </div>
     </section>

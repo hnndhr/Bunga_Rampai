@@ -97,7 +97,7 @@ export default function Navbar() {
                   "transition-colors duration-300",
                   pathname === item.href
                     ? "text-white"
-                    : "text-gray-300 hover:text-white"
+                    : "text-gray-500 hover:text-white"
                 )}
               >
                 {item.name}

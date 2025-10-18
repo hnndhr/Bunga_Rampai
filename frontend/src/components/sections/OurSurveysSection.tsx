@@ -18,13 +18,13 @@ const [cards] = useState([
 
   return (
     <section className="w-full bg-gradient-to-t from-gray-900 to-slate-800 py-16 text-center text-white">
-      <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-20">Our Surveys</h2>
+      <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-8">Our Surveys</h2>
 
       <div className="relative flex justify-center px-4">
         <CarrousselCustom cards={cards} />
       </div>
 
-      <p className="text-xs sm:text-sm text-gray-300 mt-6">
+      <p className="text-xs sm:text-sm text-gray-300 mt-4">
         Click to view article details
       </p>
     </section>
