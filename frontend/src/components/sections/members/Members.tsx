@@ -9,8 +9,8 @@ export default function Members() {
 
   // daftar section yang bisa diganti
   const sections = [
-    <MembersDirjen key="dirjen" />,
     <MembersPHT key="pht" />,
+    <MembersDirjen key="dirjen" />,
   ];
 
   return (
