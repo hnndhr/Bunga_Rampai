@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
+import CardMember from "@/components/ui/CardMembers";
 
 export default function MembersPHT() {
   const members = [
@@ -16,7 +17,7 @@ export default function MembersPHT() {
       name: "Aidan Muhammad Alfath",
       role: "Wakil Menteri",
       image: "/images/members/Aidan_Bebas.jpg",
-            imageBack: "/images/members/Lintang_Bebas.jpg",
+      imageBack: "/images/members/Lintang_Bebas.jpg",
       desc: "Dengan tangan kami perkuatkan kejelasan Media Branding, tim kreatif yang memperkuat peran Riset dan Data dalam membangun identitas kementerian.",
     },
     {
@@ -42,7 +43,7 @@ export default function MembersPHT() {
       image: "/images/members/Lintang_Bebas.jpg",
       imageBack: "/images/members/Lintang_Bebas.jpg",
       desc: "Dengan tangan kami perkuatkan kejelasan Media Branding, tim kreatif yang memperkuat peran Riset dan Data dalam membangun identitas kementerian.",
-    },    
+    },
     {
       name: "Muhammad Syahrul",
       role: "Direktur Jenderal",
@@ -74,28 +75,9 @@ export default function MembersPHT() {
           </motion.div>
 
           {/* Foto tengah */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="flex justify-center"
-          >
-            <div className="relative w-64 h-80 rounded-2xl overflow-hidden shadow-lg">
-              <Image
-                src={members[0].image}
-                alt={members[0].name}
-                fill
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-              <div className="absolute bottom-4 left-4 right-4 text-white">
-                <h3 className="font-semibold text-lg">{members[0].name}</h3>
-                <p className="text-sm text-gray-300 italic">
-                  as {members[0].role}
-                </p>
-              </div>
-            </div>
-          </motion.div>
+        <div className="grid grid-cols-1 gap-8 justify-items-center">
+            {members[0] && <CardMember key={0} {...members[0]} />}
+          </div>
 
           {/* Teks kanan */}
           <motion.div
@@ -111,36 +93,11 @@ export default function MembersPHT() {
         </div>
 
         {/* === Baris kedua: 3 foto lainnya === */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 justify-items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 justify-items-center">
           {members.slice(1).map((member, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: index * 0.05 }}
-              viewport={{ once: true }}
-              className="relative w-64 h-80 rounded-2xl overflow-hidden shadow-lg group"
-            >
-              <Image
-                src={member.image}
-                alt={member.name}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-90" />
-              <div className="absolute bottom-4 left-4 right-4 text-white">
-                <h3 className="font-semibold text-lg">{member.name}</h3>
-                <p className="text-sm text-gray-300 italic">as {member.role}</p>
-                {member.desc && (
-                  <p className="text-xs mt-2 text-gray-400 leading-snug">
-                    {member.desc}
-                  </p>
-                )}
-              </div>
-            </motion.div>
+            <CardMember key={index + 1} {...member} />
           ))}
         </div>
-
       </div>
     </section>
   );
