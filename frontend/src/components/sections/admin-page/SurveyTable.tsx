@@ -6,11 +6,18 @@ import AdminPagination from "./Pagination";
 import { MontserratText } from "@/components/ui/FontWrappers";
 
 interface SurveyData {
-  id: number;
-  date: string;
-  username: string;
-  survey: string;
-  action: string;
+  id: string;
+  slug: string;
+  title: string;
+  header_image: string | null;
+  respondents: number;
+  period: string;
+  method: string;
+  survey_type: string;
+  report_link: string | null;
+  author_username: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 const SurveyTable: React.FC = () => {
@@ -19,26 +26,34 @@ const SurveyTable: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
 
-  // Fetch data dari database
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       try {
-        setLoading(true);
-        // Ganti dengan endpoint API Anda
-        const response = await fetch(`http://localhost:3001/test/connection`);
+        const response = await fetch(
+          `http://localhost:3001/test/connection/?page=${currentPage}`,
+          {
+            method: "GET",
+          }
+        );
+        const res = await response.json();
 
-        const data = await response.json();
-        setSurveyData(data.surveys);
-        setTotalPages(data.totalPages);
-      } catch (error) {
-        console.error("Error fetching data:", error);
+        if (res?.status === "OK" && Array.isArray(res.data)) {
+          setSurveyData(res.data);
+          setTotalPages(res.totalPages ?? 1);
+        } else {
+          setSurveyData([]);
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setSurveyData([]);
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [currentPage]); // Re-fetch ketika halaman berubah
+  }, [currentPage]);
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -56,7 +71,7 @@ const SurveyTable: React.FC = () => {
 
   return (
     <div className="flex-1 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6 flex flex-col">
-      {/* Header Section with Title and Create Button */}
+      {/* Header Section */}
       <div className="flex justify-between items-center mb-8">
         <div></div>
         <MontserratText className="text-2xl md:text-3xl font-bold text-white tracking-wider">
@@ -71,19 +86,17 @@ const SurveyTable: React.FC = () => {
       </div>
 
       {/* Table Header */}
-      <div className="grid grid-cols-4 gap-4 pb-4 border-b border-white/20 text-white/90 font-medium text-sm">
-        <div className="flex items-center space-x-2 cursor-pointer hover:text-white transition-colors">
-          <span>Date</span>
-        </div>
-        <div className="flex items-center space-x-2 cursor-pointer hover:text-white transition-colors">
-          <span>Username</span>
-        </div>
-        <div className="flex items-center space-x-2 cursor-pointer hover:text-white transition-colors">
-          <span>Survey</span>
-        </div>
-        <div className="flex items-center space-x-2 cursor-pointer hover:text-white transition-colors">
-          <span>Action</span>
-        </div>
+      <div className="grid grid-cols-[0.5fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] gap-4 pb-4 border-b border-white/20 text-white/90 font-medium text-[13px]">
+        <div>No</div>
+        <div>Title</div>
+        <div>Header Image</div>
+        <div>Respondents</div>
+        <div>Period</div>
+        <div>Method</div>
+        <div>Survey Type</div>
+        <div>Report</div>
+        <div>Author Username</div>
+        <div>Created At</div>
       </div>
 
       {/* Table Body */}
@@ -93,25 +106,63 @@ const SurveyTable: React.FC = () => {
             No data available
           </div>
         ) : (
-          surveyData.map((item) => (
+          surveyData.map((item, index) => (
             <div
               key={item.id}
-              className="grid grid-cols-4 gap-4 py-4 border-b border-white/10 text-white/80 hover:bg-white/5 transition-all"
+              className="grid grid-cols-[0.5fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] gap-4 py-4 border-b border-white/10 text-white/80 hover:bg-white/5 transition-all text-sm"
             >
-              <div>{item.date}</div>
-              <div>{item.username}</div>
-              <div>{item.survey}</div>
-              <div>
-                {item.action === "Post" ? (
-                  <span className="px-4 py-1.5 bg-blue-500/80 rounded-full text-sm text-white inline-block">
-                    {item.action}
-                  </span>
+              <div>{(currentPage - 1) * surveyData.length + (index + 1)}</div>
+
+
+              {/* Title */}
+              <div className="truncate overflow-hidden whitespace-nowrap text-ellipsis">
+                {item.title}
+              </div>
+
+              {/* Header image */}
+              <div className="truncate overflow-hidden whitespace-nowrap text-ellipsis">
+                {item.header_image ? (
+                  <a
+                    href={item.header_image}
+                    target="_blank"
+                    className="underline"
+                  >
+                    {item.header_image}
+                  </a>
                 ) : (
-                  <span className="px-4 py-1.5 bg-red-500/80 rounded-full text-sm text-white inline-block">
-                    {item.action}
-                  </span>
+                  "-"
                 )}
               </div>
+
+              <div>{item.respondents}</div>
+              <div>{item.period}</div>
+              <div>{item.method}</div>
+
+              {/* Survey Type */}
+              <div className="truncate overflow-hidden whitespace-nowrap text-ellipsis">
+                {item.survey_type}
+              </div>
+
+              {/* Report link */}
+              <div className="truncate overflow-hidden whitespace-nowrap text-ellipsis">
+                {item.report_link ? (
+                  <a
+                    href={item.report_link}
+                    target="_blank"
+                    className="underline"
+                  >
+                    {item.report_link}
+                  </a>
+                ) : (
+                  "-"
+                )}
+              </div>
+
+              <div className="truncate overflow-hidden whitespace-nowrap text-ellipsis">
+                {item.author_username ?? "-"}
+              </div>
+
+              <div>{new Date(item.created_at).toLocaleDateString()}</div>
             </div>
           ))
         )}

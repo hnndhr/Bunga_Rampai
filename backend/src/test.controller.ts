@@ -11,7 +11,7 @@ export class TestController {
       .getClient()
       .from('survey_articles') // pakai nama tabelmu di Supabase
       .select('*')
-      .limit(1);
+      .limit(5);
 
     if (error) {
       return { status: 'ERROR', error };
