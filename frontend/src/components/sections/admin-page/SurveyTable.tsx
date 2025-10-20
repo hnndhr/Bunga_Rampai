@@ -17,7 +17,7 @@ const SurveyTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [surveyData, setSurveyData] = useState<SurveyData[]>([]);
   const [loading, setLoading] = useState(true);
-  const totalPages = 5;
+  const [totalPages, setTotalPages] = useState(1);
 
   // Fetch data dari database
   useEffect(() => {
@@ -25,28 +25,13 @@ const SurveyTable: React.FC = () => {
       try {
         setLoading(true);
         // Ganti dengan endpoint API Anda
-        const response = await fetch(`/api/surveys?page=${currentPage}`);
+        const response = await fetch(`http://localhost:3001/test/connection`);
+
         const data = await response.json();
         setSurveyData(data.surveys);
+        setTotalPages(data.totalPages);
       } catch (error) {
         console.error("Error fetching data:", error);
-        // Fallback ke data dummy jika error
-        setSurveyData([
-          {
-            id: 1,
-            date: "22 Juli 2025",
-            username: "Hmdhr",
-            survey: "Survei Awal Bam UNS",
-            action: "Post",
-          },
-          {
-            id: 2,
-            date: "22 Juli 2025",
-            username: "Hmdhr",
-            survey: "Survei Aspirasi dan ...",
-            action: "Delete",
-          },
-        ]);
       } finally {
         setLoading(false);
       }
@@ -73,8 +58,7 @@ const SurveyTable: React.FC = () => {
     <div className="flex-1 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6 flex flex-col">
       {/* Header Section with Title and Create Button */}
       <div className="flex justify-between items-center mb-8">
-        <div>
-        </div>
+        <div></div>
         <MontserratText className="text-2xl md:text-3xl font-bold text-white tracking-wider">
           SURVEY MANAGEMENT
         </MontserratText>

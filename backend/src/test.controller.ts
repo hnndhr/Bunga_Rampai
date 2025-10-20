@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { SupabaseService } from './common/supabase.service';
+import { SupabaseService } from './common/supabase.service.js';
 
 @Controller('test')
 export class TestController {
@@ -9,7 +9,7 @@ export class TestController {
   async testConnection() {
     const { data, error } = await this.supabase
       .getClient()
-      .from('articles') // pakai nama tabelmu di Supabase
+      .from('survey_articles') // pakai nama tabelmu di Supabase
       .select('*')
       .limit(1);
 
