@@ -10,7 +10,7 @@ export default function LoginPage() {
   const handleLogin = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     // bisa tambahkan validasi login di sini
-    router.push("/"); // pindah halaman
+    router.push("/admin-dashboard"); // pindah halaman
   };
 
   return (
@@ -64,6 +64,7 @@ export default function LoginPage() {
 
           <button
             type="submit"
+            onClick={handleLogin}
             className="w-full py-2 rounded-lg bg-blue-600 hover:bg-blue-700 transition text-white font-semibold shadow-md"
           >
             Login
