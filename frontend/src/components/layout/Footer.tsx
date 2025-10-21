@@ -94,7 +94,7 @@ export default function Footer() {
               <ul className="space-y-3 text-sm">
                 <li>
                   <Link
-                    href="/privacy-policy"
+                    href="/privacy"
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     Privacy Policy
@@ -110,7 +110,9 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/sop"
+                    href="https://drive.google.com/drive/folders/1ZyLnfIvzC9-tFaFJZevRJKekCXfamDCg?usp=sharing"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     Standard Operational
