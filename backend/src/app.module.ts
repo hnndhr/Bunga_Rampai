@@ -4,10 +4,12 @@ import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { TestController } from './test.controller.js';
 import { SupabaseService } from './common/supabase.service.js';
+import { AdminsModule } from './modules/admins/admins.module.js';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }) // ✅ aktifkan .env
+    ConfigModule.forRoot({ isGlobal: true }),
+    AdminsModule,
   ],
   controllers: [AppController, TestController],
   providers: [AppService, SupabaseService],

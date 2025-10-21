@@ -1,16 +1,16 @@
-// components/sections/admin-page/SurveyTable.tsx
 "use client";
 
 import React, { useState, useEffect } from "react";
 import AdminPagination from "./Pagination";
 import { MontserratText } from "@/components/ui/FontWrappers";
+import CreateAdminModal from "./CreateAdminModal";
 
 interface SurveyData {
   id: string;
-name: string;
-username: string;
-password: string;
-role: "master" | "admin" 
+  name: string;
+  username: string;
+  password: string;
+  role: "master" | "admin";
 }
 
 const AdminTable: React.FC = () => {
@@ -18,33 +18,36 @@ const AdminTable: React.FC = () => {
   const [surveyData, setSurveyData] = useState<SurveyData[]>([]);
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+
+  // ✅ Toast state
+  const [toastVisible, setToastVisible] = useState(false);
+
+  // ✅ Fetch Data reusable
+  const fetchData = async (page = currentPage) => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `http://localhost:3001/connect/admins/?page=${page}`,
+        { method: "GET" }
+      );
+      const res = await response.json();
+
+      if (res?.status === "OK" && Array.isArray(res.data)) {
+        setSurveyData(res.data);
+        setTotalPages(res.totalPages ?? 1);
+      } else {
+        setSurveyData([]);
+      }
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      setSurveyData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(
-          `http://localhost:3001/connect/admins/?page=${currentPage}`,
-          {
-            method: "GET",
-          }
-        );
-        const res = await response.json();
-
-        if (res?.status === "OK" && Array.isArray(res.data)) {
-          setSurveyData(res.data);
-          setTotalPages(res.totalPages ?? 1);
-        } else {
-          setSurveyData([]);
-        }
-      } catch (err) {
-        console.error("Error fetching data:", err);
-        setSurveyData([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
   }, [currentPage]);
 
@@ -52,6 +55,12 @@ const AdminTable: React.FC = () => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
     }
+  };
+
+  // ✅ Show toast (reusable)
+  const showToast = () => {
+    setToastVisible(true);
+    setTimeout(() => setToastVisible(false), 2500); // auto hide
   };
 
   if (loading) {
@@ -63,7 +72,15 @@ const AdminTable: React.FC = () => {
   }
 
   return (
-    <div className="flex-1 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6 flex flex-col">
+    <div className="relative flex-1 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6 flex flex-col">
+
+      {/* ✅ Toast */}
+      {toastVisible && (
+        <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-lg px-4 py-2 rounded-full text-white text-sm animate-slide-in">
+          ✅ Admin created successfully
+        </div>
+      )}
+
       {/* Header Section */}
       <div className="flex justify-between items-center mb-8">
         <div></div>
@@ -71,10 +88,10 @@ const AdminTable: React.FC = () => {
           ADMIN MANAGEMENT
         </MontserratText>
         <button
-          onClick={() => (window.location.href = "/admin/create-survey")}
-          className="px-6 py-2 bg-white/20 backdrop-blur-md border border-white/30 rounded-lg text-white font-medium hover:bg-white/30 transition-all shadow-lg"
+          onClick={() => setIsCreateModalOpen(true)}
+          className="px-4 py-2 bg-black text-white rounded"
         >
-          Create Survey
+          Create Admin
         </button>
       </div>
 
@@ -90,9 +107,7 @@ const AdminTable: React.FC = () => {
       {/* Table Body */}
       <div className="flex-1 overflow-auto">
         {surveyData.length === 0 ? (
-          <div className="text-white/60 text-center py-8">
-            No data available
-          </div>
+          <div className="text-white/60 text-center py-8">No data available</div>
         ) : (
           surveyData.map((item, index) => (
             <div
@@ -100,21 +115,10 @@ const AdminTable: React.FC = () => {
               className="grid grid-cols-[0.5fr_1fr_1fr_1fr_1fr] gap-4 py-4 border-b border-white/10 text-white/80 hover:bg-white/5 transition-all text-sm"
             >
               <div>{(currentPage - 1) * surveyData.length + (index + 1)}</div>
-
-
-              {/* Title */}
-              <div className="truncate overflow-hidden whitespace-nowrap text-ellipsis">
-                {item.name}
-              </div>
-
-              {/* Header image */}
-              <div className="truncate overflow-hidden whitespace-nowrap text-ellipsis">
-                {item.username}
-              </div>
-
-              <div>{item.password}</div>
+              <div className="truncate">{item.name}</div>
+              <div className="truncate">{item.username}</div>
+              <div className="truncate">{item.password}</div>
               <div>{item.role}</div>
-
             </div>
           ))
         )}
@@ -124,6 +128,16 @@ const AdminTable: React.FC = () => {
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
+      />
+
+      <CreateAdminModal
+        isOpen={isCreateModalOpen}
+        onClose={() => setIsCreateModalOpen(false)}
+        onSuccess={() => {
+          setIsCreateModalOpen(false);
+          fetchData(1); // reload page 1
+          showToast();
+        }}
       />
     </div>
   );
