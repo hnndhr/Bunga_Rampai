@@ -1,17 +1,31 @@
-// components/sections/admin-page/DashboardLayout.tsx
-import React from 'react';
-import Sidebar from './SidebarNavigation';
-import SurveyTable from './SurveyTable';
+"use client";
 
-interface DashboardLayoutProps {
-  children?: React.ReactNode;
-}
+import React, { useState } from "react";
+import Sidebar from "./SidebarNavigation";
+import SurveyTable from "./SurveyTable";
+import AdminTable from "./AdminTable";
+import SurveyBlocksTable from "./SurveyBlocksTable";
 
-const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
+const DashboardLayout: React.FC = () => {
+  const [currentView, setCurrentView] = useState<
+    "survey" | "admins" | "blocks"
+  >("survey");
+
+  const renderContent = () => {
+    switch (currentView) {
+      case "admins":
+        return <AdminTable />;
+      case "blocks":
+        return <SurveyBlocksTable />;
+      default:
+        return <SurveyTable />;
+    }
+  };
+
   return (
     <div className="min-h-screen w-full relative overflow-hidden">
       {/* Background Image */}
-      <div 
+      <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: `url('images/mission2.jpeg')`,
@@ -22,14 +36,11 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
 
       {/* Content */}
       <div className="relative z-10 flex min-h-screen px-7">
-        {/* Sidebar Component */}
-        <Sidebar />
+        {/* Sidebar */}
+        <Sidebar onNavigate={setCurrentView} currentView={currentView} />
 
         {/* Main Content Area */}
-        <div className="flex-1 p-8 flex flex-col">
-          {/* Jika tidak ada children, render SurveyTable sebagai default */}
-          {children || <SurveyTable />}
-        </div>
+        <div className="flex-1 p-8 flex flex-col">{renderContent()}</div>
       </div>
     </div>
   );

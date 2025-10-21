@@ -1,36 +1,47 @@
-// components/SidebarNavigationtsx
+"use client";
+
 import React from "react";
-import { Menu, Users, FileText, BarChart3 } from "lucide-react";
-import Image from 'next/image';
+import { BarChart3, Users, FileText } from "lucide-react";
+import Image from "next/image";
 
+interface SidebarNavigationProps {
+  onNavigate: (view: "survey" | "admins" | "blocks") => void;
+  currentView: "survey" | "admins" | "blocks";
+}
 
-const SidebarNavigation: React.FC = () => {
+const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
+  onNavigate,
+  currentView,
+}) => {
+  const navItem = (
+    view: "survey" | "admins" | "blocks",
+    Icon: React.ElementType
+  ) => (
+    <div
+      onClick={() => onNavigate(view)}
+      className={`w-12 h-12 rounded-full flex items-center justify-center cursor-pointer group transition-all backdrop-blur-md border
+        ${
+          currentView === view
+            ? "bg-white/40 border-white/70 shadow-xl"
+            : "bg-white/10 border-white/20 hover:bg-white/30"
+        }`}
+    >
+      <Icon className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
+    </div>
+  );
+
   return (
     <div className="w-20 flex flex-col items-center py-8 justify-between">
-      {/* Logo - Top */}
-      <div className="w-24 h-24 bg-transparent flex items-center justify-center cursor-pointer">
-        <Image
-          src="/images/rnd_logo.png"
-          alt="rnd logo"
-          width={50}
-          height={50}
-        />
+      <div className="w-24 h-24 flex items-center justify-center cursor-pointer">
+        <Image src="/images/rnd_logo.png" alt="rnd logo" width={50} height={50} />
       </div>
 
-      {/* Navigation Bar - Center (Wrapped in pill/oval shape) */}
       <div className="bg-white/10 backdrop-blur-md rounded-full border border-white/30 shadow-lg p-2 flex flex-col space-y-4">
-        <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center hover:bg-white/40 transition-all cursor-pointer group">
-          <BarChart3 className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
-        </div>
-        <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center hover:bg-white/40 transition-all cursor-pointer group">
-          <Users className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
-        </div>
-        <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center hover:bg-white/40 transition-all cursor-pointer group">
-          <FileText className="w-6 h-6 text-white group-hover:scale-110 transition-transform" />
-        </div>
+        {navItem("survey", BarChart3)}
+        {navItem("admins", Users)}
+        {navItem("blocks", FileText)}
       </div>
 
-      {/* Logout - Bottom */}
       <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 shadow-lg hover:bg-red-500/50 transition-all cursor-pointer group">
         <svg
           className="w-6 h-6 text-white group-hover:scale-110 transition-transform"
