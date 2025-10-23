@@ -1,23 +1,29 @@
 "use client";
 import { useState } from "react";
-import MembersDirjen from "./MembersDirjen";
 import MembersPHT from "./Members-PHT";
 import Pagination from "@/components/layout/Pagination";
+import MembersMedia from "./MembersMedia";
+import MembersKanal from "./MembersKanal";
+import MembersRiset from "./MembersRiset";
 
 export default function Members() {
   const [page, setPage] = useState(1);
 
-  // daftar section yang bisa diganti
   const sections = [
     <MembersPHT key="pht" />,
-    <MembersDirjen key="dirjen" />,
+    <MembersRiset key="Riset" />,
+    <MembersMedia key="Media" />,
+    <MembersKanal key="Kanal" />,
   ];
 
   return (
-    <section className="relative bg-[#0E1B2B] py-20 min-h-screen transition-all duration-700">
-      {/* tampilkan section sesuai halaman */}
+    <section
+      id="Members"
+      className="relative bg-[#0E1B2B] py-20 min-h-screen transition-all duration-700"
+    >
       {sections[page - 1]}
 
+      {/* Pagination */}
       <Pagination
         totalPages={sections.length}
         currentPage={page}
