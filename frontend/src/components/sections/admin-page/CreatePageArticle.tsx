@@ -14,8 +14,8 @@ type ArticleMeta = {
   period?: string;
   method?: string;
   survey_type?: string;
-  author_username?: string;
-  respondents?: Int16Array;
+  report_link?: string;
+  respondents?: number;
 };
 
 export default function AdminArticleCreatePage() {
@@ -76,9 +76,15 @@ export default function AdminArticleCreatePage() {
     };
   }, []);
 
-  function handleMetaChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setMeta((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  }
+  const handleMetaChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setMeta((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   async function createArticleMeta(): Promise<boolean> {
     // basic validation
@@ -239,7 +245,7 @@ export default function AdminArticleCreatePage() {
           name="title"
           value={meta.title}
           onChange={handleMetaChange}
-          placeholder="Title"
+          placeholder="Judul Survei"
           className="border p-2 rounded"
         />
         <input
@@ -253,42 +259,47 @@ export default function AdminArticleCreatePage() {
           name="header_image"
           value={meta.header_image || ""}
           onChange={handleMetaChange}
-          placeholder="Header image URL (optional)"
+          placeholder="Link Image Header"
           className="border p-2 rounded md:col-span-2"
         />
         <input
           name="period"
-          value={meta.period || ""}
+          value={meta.period}
           onChange={handleMetaChange}
-          placeholder="period"
+          placeholder="Periode Survei"
           className="border p-2 rounded"
         />
         <input
           name="method"
-          value={meta.method || ""}
+          value={meta.method}
           onChange={handleMetaChange}
-          placeholder="method"
+          placeholder="Metode Survei"
           className="border p-2 rounded"
         />
-        <input
+        <select
           name="survey_type"
-          value={meta.survey_type || ""}
+          value={meta.survey_type}
           onChange={handleMetaChange}
-          placeholder="survey_type"
           className="border p-2 rounded"
-        />{" "}
+        >
+          <option value="">Pilih tipe survei</option>
+          <option value="kolaborasi">Kolaborasi</option>
+          <option value="mandiri">Mandiri</option>
+        </select>
+
         <input
-          name="author_username"
-          value={meta.author_username || ""}
+          name="report_link"
+          value={meta.report_link}
           onChange={handleMetaChange}
-          placeholder="author username"
+          placeholder="Link Laporan"
           className="border p-2 rounded"
         />
         <input
           name="respondents"
-          value={Number(meta.respondents) || ""}
+          type="number"
+          value={meta.respondents}
           onChange={handleMetaChange}
-          placeholder="respondents"
+          placeholder="Jumlah Responden"
           className="border p-2 rounded"
         />
       </div>

@@ -1,7 +1,7 @@
 // app/article/[slug]/page.tsx
 import React from 'react';
 import ArticleSection from '@/components/sections/ArticleSection';
-import Title from '@/components/sections/ArticleTitleSection';
+import Footer from '@/components/layout/Footer';
 
 interface Props {
   params: { slug: string };
@@ -13,6 +13,7 @@ export default function Page({ params }: Props) {
   return (
     <main >
       <ArticleSection slug={params.slug} />
+      <Footer></Footer>
     </main>
   );
 }

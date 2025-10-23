@@ -1,17 +1,24 @@
-// frontend/src/components/ArticleSection.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
-import BlockRenderer from "./BlocksRenderer"; // Kita akan gunakan komponen terpisah
+import Image from "next/image";
+import {
+  FileText,
+  Calendar,
+  Hand,
+  Handshake,
+  Users,
+  ArrowLeft,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import BlockRenderer from "./BlocksRenderer";
 
-// Tipe data tetap sama
 type Block = {
   id: string;
   ordering: number;
   block_type?: string;
   content: any;
-  // Saran: Tambahkan caption untuk gambar
-  caption?: string; 
+  caption?: string;
 };
 
 type Article = {
@@ -19,44 +26,33 @@ type Article = {
   slug: string;
   title: string;
   header_image?: string | null;
-  // Saran: Tambahkan informasi penulis untuk tampilan seperti Medium
-  author?: {
-    name: string;
-    avatar_url?: string;
-  };
-  published_date?: string;
-  read_time_minutes?: number;
   blocks: Block[];
+  respondents?: number;
+  period?: string;
+  method?: string;
+  survey_type?: string;
+  report_link?: string;
 };
 
 export default function ArticleSection({ slug }: { slug: string }) {
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (!slug) return;
 
-    // Menggunakan async/await untuk fetching data yang lebih bersih
     const fetchArticle = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`http://localhost:3001/articles/${encodeURIComponent(slug)}`);
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(errorText || "Gagal memuat artikel");
-        }
-        const data: Article = await response.json();
-        
-        // Mensimulasikan data author jika tidak ada dari API
-        const articleWithDefaults = {
-            ...data,
-            author: data.author || { name: "Tim Redaksi", avatar_url: "https://i.pravatar.cc/40" },
-            published_date: data.published_date || "22 Oktober 2025",
-            read_time_minutes: data.read_time_minutes || 5,
-        };
+        const response = await fetch(
+          `http://localhost:3001/articles/${encodeURIComponent(slug)}`
+        );
+        if (!response.ok) throw new Error("Gagal memuat artikel");
 
-        setArticle(articleWithDefaults);
+        const data: Article = await response.json();
+        setArticle(data);
         setError(null);
       } catch (err: any) {
         console.error(err);
@@ -70,53 +66,127 @@ export default function ArticleSection({ slug }: { slug: string }) {
     fetchArticle();
   }, [slug]);
 
-  if (loading) return <div className="text-center py-20">Memuat artikel...</div>;
-  if (error) return <div className="text-center py-20 text-red-500">Error: {error}</div>;
-  if (!article) return <div className="text-center py-20">Artikel tidak ditemukan.</div>;
+  if (loading)
+    return <div className="text-center py-20">Memuat artikel...</div>;
+  if (error)
+    return <div className="text-center py-20 text-red-500">Error: {error}</div>;
+  if (!article)
+    return <div className="text-center py-20">Artikel tidak ditemukan.</div>;
 
   return (
-    <main className="font-serif bg-white text-zinc-800 py-12 md:py-16">
-      <article className="max-w-3xl mx-auto px-4">
-        {/* Judul Utama */}
-        <h1 className="font-sans text-3xl md:text-5xl font-bold !leading-tight tracking-tight mb-4">
-          {article.title}
-        </h1>
-
-        {/* Informasi Penulis & Meta - Khas Medium */}
-        <div className="flex items-center space-x-4 my-8">
-          <img
-            src={article.author?.avatar_url}
-            alt={article.author?.name}
-            className="w-12 h-12 rounded-full"
-          />
-          <div className="text-sm">
-            <p className="font-sans font-semibold">{article.author?.name}</p>
-            <p className="text-zinc-500 font-sans">
-              <span>{article.published_date}</span>
-              <span className="mx-1.5">·</span>
-              <span>{article.read_time_minutes} menit baca</span>
-            </p>
-          </div>
-        </div>
-
-        {/* Gambar Header */}
+    <main className="font-serif bg-white text-zinc-800">
+      {/* ===== HERO SECTION ===== */}
+      <section className="relative w-full h-[300px] md:h-[350px] lg:h-[400px] bg-gray-900 overflow-hidden">
+        {/* Background Image */}
         {article.header_image && (
-          <img
+          <Image
             src={article.header_image}
             alt={article.title}
-            className="w-full h-auto object-cover rounded-lg my-8"
+            fill
+            className="object-cover"
+            priority
           />
         )}
+        <div className="absolute inset-0 bg-black/55" />
 
-        {/* Konten Artikel */}
+        {/* Back Button */}
+        <div className="absolute top-12 left-4 md:left-8 lg:left-20 z-30">
+          <button
+            onClick={() => router.back()}
+            aria-label="Go back"
+            className="flex items-center justify-center w-8 h-8 text-gray-300 hover:text-white transition-colors"
+          >
+            <ArrowLeft className="w-7 h-7" />
+          </button>
+        </div>
+
+        {/* Title Section */}
+        <div className="relative z-10 flex flex-col items-center justify-center h-full px-8 md:px-32 text-center">
+          <h1 className="max-w-4xl text-xl md:text-3xl lg:text-5xl font-abhaya text-white font-medium leading-tight tracking-wide">
+            {article.title}
+          </h1>
+
+          <hr className="w-full md:w-full border-t border-white mt-10" />
+        </div>
+
+        {/* Info Badges */}
+        <div className="absolute bottom-6 left-8 md:left-32 flex flex-wrap items-center gap-2 md:gap-3 z-20">
+          {article.respondents && (
+            <InfoBadge
+              icon={<Users />}
+              text={`${article.respondents.toLocaleString()} Responden`}
+            />
+          )}
+          {article.period && (
+            <InfoBadge icon={<Calendar />} text={article.period} />
+          )}
+          {article.method && (
+            <InfoBadge icon={<Hand />} text={article.method} />
+          )}
+          {article.survey_type && (
+            <InfoBadge
+              icon={<Handshake />}
+              text={`Survei ${article.survey_type}`}
+            />
+          )}
+          {article.report_link && (
+            <a
+              href={
+                article.report_link?.startsWith("http")
+                  ? article.report_link
+                  : `https://${article.report_link}`
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <InfoBadge icon={<FileText />} text="Laporan Survei" clickable />
+            </a>
+          )}
+        </div>
+      </section>
+
+      {/* ===== ARTICLE BODY ===== */}
+      <article className="max-w-3xl mx-auto px-4 py-12 md:py-16">
         <section className="prose prose-xl prose-p:leading-relaxed prose-p:my-6 prose-headings:font-sans prose-headings:font-bold">
           {article.blocks
-            ?.sort((a, b) => a.ordering - b.ordering) // Selalu urutkan block
+            ?.sort((a, b) => a.ordering - b.ordering)
             .map((block) => (
               <BlockRenderer key={block.id} block={block} />
             ))}
         </section>
       </article>
     </main>
+  );
+}
+
+/* ===== COMPONENT: Info Badge ===== */
+function InfoBadge({
+  icon,
+  text,
+  clickable = false,
+}: {
+  icon: React.ReactNode;
+  text: string;
+  clickable?: boolean;
+}) {
+  return (
+    <div
+      className={`relative flex items-center gap-1.5 px-3 py-2 md:px-4 md:py-2 rounded-3xl
+                  bg-gradient-to-br from-white/5 to-white/5 backdrop-blur-md border border-white/20
+                  shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),_0_4px_10px_rgba(0,0,0,0.25)]
+                  overflow-hidden transition-all duration-300 ${
+                    clickable
+                      ? "hover:from-white/25 hover:to-white/10 cursor-pointer"
+                      : ""
+                  }`}
+    >
+      <span className="absolute inset-0 bg-gradient-to-t from-transparent via-white/10 to-transparent opacity-60 rotate-12" />
+      <span className="text-white relative z-10 flex items-center gap-1.5 text-xs md:text-sm font-montserrat font-medium whitespace-nowrap">
+        {React.cloneElement(icon as React.ReactElement, {
+          className: "w-4 h-4 md:w-5 md:h-5 text-white",
+        })}
+        {text}
+      </span>
+    </div>
   );
 }
