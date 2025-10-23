@@ -1,7 +1,6 @@
 // app/article/[slug]/page.tsx
 import React from 'react';
-import ArticleSection from '@/components/sections/ArticleSection';
-import Title from '@/components/sections/ArticleTitleSection';
+import AdminArticleCreatePage from '@/components/sections/admin-page/CreatePageArticle';
 
 interface Props {
   params: { slug: string };
@@ -12,7 +11,7 @@ export default function Page({ params }: Props) {
   // Because ArticleSection is a client component, just pass slug to it
   return (
     <main >
-      <ArticleSection slug={params.slug} />
+      <AdminArticleCreatePage/>
     </main>
   );
 }
