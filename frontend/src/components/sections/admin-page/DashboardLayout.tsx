@@ -28,7 +28,7 @@ const DashboardLayout: React.FC = () => {
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
-          backgroundImage: `url('images/mission2.jpeg')`,
+          backgroundImage: `url('../images/mission2.jpeg')`,
         }}
       >
         <div className="absolute inset-0 bg-gradient-to-br from-red-900/40 via-purple-900/40 to-blue-900/40"></div>

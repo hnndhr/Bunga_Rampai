@@ -78,7 +78,7 @@ const SurveyTable: React.FC = () => {
           SURVEY MANAGEMENT
         </MontserratText>
         <button
-          onClick={() => (window.location.href = "/admin/create-survey")}
+          onClick={() => (window.location.href = "/admin/create-article")}
           className="px-6 py-2 bg-white/20 backdrop-blur-md border border-white/30 rounded-lg text-white font-medium hover:bg-white/30 transition-all shadow-lg"
         >
           Create Survey
