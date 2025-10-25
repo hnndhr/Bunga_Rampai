@@ -6,11 +6,11 @@ import FilterBar from '../ui/FilterBar';
 //Catalogue -> Katalog survey
 
 const surveyData = [
-  { id: 1, title: "Survei Statistik Karyawan", image: "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=400&h=500&fit=crop" },
-  { id: 2, title: "Survei Preferensi dan Minat", image: "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=400&h=500&fit=crop" },
-  { id: 3, title: "Survei Preferensi dan Minat", image: "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=400&h=500&fit=crop" },
-  { id: 4, title: "Survei Preferensi dan Minat", image: "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=400&h=500&fit=crop" },
-  { id: 5, title: "Survei Preferensi dan Minat", image: "https://images.unsplash.com/photo-1584036561566-baf8f5f1b144?w=400&h=500&fit=crop" },
+  { id: 1, title: "Survei Statistik Karyawan", image: "https://images.unsplash.com/photo-1520176501380-9a174bf7c783?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=687" },
+  { id: 2, title: "Survei Preferensi dan Minat ", image: "https://images.unsplash.com/photo-1627375871606-69a5d05b6bdd?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=736" },
+  { id: 3, title: "Survei Preferensi dan Minat Mahasiswa UNS 2025", image: "https://images.unsplash.com/photo-1508793382608-aed8824a0743?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=687" },
+  { id: 4, title: "Survei Preferensi dan Minat", image: "https://images.unsplash.com/photo-1610005908273-cf9e5b615076?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=735" },
+  { id: 5, title: "Survei Preferensi dan Minat", image: "https://images.unsplash.com/photo-1662408565892-e918d336482d?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=717" },
 ];
 
 export default function CataloguePage() {
@@ -20,7 +20,7 @@ export default function CataloguePage() {
       <header className="relative h-screen flex items-center justify-center">
         <div 
           className="absolute inset-0 bg-cover bg-center" 
-          style={{ backgroundImage: "url('/images/bunga.png')" }}
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1530533718754-001d2668365a?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170')" }}
         >
           <div className="absolute inset-0 bg-black/10"></div>
           <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0D1117] to-transparent"></div>

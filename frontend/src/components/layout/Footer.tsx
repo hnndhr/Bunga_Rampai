@@ -63,6 +63,14 @@ export default function Footer() {
               <ul className="space-y-3 text-sm">
                 <li>
                   <Link
+                    href="/"
+                    className="text-gray-400 hover:text-white transition-colors"
+                  >
+                    Home
+                  </Link>
+                </li>
+                <li>
+                  <Link
                     href="/catalogue"
                     className="text-gray-400 hover:text-white transition-colors"
                   >
@@ -77,6 +85,13 @@ export default function Footer() {
                     About Us
                   </Link>
                 </li>
+              </ul>
+            </div>
+
+            {/* Kolom Support */}
+            <div>
+              <h3 className="font-bold text-lg mb-4">Legal and Support</h3>
+              <ul className="space-y-3 text-sm">
                 <li>
                   <Link
                     href="/faq"
@@ -85,13 +100,6 @@ export default function Footer() {
                     FAQ
                   </Link>
                 </li>
-              </ul>
-            </div>
-
-            {/* Kolom Privasi */}
-            <div>
-              <h3 className="font-bold text-lg mb-4">Our Privacy</h3>
-              <ul className="space-y-3 text-sm">
                 <li>
                   <Link
                     href="/privacy"
@@ -106,16 +114,6 @@ export default function Footer() {
                     className="text-gray-400 hover:text-white transition-colors"
                   >
                     Terms and Condition
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="https://drive.google.com/drive/folders/1ZyLnfIvzC9-tFaFJZevRJKekCXfamDCg?usp=sharing"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-gray-400 hover:text-white transition-colors"
-                  >
-                    Standard Operational
                   </Link>
                 </li>
               </ul>
