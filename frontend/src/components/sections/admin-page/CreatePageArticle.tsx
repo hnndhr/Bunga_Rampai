@@ -269,7 +269,7 @@ export default function AdminArticleCreatePage() {
           name="slug"
           value={meta.slug}
           onChange={handleMetaChange}
-          placeholder="slug (unique, e.g. survey-kos-2025)"
+          placeholder="Nama Link (Contoh: survey-kos-2025)"
           className="border p-2 rounded"
         />
         <input
@@ -277,7 +277,7 @@ export default function AdminArticleCreatePage() {
           value={meta.header_image || ""}
           onChange={handleMetaChange}
           placeholder="Link Image Header"
-          className="border p-2 rounded md:col-span-2"
+          className="border p-2 rounded "
         />
         <input
           name="period"
@@ -303,7 +303,6 @@ export default function AdminArticleCreatePage() {
           <option value="kolaborasi">Kolaborasi</option>
           <option value="mandiri">Mandiri</option>
         </select>
-
         <input
           name="report_link"
           value={meta.report_link || ""}
@@ -326,13 +325,11 @@ export default function AdminArticleCreatePage() {
           placeholder="Link Infografis"
           className="border p-2 rounded md:col-span-2"
         />
-
-        {/* Separate textarea for infographic block (NOT meta) */}
         <textarea
           name="infographic_desc_block"
           value={infographicDesc}
           onChange={(e) => setInfographicDesc(e.target.value)}
-          placeholder="Deskripsi singkat infografis (akan disimpan sebagai block)"
+          placeholder="Pengenalan survei"
           className="border p-2 rounded md:col-span-2 h-28"
         />
       </div>
