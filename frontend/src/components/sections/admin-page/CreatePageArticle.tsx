@@ -6,6 +6,8 @@ import List from "@editorjs/list";
 import Quote from "@editorjs/quote";
 import Embed from "@editorjs/embed";
 import Paragraph from "@editorjs/paragraph";
+import AddImageTools from "./AddImageTools";
+import { convertGoogleDriveLink } from "./GoogleDriveConverter";
 
 type ArticleMeta = {
   title: string;
@@ -44,6 +46,10 @@ export default function AdminArticleCreatePage() {
           list: List,
           quote: Quote,
           embed: Embed as any,
+          image_caption: {
+            class: AddImageTools,
+            inlineToolbar: false,
+          },
         },
         placeholder: "Start writing your article...",
       });
@@ -85,18 +91,6 @@ export default function AdminArticleCreatePage() {
       [name]: value,
     }));
   };
-
-  function convertGoogleDriveLink(input: string): string {
-    if (!input) return input;
-
-    // Regex untuk ambil file ID dari berbagai format URL
-    const match = input.match(/(?:\/d\/|id=)([\w-]+)/);
-    const fileId = match ? match[1] : null;
-
-    if (!fileId) return input;
-
-    return `https://drive.google.com/uc?export=view&id=${fileId}`;
-  }
 
   // create article meta (without infographic_desc)
   async function createArticleMeta(): Promise<boolean> {
@@ -143,8 +137,8 @@ export default function AdminArticleCreatePage() {
       list: "list",
       quote: "quote",
       embed: "embed",
-      // keep mapping flexible for custom types too
-      infographic_desc: "infographic_desc", // safety: if ever created internally
+      infographic_desc: "infographic_desc",
+      image_caption: "image_caption",
     };
 
     const myType = typeMap[block.type] || block.type || "paragraph";
@@ -173,8 +167,15 @@ export default function AdminArticleCreatePage() {
         };
         break;
       case "infographic_desc":
-        // If somehow an EditorJS block has this type, prefer data.text or raw data
         content = block.data?.text ?? block.data ?? block;
+        break;
+      case "image_caption":
+        content = {
+          image:
+            block.data?.image ||
+            (typeof block.data === "string" ? block.data : null),
+          caption: block.data?.caption || "",
+        };
         break;
       default:
         content = block.data || block;

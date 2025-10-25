@@ -11,7 +11,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import BlockRenderer from "./BlocksRenderer";
+import BlockRenderer from "./admin-page/BlocksRenderer";
 import InfographicIntro from "./InfographicIntro";
 
 type Block = {
@@ -78,7 +78,7 @@ export default function ArticleSection({ slug }: { slug: string }) {
   return (
     <main className="font-serif bg-white text-zinc-800">
       {/* ===== HERO SECTION ===== */}
-      <section className="relative w-full h-[300px] md:h-[350px] lg:h-[400px] bg-gray-900 overflow-hidden">
+      <section className="relative w-full h-[300px] md:h-[300px] lg:h-[300px] bg-gray-900 overflow-hidden">
         {/* Background Image */}
         {article.header_image && (
           <Image
@@ -103,11 +103,10 @@ export default function ArticleSection({ slug }: { slug: string }) {
         </div>
 
         {/* Title Section */}
-        <div className="relative z-10 flex flex-col items-center justify-center h-full px-8 md:px-32 text-center">
-          <h1 className="max-w-4xl text-xl md:text-3xl lg:text-5xl font-abhaya text-white font-medium leading-tight tracking-wide">
+        <div className="relative z-10 flex flex-col items-center justify-start h-full pt-24 px-8 md:px-32 text-center">
+          <h1 className="max-w-4xl text-2xl md:text-3xl lg:text-5xl font-abhaya text-white font-medium leading-tight tracking-wide">
             {article.title}
           </h1>
-
           <hr className="w-full md:w-full border-t border-white mt-10" />
         </div>
 
@@ -163,7 +162,7 @@ export default function ArticleSection({ slug }: { slug: string }) {
       })()}
 
       {/* ===== ARTICLE BODY ===== */}
-      <article className="max-w-4xl mx-auto px-4 pb-12 md:pb-16">
+      <article className=" max-w-4xl mx-auto px-4 pb-12 md:pb-16">
         <section className="prose prose-xl prose-p:leading-relaxed prose-p:my-6 prose-headings:font-sans prose-headings:font-bold text-justify">
           {article.blocks
             ?.filter((b)=> b.block_type !== "infographic_desc")
