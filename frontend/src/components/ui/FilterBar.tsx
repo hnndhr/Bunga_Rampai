@@ -3,7 +3,29 @@
 import { useState } from "react";
 import { Search, ChevronDown } from "lucide-react";
 
-export default function FilterBar() {
+interface Survey {
+  title: string;
+  slug: string;
+  infographic_link: string;
+  survey_type: string;
+  created_at: string;
+}
+
+interface FilterBarProps {
+  surveys: Survey[];
+  filterType: string;
+  setFilterType: (value: string) => void;
+  sortOrder: "asc" | "desc";
+  setSortOrder: (value: "asc" | "desc") => void;
+}
+
+export default function FilterBar({
+  surveys,
+  filterType,
+  setFilterType,
+  sortOrder,
+  setSortOrder,
+}: FilterBarProps) {
   const [sortOpen, setSortOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
   const [activeSort, setActiveSort] = useState("Sort By");
@@ -23,10 +45,10 @@ export default function FilterBar() {
     setFilterOpen((prev) => {
       if (!prev) setSortOpen(false);
       return !prev;
-    }); 
+    });
   };
 
-  const sortOptions = ["Default", "A - Z", "Z - A", "Latest", "Oldest"];
+  const sortOptions = ["Default", "Latest", "Oldest"];
   const filterOptions = ["All", "Mandiri", "Kolaborasi"];
 
   return (
@@ -49,7 +71,9 @@ export default function FilterBar() {
           <button
             onClick={toggleSort}
             className={`flex items-center justify-between w-40 py-2.5 px-6 rounded-full border border-white/20 text-gray-200 hover:bg-white/20 transition-all duration-200 backdrop-blur-xl ${
-              activeSort !== "Sort By" ? "bg-white/20 text-white font-semibold" : "bg-white/10"
+              activeSort !== "Sort By"
+                ? "bg-white/20 text-white font-semibold"
+                : "bg-white/10"
             }`}
           >
             <span>{activeSort}</span>
@@ -70,9 +94,11 @@ export default function FilterBar() {
                   key={opt}
                   onClick={() => {
                     setActiveSort(opt === "Default" ? "Sort By" : opt);
+                    if (opt === "Latest") setSortOrder("desc");
+                    else if (opt === "Oldest") setSortOrder("asc");
+                    else setSortOrder("desc"); // Default
                     setSortOpen(false);
                   }}
-
                   className={`w-full text-center px-3 py-2 mb-1 rounded-xl transition ${
                     activeSort === opt
                       ? "bg-white/30 text-white font-semibold"
@@ -91,7 +117,9 @@ export default function FilterBar() {
           <button
             onClick={toggleFilter}
             className={`flex items-center w-40 justify-between py-2.5 px-6 rounded-full border border-white/20 text-gray-200 hover:bg-white/20 transition-all duration-200 backdrop-blur-xl ${
-              activeFilter !== "Filter" ? "bg-white/20 text-white font-semibold" : "bg-white/10"
+              activeFilter !== "Filter"
+                ? "bg-white/20 text-white font-semibold"
+                : "bg-white/10"
             }`}
           >
             <span>{activeFilter}</span>
@@ -112,6 +140,8 @@ export default function FilterBar() {
                   key={opt}
                   onClick={() => {
                     setActiveFilter(opt === "All" ? "Filter" : opt);
+                    if (opt === "All") setFilterType("all");
+                    else setFilterType(opt.toLowerCase());
                     setFilterOpen(false);
                   }}
                   className={`w-full text-center px-3 py-2 mb-1 rounded-xl transition ${
