@@ -6,32 +6,37 @@ const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
-export async function getSurveys(options?: {
+export async function getSurveys({
+  filterType = "all",
+  sortBy = "created_at",
+  order = "desc",
+  search = "",
+}: {
   filterType?: string;
   sortBy?: string;
   order?: "asc" | "desc";
+  search?: string;
 }) {
-  const { filterType, sortBy = "created_at", order = "desc" } = options || {};
-
   let query = supabase
-    .from("survey_articles")      // nanti ganti ke tabel yang benar bila perlu
-    .select("title, slug, infographic_link, survey_type, created_at");
+    .from("survey_articles")
+    .select("title, slug, infographic_link, survey_type, created_at")
+    .order(sortBy, { ascending: order === "asc" });
 
-  if (filterType && filterType !== "all") {
+  if (filterType !== "all") {
     query = query.eq("survey_type", filterType);
   }
 
-  query = query.order(sortBy, { ascending: order === "asc" });
+  if (search && search.trim() !== "") {
+    query = query.ilike("title", `%${search}%`);
+  }
 
   const { data, error } = await query;
   if (error) {
-    console.error("Error fetching surveys:", error);
+    console.error(error);
     return [];
   }
-
-  return data;
+  return data || [];
 }
-
 export async function getArticleBySlug(slug: string) {
   const { data, error } = await supabase
     .from("survey_articles")

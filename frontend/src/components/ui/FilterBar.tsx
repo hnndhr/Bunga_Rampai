@@ -17,6 +17,8 @@ interface FilterBarProps {
   setFilterType: (value: string) => void;
   sortOrder: "asc" | "desc";
   setSortOrder: (value: "asc" | "desc") => void;
+  search: string;
+  setSearch: (value: string) => void;
 }
 
 export default function FilterBar({
@@ -25,6 +27,9 @@ export default function FilterBar({
   setFilterType,
   sortOrder,
   setSortOrder,
+  search,
+  setSearch,
+  
 }: FilterBarProps) {
   const [sortOpen, setSortOpen] = useState(false);
   const [filterOpen, setFilterOpen] = useState(false);
@@ -61,6 +66,8 @@ export default function FilterBar({
         <input
           type="text"
           placeholder="Search..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
           className="w-full bg-transparent border-none focus:ring-0 text-gray-200 placeholder:text-gray-400"
         />
       </div>

@@ -21,6 +21,11 @@ export default function CataloguePage() {
   const [surveys, setSurveys] = useState<Survey[]>([]);
   const [filterType, setFilterType] = useState("all");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [search, setSearch] = useState("");
+  const filteredSurveys = surveys.filter((survey) =>
+    survey.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   useEffect(() => {
     async function fetchSurveys() {
@@ -28,11 +33,12 @@ export default function CataloguePage() {
         filterType,
         sortBy: "created_at",
         order: sortOrder,
+        search,
       });
       setSurveys(data);
     }
     fetchSurveys();
-  }, [filterType, sortOrder]);
+  }, [filterType, sortOrder, search]);
 
   return (
     <main>
@@ -69,6 +75,8 @@ export default function CataloguePage() {
 
           <FilterBar
             surveys={surveys}
+            search={search}
+            setSearch={setSearch}
             filterType={filterType}
             setFilterType={setFilterType}
             sortOrder={sortOrder}
@@ -77,7 +85,7 @@ export default function CataloguePage() {
 
           {/* Catalog Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {surveys.map((survey) => (
+            {filteredSurveys.map((survey) => (
               <SurveyCard
                 key={survey.slug}
                 title={survey.title}
