@@ -16,12 +16,14 @@ type ArticleMeta = {
   survey_type?: string;
   report_link?: string;
   respondents?: number;
+  infographic_link?: string;
+  // NOTE: infographic_desc moved OUT of meta (we keep separate state below)
 };
 
 export default function AdminArticleCreatePage() {
   const editorRef = useRef<EditorJS | null>(null);
-  const editorHolderRef = useRef<HTMLDivElement | null>(null);
   const [meta, setMeta] = useState<ArticleMeta>({ title: "", slug: "" });
+  const [infographicDesc, setInfographicDesc] = useState<string>(""); // <-- separate state
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
@@ -56,7 +58,6 @@ export default function AdminArticleCreatePage() {
 
     initializeEditor();
 
-    // The corrected cleanup function
     return () => {
       isMounted = false;
 
@@ -65,11 +66,9 @@ export default function AdminArticleCreatePage() {
         typeof editorRef.current.destroy === "function"
       ) {
         try {
-          // FIX 1: Call destroy() directly, as it does not return a promise.
           editorRef.current.destroy();
           editorRef.current = null;
         } catch (err: any) {
-          // FIX 2: Explicitly type 'err' as 'any'.
           console.error("Error destroying Editor.js instance:", err);
         }
       }
@@ -77,7 +76,9 @@ export default function AdminArticleCreatePage() {
   }, []);
 
   const handleMetaChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
     const { name, value } = e.target;
     setMeta((prev) => ({
@@ -86,51 +87,52 @@ export default function AdminArticleCreatePage() {
     }));
   };
 
+  // create article meta (without infographic_desc)
   async function createArticleMeta(): Promise<boolean> {
-    // basic validation
     if (!meta.title || !meta.slug) {
       setMessage("Title and slug are required");
-      console.error("VALIDATION FAILED: Title atau Slug kosong."); // Log 1
+      console.error("VALIDATION FAILED: Title atau Slug kosong.");
       return false;
     }
     try {
-      console.log("SENDING META:", JSON.stringify(meta)); // Log 2
+      // clone meta but ensure infographic_desc is NOT included (safety)
+      const metaPayload: any = { ...meta };
+      if ("infographic_desc" in metaPayload) delete metaPayload.infographic_desc;
+
+      console.log("SENDING META:", JSON.stringify(metaPayload));
       const res = await fetch("http://localhost:3001/articles", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(meta),
+        body: JSON.stringify(metaPayload),
       });
 
-      console.log("META RESPONSE STATUS:", res.status, res.statusText); // Log 3
+      console.log("META RESPONSE STATUS:", res.status, res.statusText);
 
       if (!res.ok) {
         const txt = await res.text();
-        console.error("BACKEND META ERROR:", txt); // Log 4: Ini yang paling penting!
+        console.error("BACKEND META ERROR:", txt);
         setMessage(`Gagal membuat artikel: ${txt}`);
-        return false; // Gagal di sini
+        return false;
       }
 
       setMessage("Article meta created");
-      console.log("META CREATED SUCCESSFULLY."); // Log 5
-      return true; // Berhasil
+      return true;
     } catch (err: any) {
-      console.error("ERROR DI DALAM createArticleMeta catch block:", err); // Log 6
+      console.error("ERROR DI DALAM createArticleMeta catch block:", err);
       setMessage(err.message || "Error");
       return false;
     }
   }
 
   function mapEditorBlockToMyBlock(block: any, idx: number) {
-    // Editor.js block types: header, paragraph (usually type "paragraph" from Paragraph tool),
-    // list, quote, embed, etc.
-    // We map to our block_type + content (string or object)
     const typeMap: Record<string, string> = {
       header: "headline",
       paragraph: "paragraph",
       list: "list",
       quote: "quote",
       embed: "embed",
-      // add more mappings if you use other tools
+      // keep mapping flexible for custom types too
+      infographic_desc: "infographic_desc", // safety: if ever created internally
     };
 
     const myType = typeMap[block.type] || block.type || "paragraph";
@@ -146,19 +148,21 @@ export default function AdminArticleCreatePage() {
           block.data?.text || block.data?.html || JSON.stringify(block.data);
         break;
       case "list":
-        // block.data.items is likely an array
         content = block.data?.items || block.data?.style || block.data;
         break;
       case "quote":
         content = block.data?.text || block.data;
         break;
       case "embed":
-        // store embed data as object
         content = {
           service: block.data.service,
           source: block.data.source,
-          embed: block.data.embed, // html
+          embed: block.data.embed,
         };
+        break;
+      case "infographic_desc":
+        // If somehow an EditorJS block has this type, prefer data.text or raw data
+        content = block.data?.text ?? block.data ?? block;
         break;
       default:
         content = block.data || block;
@@ -184,12 +188,9 @@ export default function AdminArticleCreatePage() {
 
     try {
       // 2. Buat artikel (metadata) terlebih dahulu
-      // Fungsi createArticleMeta sudah melakukan POST ke /articles
       const metaCreated = await createArticleMeta();
 
-      // Jika gagal membuat meta, hentikan proses
       if (!metaCreated) {
-        // Pesan error sudah di-set di dalam createArticleMeta()
         setSaving(false);
         return;
       }
@@ -197,32 +198,48 @@ export default function AdminArticleCreatePage() {
       // 3. Ambil data blok dari editor
       const output = await editorRef.current?.save();
 
-      // Jika tidak ada konten, tidak perlu kirim blok. Selesai.
-      if (!output || output.blocks.length === 0) {
+      // Build blocksPayload from editor blocks
+      const editorBlocks = (output?.blocks || []).map((b: any, i: number) =>
+        mapEditorBlockToMyBlock(b, i + (infographicDesc ? 1 : 0)) // shift ordering if infographicDesc will be prepended
+      );
+
+      // 4. If infographicDesc present, create a block and prepend
+      let blocksPayload: any[] = editorBlocks;
+      if (infographicDesc && infographicDesc.trim() !== "") {
+        const infographicBlock = {
+          ordering: 1,
+          block_type: "infographic_desc",
+          content: infographicDesc.trim(),
+        };
+        // reindex editor blocks ordering to start from 2
+        blocksPayload = [
+          infographicBlock,
+          ...editorBlocks.map((b, idx) => ({ ...b, ordering: idx + 2 })),
+        ];
+      } else {
+        // ensure ordering starts at 1 sequentially
+        blocksPayload = editorBlocks.map((b, i) => ({ ...b, ordering: i + 1 }));
+      }
+
+      // If there are no blocks (including infographic), finish
+      if (blocksPayload.length === 0) {
         setMessage("Artikel berhasil dibuat (tanpa konten).");
         setSaving(false);
         return;
       }
 
-      // 4. Format bloknya
-      const blocksPayload = (output.blocks || []).map((b, i) =>
-        mapEditorBlockToMyBlock(b, i)
-      );
-
-      // 5. POST blok-blok tersebut ke endpoint spesifik untuk artikel ini
-      // Backend Anda harus punya route seperti: /articles/:slug/blocks
+      // 5. POST blocks to backend
       const resBlocks = await fetch(
-        `http://localhost:3001/articles/${meta.slug}/blocks`, // <-- PENTING: URL ini harus ada di backend
+        `http://localhost:3001/articles/${encodeURIComponent(meta.slug)}/blocks`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(blocksPayload), // Kirim HANYA array of blocks
+          body: JSON.stringify(blocksPayload),
         }
       );
 
       if (!resBlocks.ok) {
         const txt = await resBlocks.text();
-        // Tambahkan pesan error yang lebih jelas
         throw new Error(`Gagal menyimpan blok konten: ${txt}`);
       }
 
@@ -264,21 +281,21 @@ export default function AdminArticleCreatePage() {
         />
         <input
           name="period"
-          value={meta.period}
+          value={meta.period || ""}
           onChange={handleMetaChange}
           placeholder="Periode Survei"
           className="border p-2 rounded"
         />
         <input
           name="method"
-          value={meta.method}
+          value={meta.method || ""}
           onChange={handleMetaChange}
           placeholder="Metode Survei"
           className="border p-2 rounded"
         />
         <select
           name="survey_type"
-          value={meta.survey_type}
+          value={meta.survey_type || ""}
           onChange={handleMetaChange}
           className="border p-2 rounded"
         >
@@ -289,7 +306,7 @@ export default function AdminArticleCreatePage() {
 
         <input
           name="report_link"
-          value={meta.report_link}
+          value={meta.report_link || ""}
           onChange={handleMetaChange}
           placeholder="Link Laporan"
           className="border p-2 rounded"
@@ -297,10 +314,26 @@ export default function AdminArticleCreatePage() {
         <input
           name="respondents"
           type="number"
-          value={meta.respondents}
+          value={meta.respondents || ""}
           onChange={handleMetaChange}
           placeholder="Jumlah Responden"
           className="border p-2 rounded"
+        />
+        <input
+          name="infographic_link"
+          value={meta.infographic_link || ""}
+          onChange={handleMetaChange}
+          placeholder="Link Infografis"
+          className="border p-2 rounded md:col-span-2"
+        />
+
+        {/* Separate textarea for infographic block (NOT meta) */}
+        <textarea
+          name="infographic_desc_block"
+          value={infographicDesc}
+          onChange={(e) => setInfographicDesc(e.target.value)}
+          placeholder="Deskripsi singkat infografis (akan disimpan sebagai block)"
+          className="border p-2 rounded md:col-span-2 h-28"
         />
       </div>
 
@@ -322,6 +355,7 @@ export default function AdminArticleCreatePage() {
         <button
           onClick={() => {
             editorRef.current?.clear();
+            setInfographicDesc("");
           }}
           className="px-4 py-2 border rounded"
         >

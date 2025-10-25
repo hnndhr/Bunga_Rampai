@@ -1,9 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { CreateArticleDto } from './dto/create-article.dto.js';
 import { CreateBlockDto } from './dto/create-blocks.dto.js';
 import { UpdateArticleDto } from './dto/update-article.dto.js';
-import { BadRequestException } from '@nestjs/common';
 
 @Injectable()
 export class ArticlesService {
@@ -17,13 +16,12 @@ export class ArticlesService {
     this.supabase = createClient(url, key);
   }
 
-  // Find by slug (returns article + parsed blocks)
+  /** Find by slug, return article & blocks */
   async findBySlug(slug: string) {
     const { data: article, error: articleError } = await this.supabase
       .from('survey_articles')
       .select('*')
       .eq('slug', slug)
-      .limit(1)
       .single();
 
     if (articleError || !article) {
@@ -34,7 +32,7 @@ export class ArticlesService {
       .from('survey_article_blocks')
       .select('*')
       .eq('slug_survey', slug)
-      .order('ordering', { ascending: true });
+      .order('ordering');
 
     const parsedBlocks = (blocks || []).map((b: any) => {
       let contentParsed = null;
@@ -51,42 +49,49 @@ export class ArticlesService {
       };
     });
 
-    return {
-      ...article,
-      blocks: parsedBlocks,
-    };
+    return { ...article, blocks: parsedBlocks };
   }
 
-  // Create article + blocks in one request. If blocks insert fails, rollback (delete article).
+  /** Validate max 1 infographic_desc */
+  private validateInfographicBlocks(blocks: CreateBlockDto[]) {
+    const count = blocks.filter((b) => b.block_type === 'infographic_desc')
+      .length;
+    if (count > 1) {
+      throw new BadRequestException('Only one infographic_desc block is allowed');
+    }
+  }
+
+  /** Create article + blocks */
   async createArticleWithBlocks(dto: CreateArticleDto) {
     const { blocks, ...articlePayload } = dto;
 
-    // ensure slug present
     if (!articlePayload.slug) {
-      throw new Error('slug is required');
+      throw new BadRequestException('slug is required');
     }
 
-    // 1) Insert article (without blocks)
+    if (Array.isArray(blocks)) {
+      this.validateInfographicBlocks(blocks);
+    }
+
     const { data: articleData, error: articleError } = await this.supabase
       .from('survey_articles')
       .insert([articlePayload])
       .select('id,slug')
       .single();
 
-    if (articleError) {
-      this.logger.error('Failed to insert article', articleError);
-      throw articleError;
-    }
+    if (articleError) throw articleError;
 
-    const insertedSlug = (articleData && articleData.slug) || articlePayload.slug;
+    const insertedSlug = articleData.slug;
     let insertedBlocks: any[] = [];
 
-    // 2) Insert blocks bulk (if provided)
     if (Array.isArray(blocks) && blocks.length > 0) {
-      const payload = blocks.map((b: CreateBlockDto, idx: number) => ({
+      const payload = blocks.map((b, idx) => ({
         ordering: typeof b.ordering === 'number' ? b.ordering : idx + 1,
         block_type: b.block_type,
-        content: typeof b.content === 'string' ? b.content : JSON.stringify(b.content),
+        content:
+          typeof b.content === 'string'
+            ? b.content
+            : JSON.stringify(b.content),
         slug_survey: insertedSlug,
       }));
 
@@ -96,45 +101,32 @@ export class ArticlesService {
         .select();
 
       if (blocksError) {
-        this.logger.error('Failed to insert blocks; rolling back article', blocksError);
-        // rollback: delete inserted article to keep consistency
-        await this.supabase
-          .from('survey_articles')
-          .delete()
-          .eq('slug', insertedSlug);
-
+        await this.supabase.from('survey_articles').delete().eq('slug', insertedSlug);
         throw blocksError;
       }
 
       insertedBlocks = blocksData || [];
     }
 
-    return {
-      article: articleData,
-      blocks: insertedBlocks,
-    };
+    return { article: articleData, blocks: insertedBlocks };
   }
 
-  // Update article metadata and optionally replace blocks (complete replace)
+  /** Update article + (optional) replace blocks */
   async updateArticleBySlug(slug: string, dto: UpdateArticleDto) {
-    // update article fields if provided
     const { blocks, ...articleFields } = dto;
 
-    if (Object.keys(articleFields).length > 0) {
-      const { data: updatedArticle, error: updateError } = await this.supabase
+    if (Object.keys(articleFields).length) {
+      const { error: updateError } = await this.supabase
         .from('survey_articles')
         .update(articleFields)
         .eq('slug', slug)
-        .select()
         .single();
-
       if (updateError) throw updateError;
     }
 
-    // if blocks passed -> delete existing blocks for slug and insert new ones
-    let insertedBlocks: any[] = [];
     if (Array.isArray(blocks)) {
-      // delete existing
+      this.validateInfographicBlocks(blocks);
+
       const { error: delErr } = await this.supabase
         .from('survey_article_blocks')
         .delete()
@@ -142,78 +134,50 @@ export class ArticlesService {
 
       if (delErr) throw delErr;
 
-      if (blocks.length > 0) {
-        const payload = blocks.map((b: CreateBlockDto, idx: number) => ({
-          ordering: typeof b.ordering === 'number' ? b.ordering : idx + 1,
-          block_type: b.block_type,
-          content: typeof b.content === 'string' ? b.content : JSON.stringify(b.content),
-          slug_survey: slug,
-        }));
+      const payload = blocks.map((b, idx) => ({
+        ordering: typeof b.ordering === 'number' ? b.ordering : idx + 1,
+        block_type: b.block_type,
+        content:
+          typeof b.content === 'string'
+            ? b.content
+            : JSON.stringify(b.content),
+        slug_survey: slug,
+      }));
 
-        const { data: blocksData, error: blocksError } = await this.supabase
-          .from('survey_article_blocks')
-          .insert(payload)
-          .select();
+      const { error: insertErr } = await this.supabase
+        .from('survey_article_blocks')
+        .insert(payload);
 
-        if (blocksError) throw blocksError;
-        insertedBlocks = blocksData || [];
-      }
+      if (insertErr) throw insertErr;
     }
 
-    return { message: 'updated', insertedBlocksCount: insertedBlocks.length };
+    return { message: 'updated' };
   }
 
-  // Delete article and its blocks
-  async deleteArticleBySlug(slug: string) {
-    // delete blocks first
-    const { error: delBlocksErr } = await this.supabase
-      .from('survey_article_blocks')
-      .delete()
-      .eq('slug_survey', slug);
-
-    if (delBlocksErr) throw delBlocksErr;
-
-    const { data: deletedArticle, error: delArticleErr } = await this.supabase
-      .from('survey_articles')
-      .delete()
-      .eq('slug', slug)
-      .select()
-      .single();
-
-    if (delArticleErr) throw delArticleErr;
-
-    return { deletedArticle };
-  }
-
+  /** Bulk insert (management screen use case) */
   async createBlocksBulk(slug: string, blocks: CreateBlockDto[]) {
-    if (!slug) {
-      throw new BadRequestException('slug parameter is required');
-    }
+    if (!slug) throw new BadRequestException('slug is required');
+    if (!blocks || blocks.length === 0) return { inserted: 0, data: [] };
 
-    if (!Array.isArray(blocks) || blocks.length === 0) {
-      return { inserted: 0, data: [] };
-    }
+    this.validateInfographicBlocks(blocks);
 
-    // Build payload for bulk insert: stringify non-string content
-    const payload = blocks.map((b: CreateBlockDto, idx: number) => ({
+    const payload = blocks.map((b, idx) => ({
       ordering: typeof b.ordering === 'number' ? b.ordering : idx + 1,
       block_type: b.block_type,
-      content: typeof b.content === 'string' ? b.content : JSON.stringify(b.content),
+      content:
+        typeof b.content === 'string'
+          ? b.content
+          : JSON.stringify(b.content),
       slug_survey: slug,
     }));
 
-    // Run bulk insert
     const { data, error } = await this.supabase
       .from('survey_article_blocks')
       .insert(payload)
-      .select(); // return inserted rows
+      .select();
 
-    if (error) {
-      this.logger.error('Supabase insert blocks error', error);
-      // rethrow so controller can return proper 4xx/5xx
-      throw error;
-    }
+    if (error) throw error;
 
-    return { inserted: (data || []).length, data };
+    return { inserted: data.length, data };
   }
 }

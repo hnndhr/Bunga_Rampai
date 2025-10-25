@@ -92,7 +92,7 @@ const SurveyTable: React.FC = () => {
         <div>Header Image</div>
         <div>Respondents</div>
         <div>Period</div>
-        <div>Method</div>
+        <div>Method</div>s
         <div>Survey Type</div>
         <div>Report</div>
         <div>Author Username</div>

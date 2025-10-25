@@ -34,10 +34,10 @@ export class ArticlesController {
     return this.articlesService.updateArticleBySlug(slug, dto);
   }
 
-  @Delete(':slug')
-  async deleteArticle(@Param('slug') slug: string) {
-    return this.articlesService.deleteArticleBySlug(slug);
-  }
+  // @Delete(':slug')
+  // async deleteArticle(@Param('slug') slug: string) {
+  //   return this.articlesService.deleteArticleBySlug(slug);
+  // }
 
   @Post(':slug/blocks')
   async createBlocks(

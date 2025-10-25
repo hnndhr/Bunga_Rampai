@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import BlockRenderer from "./BlocksRenderer";
+import InfographicIntro from "./InfographicIntro";
 
 type Block = {
   id: string;
@@ -32,6 +33,7 @@ type Article = {
   method?: string;
   survey_type?: string;
   report_link?: string;
+  infographic_link?: string;
 };
 
 export default function ArticleSection({ slug }: { slug: string }) {
@@ -145,11 +147,27 @@ export default function ArticleSection({ slug }: { slug: string }) {
         </div>
       </section>
 
+      {/* ===== INFOGRAPHIC ===== */}
+      {(() => {
+        const infographicBlock = article.blocks?.find(
+          (b) => b.block_type === "infographic_desc"
+        );
+        return (
+          (article.infographic_link || infographicBlock) && (
+            <InfographicIntro
+              image={article.infographic_link}
+              text={infographicBlock?.content}
+            />
+          )
+        );
+      })()}
+
       {/* ===== ARTICLE BODY ===== */}
       <article className="max-w-3xl mx-auto px-4 py-12 md:py-16">
         <section className="prose prose-xl prose-p:leading-relaxed prose-p:my-6 prose-headings:font-sans prose-headings:font-bold">
           {article.blocks
-            ?.sort((a, b) => a.ordering - b.ordering)
+            ?.filter((b)=> b.block_type !== "infographic_desc")
+            .sort((a, b) => a.ordering - b.ordering)
             .map((block) => (
               <BlockRenderer key={block.id} block={block} />
             ))}
