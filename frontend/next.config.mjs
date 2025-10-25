@@ -11,6 +11,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "api.builder.io",
       },
+      {
+        protocol: "https",
+        hostname: "drive.google.com"
+      }
     ],
   },
 };

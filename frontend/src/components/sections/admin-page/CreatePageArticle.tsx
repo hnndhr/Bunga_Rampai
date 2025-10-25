@@ -17,7 +17,6 @@ type ArticleMeta = {
   report_link?: string;
   respondents?: number;
   infographic_link?: string;
-  // NOTE: infographic_desc moved OUT of meta (we keep separate state below)
 };
 
 export default function AdminArticleCreatePage() {
@@ -87,6 +86,18 @@ export default function AdminArticleCreatePage() {
     }));
   };
 
+  function convertGoogleDriveLink(input: string): string {
+    if (!input) return input;
+
+    // Regex untuk ambil file ID dari berbagai format URL
+    const match = input.match(/(?:\/d\/|id=)([\w-]+)/);
+    const fileId = match ? match[1] : null;
+
+    if (!fileId) return input;
+
+    return `https://drive.google.com/uc?export=view&id=${fileId}`;
+  }
+
   // create article meta (without infographic_desc)
   async function createArticleMeta(): Promise<boolean> {
     if (!meta.title || !meta.slug) {
@@ -97,7 +108,8 @@ export default function AdminArticleCreatePage() {
     try {
       // clone meta but ensure infographic_desc is NOT included (safety)
       const metaPayload: any = { ...meta };
-      if ("infographic_desc" in metaPayload) delete metaPayload.infographic_desc;
+      if ("infographic_desc" in metaPayload)
+        delete metaPayload.infographic_desc;
 
       console.log("SENDING META:", JSON.stringify(metaPayload));
       const res = await fetch("http://localhost:3001/articles", {
@@ -199,8 +211,9 @@ export default function AdminArticleCreatePage() {
       const output = await editorRef.current?.save();
 
       // Build blocksPayload from editor blocks
-      const editorBlocks = (output?.blocks || []).map((b: any, i: number) =>
-        mapEditorBlockToMyBlock(b, i + (infographicDesc ? 1 : 0)) // shift ordering if infographicDesc will be prepended
+      const editorBlocks = (output?.blocks || []).map(
+        (b: any, i: number) =>
+          mapEditorBlockToMyBlock(b, i + (infographicDesc ? 1 : 0)) // shift ordering if infographicDesc will be prepended
       );
 
       // 4. If infographicDesc present, create a block and prepend
@@ -230,7 +243,9 @@ export default function AdminArticleCreatePage() {
 
       // 5. POST blocks to backend
       const resBlocks = await fetch(
-        `http://localhost:3001/articles/${encodeURIComponent(meta.slug)}/blocks`,
+        `http://localhost:3001/articles/${encodeURIComponent(
+          meta.slug
+        )}/blocks`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -321,7 +336,12 @@ export default function AdminArticleCreatePage() {
         <input
           name="infographic_link"
           value={meta.infographic_link || ""}
-          onChange={handleMetaChange}
+          onChange={(e) =>
+            setMeta({
+              ...meta,
+              infographic_link: convertGoogleDriveLink(e.target.value),
+            })
+          }
           placeholder="Link Infografis"
           className="border p-2 rounded md:col-span-2"
         />

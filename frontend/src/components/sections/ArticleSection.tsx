@@ -163,8 +163,8 @@ export default function ArticleSection({ slug }: { slug: string }) {
       })()}
 
       {/* ===== ARTICLE BODY ===== */}
-      <article className="max-w-3xl mx-auto px-4 py-12 md:py-16">
-        <section className="prose prose-xl prose-p:leading-relaxed prose-p:my-6 prose-headings:font-sans prose-headings:font-bold">
+      <article className="max-w-4xl mx-auto px-4 pb-12 md:pb-16">
+        <section className="prose prose-xl prose-p:leading-relaxed prose-p:my-6 prose-headings:font-sans prose-headings:font-bold text-justify">
           {article.blocks
             ?.filter((b)=> b.block_type !== "infographic_desc")
             .sort((a, b) => a.ordering - b.ordering)
