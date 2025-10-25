@@ -10,9 +10,9 @@ const Carroussel = dynamic(() => import("../ui/Carroussel"), { ssr: false });
 
 export default function OurSurveysSection() {
 const [cards] = useState([
-  { key: 1, content: <OurSurveyCard imageSrc="/images/contoh.png" />, link: "/article" },
-  { key: 2, content: <OurSurveyCard imageSrc="/images/infografis.png" />, link: "/article" },
-  { key: 3, content: <OurSurveyCard imageSrc="/images/infografis.png" />, link: "/article" },
+  { key: 1, content: <OurSurveyCard imageSrc="/images/surveiTempatMakanUNS2025.png" />, link: "/article" },
+  { key: 2, content: <OurSurveyCard imageSrc="/images/surveiTempatMakanUNS2025.png" />, link: "/article" },
+  { key: 3, content: <OurSurveyCard imageSrc="/images/surveiTempatMakanUNS2025.png" />, link: "/article" },
 ]);
 
 
