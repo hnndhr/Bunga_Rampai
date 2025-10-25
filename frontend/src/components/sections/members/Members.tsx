@@ -19,7 +19,7 @@ export default function Members() {
   return (
     <section
       id="Members"
-      className="relative bg-[#0E1B2B] py-20 min-h-screen transition-all duration-700"
+      className="relative bg-gray-900 py-20 min-h-screen transition-all duration-700"
     >
       {sections[page - 1]}
 

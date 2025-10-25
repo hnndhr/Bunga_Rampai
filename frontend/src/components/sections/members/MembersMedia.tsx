@@ -56,7 +56,7 @@ export default function MembersMedia() {
   ];
 
   return (
-    <section className="relative bg-[#0E1B2B] py-12 overflow-hidden">
+    <section className="relative py-12 overflow-hidden">
       {/* === Background Pattern === */}
       <div
         className="absolute inset-0 bg-[linear-gradient(120deg,#1C2940_1px,transparent_1px)] bg-[length:60px_60px] opacity-30"
