@@ -1,4 +1,3 @@
-// components/sections/admin-page/SurveyTable.tsx
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -7,20 +6,18 @@ import { MontserratText } from "@/components/ui/FontWrappers";
 
 interface SurveyData {
   id: string;
-  slug: string;
   title: string;
-  header_image: string | null;
-  respondents: number;
-  period: string;
-  method: string;
-  survey_type: string;
-  report_link: string | null;
   author_username: string | null;
   created_at: string;
-  updated_at: string;
+  updated_at: string | null;
 }
 
-const SurveyTable: React.FC = () => {
+function getActionLabel(item: SurveyData) {
+  if (item.updated_at && item.updated_at !== item.created_at) return "Edited";
+  return "Created";
+}
+
+const LogsTabel: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [surveyData, setSurveyData] = useState<SurveyData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -72,24 +69,16 @@ const SurveyTable: React.FC = () => {
   return (
     <div className="flex-1 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6 flex flex-col">
       {/* Header Section */}
-      <div className="flex justify-between items-center mb-8">
-        <div></div>
+      <div className="flex justify-center items-center mb-8">
         <MontserratText className="text-2xl md:text-3xl font-bold text-white tracking-wider">
-          SURVEY MANAGEMENT
+          SURVEY LOGS
         </MontserratText>
-        <button
-          onClick={() => (window.location.href = "/admin/create-article")}
-          className="px-6 py-2 bg-white/20 backdrop-blur-md border border-white/30 rounded-lg text-white font-medium hover:bg-white/30 transition-all shadow-lg"
-        >
-          Create Survey
-        </button>
       </div>
 
       {/* Table Header */}
-      <div className="grid grid-cols-[0.5fr_1fr_1fr_1fr_1fr] gap-4 pb-4 border-b border-white/20 text-white/90 font-medium text-[13px]">
-        <div>No</div>
-        <div>Title</div>
-        <div>Last Modified</div>
+      <div className="grid grid-cols-[1fr_1fr_1fr_1fr] gap-4 pb-4 border-b border-white/20 text-white/90 font-medium text-[13px] text-center">
+        <div>Date</div>
+        <div>Survey</div>
         <div>Username</div>
         <div>Action</div>
       </div>
@@ -101,63 +90,28 @@ const SurveyTable: React.FC = () => {
             No data available
           </div>
         ) : (
-          surveyData.map((item, index) => (
+          surveyData.map((item) => (
             <div
               key={item.id}
-              className="grid grid-cols-[0.5fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] gap-4 py-4 border-b border-white/10 text-white/80 hover:bg-white/5 transition-all text-sm"
+              className="grid grid-cols-[1fr_1fr_1fr_1fr] gap-4 py-4 border-b border-white/10 text-white/80 hover:bg-white/5 transition-all text-sm"
             >
-              <div>{(currentPage - 1) * surveyData.length + (index + 1)}</div>
-
+              {/* Date */}
+              <div>
+                {new Date(item.updated_at || item.created_at).toLocaleDateString()}
+              </div>
 
               {/* Title */}
               <div className="truncate overflow-hidden whitespace-nowrap text-ellipsis">
                 {item.title}
               </div>
 
-              {/* Header image */}
-              <div className="truncate overflow-hidden whitespace-nowrap text-ellipsis">
-                {item.header_image ? (
-                  <a
-                    href={item.header_image}
-                    target="_blank"
-                    className="underline"
-                  >
-                    {item.header_image}
-                  </a>
-                ) : (
-                  "-"
-                )}
-              </div>
-
-              <div>{item.respondents}</div>
-              <div>{item.period}</div>
-              <div>{item.method}</div>
-
-              {/* Survey Type */}
-              <div className="truncate overflow-hidden whitespace-nowrap text-ellipsis">
-                {item.survey_type}
-              </div>
-
-              {/* Report link */}
-              <div className="truncate overflow-hidden whitespace-nowrap text-ellipsis">
-                {item.report_link ? (
-                  <a
-                    href={item.report_link}
-                    target="_blank"
-                    className="underline"
-                  >
-                    {item.report_link}
-                  </a>
-                ) : (
-                  "-"
-                )}
-              </div>
-
+              {/* Username */}
               <div className="truncate overflow-hidden whitespace-nowrap text-ellipsis">
                 {item.author_username ?? "-"}
               </div>
 
-              <div>{new Date(item.created_at).toLocaleDateString()}</div>
+              {/* Action */}
+              <div>{getActionLabel(item)}</div>
             </div>
           ))
         )}
@@ -172,4 +126,4 @@ const SurveyTable: React.FC = () => {
   );
 };
 
-export default SurveyTable;
+export default LogsTabel;

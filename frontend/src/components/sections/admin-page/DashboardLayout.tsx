@@ -5,20 +5,21 @@ import Sidebar from "./SidebarNavigation";
 import SurveyTable from "./SurveyTable";
 import AdminTable from "./AdminTable";
 import SurveyBlocksTable from "./SurveyBlocksTable";
+import SurveyLogs from "./LogsTabel";
 
 const DashboardLayout: React.FC = () => {
   const [currentView, setCurrentView] = useState<
-    "survey" | "admins" | "blocks"
-  >("survey");
+    "Logs" | "admins" | "survey"
+  >("Logs");
 
   const renderContent = () => {
     switch (currentView) {
       case "admins":
         return <AdminTable />;
-      case "blocks":
-        return <SurveyBlocksTable />;
-      default:
+      case "survey":
         return <SurveyTable />;
+      default:
+        return <SurveyLogs />;
     }
   };
 

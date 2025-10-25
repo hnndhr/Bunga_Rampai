@@ -5,8 +5,8 @@ import { BarChart3, Users, FileText } from "lucide-react";
 import Image from "next/image";
 
 interface SidebarNavigationProps {
-  onNavigate: (view: "survey" | "admins" | "blocks") => void;
-  currentView: "survey" | "admins" | "blocks";
+  onNavigate: (view: "Logs" | "admins" | "survey") => void;
+  currentView: "Logs" | "admins" | "survey";
 }
 
 const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
@@ -14,7 +14,7 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   currentView,
 }) => {
   const navItem = (
-    view: "survey" | "admins" | "blocks",
+    view: "Logs" | "admins" | "survey",
     Icon: React.ElementType
   ) => (
     <div
@@ -37,9 +37,9 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
       </div>
 
       <div className="bg-white/10 backdrop-blur-md rounded-full border border-white/30 shadow-lg p-2 flex flex-col space-y-4">
-        {navItem("survey", BarChart3)}
+        {navItem("Logs", BarChart3)}
         {navItem("admins", Users)}
-        {navItem("blocks", FileText)}
+        {navItem("survey", FileText)}
       </div>
 
       <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 shadow-lg hover:bg-red-500/50 transition-all cursor-pointer group">
