@@ -96,12 +96,13 @@ const AdminTable: React.FC = () => {
       </div>
 
       {/* Table Header */}
-      <div className="grid grid-cols-[0.5fr_1fr_1fr_1fr_1fr] gap-4 pb-4 border-b border-white/20 text-white/90 font-medium text-center text-[13px]">
+      <div className="grid grid-cols-[0.5fr_1fr_1fr_1fr_1fr_1fr] gap-4 pb-4 border-b border-white/20 text-white/90 font-medium text-[13px]">
         <div>No</div>
         <div>Nama</div>
         <div>Username</div>
         <div>Password</div>
         <div>Role</div>
+        <div>Action</div>
       </div>
 
       {/* Table Body */}
@@ -112,7 +113,7 @@ const AdminTable: React.FC = () => {
           surveyData.map((item, index) => (
             <div
               key={item.id}
-              className="grid grid-cols-[0.5fr_1fr_1fr_1fr_1fr] gap-4 py-4 border-b border-white/10 text-white/80 hover:bg-white/5 transition-all text-sm"
+              className="grid grid-cols-[0.5fr_1fr_1fr_1fr_1fr_1fr] gap-4 py-4 border-b border-white/10 text-white/80 hover:bg-white/5 transition-all text-sm"
             >
               <div>{(currentPage - 1) * surveyData.length + (index + 1)}</div>
               <div className="truncate">{item.name}</div>

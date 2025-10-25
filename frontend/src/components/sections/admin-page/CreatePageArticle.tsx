@@ -1,5 +1,6 @@
 "use client";
 import React, { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import EditorJS from "@editorjs/editorjs";
 import Header from "@editorjs/header";
 import List from "@editorjs/list";
@@ -22,20 +23,18 @@ type ArticleMeta = {
 };
 
 export default function AdminArticleCreatePage() {
+  const router = useRouter();
   const editorRef = useRef<EditorJS | null>(null);
   const [meta, setMeta] = useState<ArticleMeta>({ title: "", slug: "" });
-  const [infographicDesc, setInfographicDesc] = useState<string>(""); // <-- separate state
+  const [infographicDesc, setInfographicDesc] = useState<string>("");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
 
-  // initialize editor once
   React.useEffect(() => {
     let isMounted = true;
 
     const initializeEditor = async () => {
-      if (editorRef.current) {
-        return;
-      }
+      if (editorRef.current) return;
 
       const editor = new EditorJS({
         holder: "editorjs",
@@ -55,28 +54,15 @@ export default function AdminArticleCreatePage() {
       });
 
       await editor.isReady;
-
-      if (isMounted) {
-        editorRef.current = editor;
-      }
+      if (isMounted) editorRef.current = editor;
     };
 
     initializeEditor();
 
     return () => {
       isMounted = false;
-
-      if (
-        editorRef.current &&
-        typeof editorRef.current.destroy === "function"
-      ) {
-        try {
-          editorRef.current.destroy();
-          editorRef.current = null;
-        } catch (err: any) {
-          console.error("Error destroying Editor.js instance:", err);
-        }
-      }
+      editorRef.current?.destroy?.();
+      editorRef.current = null;
     };
   }, []);
 
@@ -92,31 +78,24 @@ export default function AdminArticleCreatePage() {
     }));
   };
 
-  // create article meta (without infographic_desc)
   async function createArticleMeta(): Promise<boolean> {
     if (!meta.title || !meta.slug) {
       setMessage("Title and slug are required");
-      console.error("VALIDATION FAILED: Title atau Slug kosong.");
       return false;
     }
     try {
-      // clone meta but ensure infographic_desc is NOT included (safety)
       const metaPayload: any = { ...meta };
       if ("infographic_desc" in metaPayload)
         delete metaPayload.infographic_desc;
 
-      console.log("SENDING META:", JSON.stringify(metaPayload));
       const res = await fetch("http://localhost:3001/articles", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(metaPayload),
       });
 
-      console.log("META RESPONSE STATUS:", res.status, res.statusText);
-
       if (!res.ok) {
         const txt = await res.text();
-        console.error("BACKEND META ERROR:", txt);
         setMessage(`Gagal membuat artikel: ${txt}`);
         return false;
       }
@@ -124,7 +103,6 @@ export default function AdminArticleCreatePage() {
       setMessage("Article meta created");
       return true;
     } catch (err: any) {
-      console.error("ERROR DI DALAM createArticleMeta catch block:", err);
       setMessage(err.message || "Error");
       return false;
     }
@@ -142,9 +120,8 @@ export default function AdminArticleCreatePage() {
     };
 
     const myType = typeMap[block.type] || block.type || "paragraph";
-
-    // content conversion:
     let content: any = null;
+
     switch (block.type) {
       case "header":
         content = block.data.text;
@@ -191,8 +168,6 @@ export default function AdminArticleCreatePage() {
   async function handleSave() {
     setMessage(null);
     setSaving(true);
-
-    // 1. Validasi frontend dulu
     if (!meta.title || !meta.slug) {
       setMessage("Title dan slug wajib diisi");
       setSaving(false);
@@ -200,49 +175,38 @@ export default function AdminArticleCreatePage() {
     }
 
     try {
-      // 2. Buat artikel (metadata) terlebih dahulu
       const metaCreated = await createArticleMeta();
-
       if (!metaCreated) {
         setSaving(false);
         return;
       }
 
-      // 3. Ambil data blok dari editor
       const output = await editorRef.current?.save();
-
-      // Build blocksPayload from editor blocks
-      const editorBlocks = (output?.blocks || []).map(
-        (b: any, i: number) =>
-          mapEditorBlockToMyBlock(b, i + (infographicDesc ? 1 : 0)) // shift ordering if infographicDesc will be prepended
+      const editorBlocks = (output?.blocks || []).map((b: any, i: number) =>
+        mapEditorBlockToMyBlock(b, i + (infographicDesc ? 1 : 0))
       );
 
-      // 4. If infographicDesc present, create a block and prepend
       let blocksPayload: any[] = editorBlocks;
-      if (infographicDesc && infographicDesc.trim() !== "") {
+      if (infographicDesc.trim() !== "") {
         const infographicBlock = {
           ordering: 1,
           block_type: "infographic_desc",
           content: infographicDesc.trim(),
         };
-        // reindex editor blocks ordering to start from 2
         blocksPayload = [
           infographicBlock,
           ...editorBlocks.map((b, idx) => ({ ...b, ordering: idx + 2 })),
         ];
       } else {
-        // ensure ordering starts at 1 sequentially
         blocksPayload = editorBlocks.map((b, i) => ({ ...b, ordering: i + 1 }));
       }
 
-      // If there are no blocks (including infographic), finish
       if (blocksPayload.length === 0) {
         setMessage("Artikel berhasil dibuat (tanpa konten).");
         setSaving(false);
         return;
       }
 
-      // 5. POST blocks to backend
       const resBlocks = await fetch(
         `http://localhost:3001/articles/${encodeURIComponent(
           meta.slug
@@ -259,10 +223,9 @@ export default function AdminArticleCreatePage() {
         throw new Error(`Gagal menyimpan blok konten: ${txt}`);
       }
 
-      const data = await resBlocks.json();
       setMessage(`Artikel dan ${blocksPayload.length} blok berhasil disimpan!`);
+      router.push("/surveytable");
     } catch (err: any) {
-      console.error(err);
       setMessage(err.message || "Terjadi error saat menyimpan");
     } finally {
       setSaving(false);
@@ -270,116 +233,132 @@ export default function AdminArticleCreatePage() {
   }
 
   return (
-    <div className="container mx-auto p-6">
-      <h1 className="text-2xl font-semibold mb-4">Create Article (Admin)</h1>
+    <div className="min-h-screen bg-[#0e0e12] text-white px-6 py-10">
+      <div className="max-w-6xl mx-auto bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-8">
+        <h1 className="text-3xl font-bold mb-6 text-center tracking-wide">
+          Create New Survey Article
+        </h1>
 
-      <div className="mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <input
-          name="title"
-          value={meta.title}
-          onChange={handleMetaChange}
-          placeholder="Judul Survei"
-          className="border p-2 rounded"
-        />
-        <input
-          name="slug"
-          value={meta.slug}
-          onChange={handleMetaChange}
-          placeholder="Nama Link (Contoh: survey-kos-2025)"
-          className="border p-2 rounded"
-        />
-        <input
-          name="header_image"
-          value={meta.header_image || ""}
-          onChange={handleMetaChange}
-          placeholder="Link Image Header"
-          className="border p-2 rounded "
-        />
-        <input
-          name="period"
-          value={meta.period || ""}
-          onChange={handleMetaChange}
-          placeholder="Periode Survei"
-          className="border p-2 rounded"
-        />
-        <input
-          name="method"
-          value={meta.method || ""}
-          onChange={handleMetaChange}
-          placeholder="Metode Survei"
-          className="border p-2 rounded"
-        />
-        <select
-          name="survey_type"
-          value={meta.survey_type || ""}
-          onChange={handleMetaChange}
-          className="border p-2 rounded"
-        >
-          <option value="">Pilih tipe survei</option>
-          <option value="kolaborasi">Kolaborasi</option>
-          <option value="mandiri">Mandiri</option>
-        </select>
-        <input
-          name="report_link"
-          value={meta.report_link || ""}
-          onChange={handleMetaChange}
-          placeholder="Link Laporan"
-          className="border p-2 rounded"
-        />
-        <input
-          name="respondents"
-          type="number"
-          value={meta.respondents || ""}
-          onChange={handleMetaChange}
-          placeholder="Jumlah Responden"
-          className="border p-2 rounded"
-        />
-        <input
-          name="infographic_link"
-          value={meta.infographic_link || ""}
-          onChange={(e) =>
-            setMeta({
-              ...meta,
-              infographic_link: convertGoogleDriveLink(e.target.value),
-            })
-          }
-          placeholder="Link Infografis"
-          className="border p-2 rounded md:col-span-2"
-        />
-        <textarea
-          name="infographic_desc_block"
-          value={infographicDesc}
-          onChange={(e) => setInfographicDesc(e.target.value)}
-          placeholder="Pengenalan survei"
-          className="border p-2 rounded md:col-span-2 h-28"
-        />
-      </div>
+        {/* Form Meta */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          {[
+            { name: "title", placeholder: "Judul Survei" },
+            {
+              name: "slug",
+              placeholder: "Nama Link (Contoh: survey-kos-2025)",
+            },
+            { name: "header_image", placeholder: "Link Image Header" },
+            { name: "period", placeholder: "Periode Survei" },
+            { name: "method", placeholder: "Metode Survei" },
+          ].map((input) => (
+            <input
+              key={input.name}
+              name={input.name}
+              value={(meta as any)[input.name] || ""}
+              onChange={handleMetaChange}
+              placeholder={input.placeholder}
+              className="p-3 rounded-xl bg-white/5 border border-white/20 focus:ring-2 focus:ring-white focus:outline-none text-white placeholder-white/50"
+            />
+          ))}
 
-      <div className="mb-4">
+          <select
+            name="survey_type"
+            value={meta.survey_type || ""}
+            onChange={handleMetaChange}
+            className="
+              p-3 rounded-xl 
+              bg-white/5 border border-white/20 
+              text-white
+              focus:outline-none
+              focus:ring-2 focus:ring-white/70
+              focus:border-white/50
+              transition-all
+            "
+          >
+            <option value="" className="bg-black/80">
+              Pilih tipe survei
+            </option>
+            <option value="kolaborasi" className="bg-black/80">
+              Kolaborasi
+            </option>
+            <option value="mandiri" className="bg-black/80">
+              Mandiri
+            </option>
+          </select>
+
+          <input
+            name="report_link"
+            value={meta.report_link || ""}
+            onChange={handleMetaChange}
+            placeholder="Link Laporan"
+            className="p-3 rounded-xl bg-white/5 border border-white/20 focus:ring-2 focus:ring-white text-white placeholder-white/50"
+          />
+
+          <input
+            name="respondents"
+            type="number"
+            value={meta.respondents || ""}
+            onChange={handleMetaChange}
+            placeholder="Jumlah Responden"
+            className="p-3 rounded-xl bg-white/5 border border-white/20 focus:ring-2 focus:ring-white text-white placeholder-white/50"
+          />
+
+          <input
+            name="infographic_link"
+            value={meta.infographic_link || ""}
+            onChange={(e) =>
+              setMeta({
+                ...meta,
+                infographic_link: convertGoogleDriveLink(e.target.value),
+              })
+            }
+            placeholder="Link Infografis"
+            className="p-3 rounded-xl bg-white/5 border border-white/20 focus:ring-2 focus:ring-white text-white placeholder-white/50 md:col-span-2"
+          />
+
+          <textarea
+            name="infographic_desc_block"
+            value={infographicDesc}
+            onChange={(e) => setInfographicDesc(e.target.value)}
+            placeholder="Pengenalan survei"
+            className="p-3 rounded-xl bg-white/5 border border-white/20 focus:ring-2 focus:ring-white text-white placeholder-white/50 md:col-span-2 h-28 resize-none"
+          />
+        </div>
+
+        {/* EditorJS Container */}
         <div
           id="editorjs"
-          className="bg-white border rounded p-4 min-h-[200px]"
+          className="bg-white/5 border border-white/20 rounded-2xl min-h-[300px] p-4"
         ></div>
-      </div>
 
-      <div className="flex items-center gap-3">
-        <button
-          onClick={handleSave}
-          disabled={saving}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          {saving ? "Saving..." : "Save Article"}
-        </button>
-        <button
-          onClick={() => {
-            editorRef.current?.clear();
-            setInfographicDesc("");
-          }}
-          className="px-4 py-2 border rounded"
-        >
-          Clear
-        </button>
-        {message && <div className="text-sm text-muted">{message}</div>}
+        {/* Buttons */}
+        <div className="flex items-center gap-4 mt-6">
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className={`px-6 py-2.5 rounded-xl font-semibold transition-all ${
+              saving
+                ? "bg-blue-400 text-white cursor-wait"
+                : "bg-blue-600 hover:bg-blue-500 text-white"
+            }`}
+          >
+            {saving ? "Saving..." : "Save Article"}
+          </button>
+
+          <button
+            onClick={() => {
+              editorRef.current?.clear();
+              setInfographicDesc("");
+            }}
+            className="px-6 py-2.5 rounded-xl border border-white/20 text-white hover:bg-white/10 transition-all"
+          >
+            Clear
+          </button>
+
+          {message && (
+            <div className="ml-4 text-sm text-white/70 italic">{message}</div>
+          )}
+        </div>
       </div>
     </div>
   );

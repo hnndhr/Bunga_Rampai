@@ -4,6 +4,7 @@
 import React, { useState, useEffect } from "react";
 import AdminPagination from "./Pagination";
 import { MontserratText } from "@/components/ui/FontWrappers";
+import { useRouter } from "next/navigation";
 
 interface SurveyData {
   id: string;
@@ -15,12 +16,13 @@ interface SurveyData {
   method: string;
   survey_type: string;
   report_link: string | null;
-  author_username: string | null;
+  username: string | null;
   created_at: string;
   updated_at: string;
 }
 
 const SurveyTable: React.FC = () => {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [surveyData, setSurveyData] = useState<SurveyData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,6 +56,25 @@ const SurveyTable: React.FC = () => {
 
     fetchData();
   }, [currentPage]);
+
+  const handleEdit = (id: string) => {
+    // redirect ke halaman edit
+    router.push(`/admin/survey/edit/${id}`);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Yakin ingin menghapus survei ini?")) return;
+
+    try {
+      await fetch(`/api/surveys/${id}`, { method: "DELETE" });
+      alert("Data berhasil dihapus");
+      // optionally refresh data
+      window.location.reload();
+    } catch (error) {
+      console.error(error);
+      alert("Gagal menghapus data");
+    }
+  };
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -104,60 +125,43 @@ const SurveyTable: React.FC = () => {
           surveyData.map((item, index) => (
             <div
               key={item.id}
-              className="grid grid-cols-[0.5fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr_1fr] gap-4 py-4 border-b border-white/10 text-white/80 hover:bg-white/5 transition-all text-sm"
+              className="grid grid-cols-[0.5fr_1fr_1fr_1fr_1fr] gap-4 py-4 border-b border-white/10 text-white/80 hover:bg-white/5 transition-all text-sm"
             >
               <div>{(currentPage - 1) * surveyData.length + (index + 1)}</div>
-
 
               {/* Title */}
               <div className="truncate overflow-hidden whitespace-nowrap text-ellipsis">
                 {item.title}
               </div>
 
-              {/* Header image */}
-              <div className="truncate overflow-hidden whitespace-nowrap text-ellipsis">
-                {item.header_image ? (
-                  <a
-                    href={item.header_image}
-                    target="_blank"
-                    className="underline"
-                  >
-                    {item.header_image}
-                  </a>
-                ) : (
-                  "-"
-                )}
+              <div>
+                {new Date(
+                  item.updated_at || item.created_at
+                ).toLocaleDateString()}
               </div>
 
-              <div>{item.respondents}</div>
-              <div>{item.period}</div>
-              <div>{item.method}</div>
-
-              {/* Survey Type */}
+              {/* Username */}
               <div className="truncate overflow-hidden whitespace-nowrap text-ellipsis">
-                {item.survey_type}
+                {item.username ?? "-"}
               </div>
 
-              {/* Report link */}
-              <div className="truncate overflow-hidden whitespace-nowrap text-ellipsis">
-                {item.report_link ? (
-                  <a
-                    href={item.report_link}
-                    target="_blank"
-                    className="underline"
-                  >
-                    {item.report_link}
-                  </a>
-                ) : (
-                  "-"
-                )}
-              </div>
+              <div className="flex items-center space-x-3">
+                {/* Tombol Edit */}
+                <button
+                  onClick={() => handleEdit(item.id)}
+                  className="px-3 py-1.5 text-sm rounded-lg bg-yellow-500/20 border border-yellow-500/40 text-yellow-400 hover:bg-yellow-500/30 transition-all"
+                >
+                  Edit
+                </button>
 
-              <div className="truncate overflow-hidden whitespace-nowrap text-ellipsis">
-                {item.author_username ?? "-"}
+                {/* Tombol Delete */}
+                <button
+                  onClick={() => handleDelete(item.id)}
+                  className="px-3 py-1.5 text-sm rounded-lg bg-red-500/20 border border-red-600/40 text-red-400 hover:bg-red-500/30 transition-all"
+                >
+                  Delete
+                </button>
               </div>
-
-              <div>{new Date(item.created_at).toLocaleDateString()}</div>
             </div>
           ))
         )}
