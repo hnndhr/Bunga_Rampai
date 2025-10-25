@@ -89,14 +89,14 @@ const AdminTable: React.FC = () => {
         </MontserratText>
         <button
           onClick={() => setIsCreateModalOpen(true)}
-          className="px-4 py-2 bg-black text-white rounded"
+          className="px-6 py-2 bg-white/20 backdrop-blur-md border border-white/30 rounded-lg text-white font-medium hover:bg-white/30 transition-all shadow-lg"
         >
           Create Admin
         </button>
       </div>
 
       {/* Table Header */}
-      <div className="grid grid-cols-[0.5fr_1fr_1fr_1fr_1fr] gap-4 pb-4 border-b border-white/20 text-white/90 font-medium text-[13px]">
+      <div className="grid grid-cols-[0.5fr_1fr_1fr_1fr_1fr] gap-4 pb-4 border-b border-white/20 text-white/90 font-medium text-center text-[13px]">
         <div>No</div>
         <div>Nama</div>
         <div>Username</div>
