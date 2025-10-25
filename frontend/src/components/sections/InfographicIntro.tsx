@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import React from "react";
 
 interface Props {
   image?: string | null;
@@ -10,9 +11,16 @@ interface Props {
 export default function InfographicIntro({ image, text }: Props) {
   const showImage = Boolean(image);
   const showText = Boolean(text);
+  const [open, setOpen] = React.useState(false);
+
+  // Lock scroll saat modal terbuka
+  React.useEffect(() => {
+    if (open) document.body.style.overflow = "hidden";
+    else document.body.style.overflow = "";
+  }, [open]);
 
   return (
-    <section className="max-w-4xl mx-auto px-4 pt-12 md:pt-16">
+    <section className="max-w-4xl mx-auto px-4 pt-12 md:pt-16 relative">
       <div className="relative">
         {showImage && (
           <div className="md:float-left md:mr-6 mb-4 max-w-3xl">
@@ -21,7 +29,8 @@ export default function InfographicIntro({ image, text }: Props) {
               alt="Infografis"
               width={800}
               height={842}
-              className="object-contain rounded-lg shadow-md aspect-[2828/4000] max-w-[400px] object-center"
+              className="object-contain rounded-lg shadow-md aspect-[2828/4000] max-w-[400px] object-center cursor-zoom-in"
+              onClick={() => setOpen(true)}
             />
           </div>
         )}
@@ -38,9 +47,28 @@ export default function InfographicIntro({ image, text }: Props) {
           )}
         </div>
 
-        {/* clearfix untuk menghindari konten berikutnya naik */}
+        {/* clearfix */}
         <div className="clear-both" />
       </div>
+
+      {/* ===== Modal Zoom ===== */}
+      {open && (
+        <div
+          className="fixed inset-0 z-[9999] bg-black/70 backdrop-blur-sm flex items-center justify-center p-6"
+          onClick={() => setOpen(false)}
+        >
+          <div onClick={(e) => e.stopPropagation()}>
+            <Image
+              src={image as string}
+              alt="Infografis"
+              width={1200}
+              height={800}
+              className="rounded-lg object-contain max-h-[90vh] w-auto cursor-zoom-out"
+              onClick={() => setOpen(false)}
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 }
