@@ -13,7 +13,7 @@ export default function TermsTitle() {
       <section className="relative w-full h-[280px] md:h-[300px] lg:h-[300px] bg-gray-900 overflow-hidden">
         {/* Background Image */}
         <Image
-          src="https://images.unsplash.com/photo-1630241772217-5d4926c594cc?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170"
+          src="https://images.unsplash.com/photo-1593115057322-e94b77572f20?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1171"
           alt="Surveillance cameras on wall"
           fill
           className="object-cover"
