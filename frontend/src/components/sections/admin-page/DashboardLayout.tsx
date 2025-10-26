@@ -5,7 +5,7 @@ import Sidebar from "./SidebarNavigation";
 import SurveyTable from "./SurveyTable";
 import AdminTable from "./AdminTable";
 import SurveyBlocksTable from "./SurveyBlocksTable";
-import SurveyLogs from "./LogsTabel";
+import SurveyLogs from "./LogsTable";
 
 const DashboardLayout: React.FC = () => {
   const [currentView, setCurrentView] = useState<

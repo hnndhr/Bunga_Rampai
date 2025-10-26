@@ -3,6 +3,7 @@
 import React from "react";
 import { BarChart3, Users, FileText } from "lucide-react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 interface SidebarNavigationProps {
   onNavigate: (view: "Logs" | "admins" | "survey") => void;
@@ -13,6 +14,8 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   onNavigate,
   currentView,
 }) => {
+  const router = useRouter();
+
   const navItem = (
     view: "Logs" | "admins" | "survey",
     Icon: React.ElementType
@@ -30,19 +33,32 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
     </div>
   );
 
+  const handleLogout = () => {
+    // kalau kamu mau tambahin logika hapus token dulu, bisa di sini
+    // localStorage.removeItem("admin_token");
+
+    router.push("/login-admin"); // redirect ke halaman login-admin
+  };
+
   return (
     <div className="w-20 flex flex-col items-center py-8 justify-between">
+      {/* Logo */}
       <div className="w-24 h-24 flex items-center justify-center cursor-pointer">
         <Image src="/images/rnd_logo.png" alt="rnd logo" width={50} height={50} />
       </div>
 
+      {/* Navigasi */}
       <div className="bg-white/10 backdrop-blur-md rounded-full border border-white/30 shadow-lg p-2 flex flex-col space-y-4">
         {navItem("Logs", BarChart3)}
         {navItem("admins", Users)}
         {navItem("survey", FileText)}
       </div>
 
-      <div className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 shadow-lg hover:bg-red-500/50 transition-all cursor-pointer group">
+      {/* Tombol Logout */}
+      <div
+        onClick={handleLogout}
+        className="w-12 h-12 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 shadow-lg hover:bg-red-500/50 transition-all cursor-pointer group"
+      >
         <svg
           className="w-6 h-6 text-white group-hover:scale-110 transition-transform"
           fill="none"

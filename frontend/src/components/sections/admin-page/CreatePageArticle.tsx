@@ -254,7 +254,12 @@ export default function AdminArticleCreatePage() {
             <input
               key={input.name}
               name={input.name}
-              value={(meta as any)[input.name] || ""}
+              value={
+                input.name === "header_image"
+                  ? (meta as any)[input.name] ||
+                    "https://images.unsplash.com/photo-1513185041617-8ab03f83d6c5?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170"
+                  : (meta as any)[input.name] || ""
+              }
               onChange={handleMetaChange}
               placeholder={input.placeholder}
               className="p-3 rounded-xl bg-white/5 border border-white/20 focus:ring-2 focus:ring-white focus:outline-none text-white placeholder-white/50"

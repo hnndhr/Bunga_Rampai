@@ -1,10 +1,10 @@
-// components/sections/admin-page/SurveyTable.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import AdminPagination from "./Pagination";
 import { MontserratText } from "@/components/ui/FontWrappers";
 import { useRouter } from "next/navigation";
+import { ChevronUp, ChevronDown } from "lucide-react";
 
 interface SurveyData {
   id: string;
@@ -28,15 +28,22 @@ const SurveyTable: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
 
+  // State untuk sort (kolom & arah)
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof SurveyData;
+    direction: "asc" | "desc";
+  }>({
+    key: "updated_at",
+    direction: "desc", // Default: terbaru ke terlama
+  });
+
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
         const response = await fetch(
           `http://localhost:3001/connect/survey-articles/?page=${currentPage}`,
-          {
-            method: "GET",
-          }
+          { method: "GET" }
         );
         const res = await response.json();
 
@@ -57,18 +64,62 @@ const SurveyTable: React.FC = () => {
     fetchData();
   }, [currentPage]);
 
+  // Fungsi untuk handle klik header (toggle arah sort)
+  const handleSort = (key: keyof SurveyData) => {
+    setSortConfig((prev) => {
+      if (prev.key === key) {
+        // toggle arah sort
+        return {
+          key,
+          direction: prev.direction === "asc" ? "desc" : "asc",
+        };
+      }
+      return { key, direction: "asc" };
+    });
+  };
+
+  // Urutkan data di client (tanpa ubah fetch)
+  const sortedData = useMemo(() => {
+    const sorted = [...surveyData];
+    const { key, direction } = sortConfig;
+
+    sorted.sort((a, b) => {
+      // Sorting tanggal
+      if (key === "created_at" || key === "updated_at") {
+        const dateA = new Date(a[key]).getTime();
+        const dateB = new Date(b[key]).getTime();
+        return direction === "asc" ? dateA - dateB : dateB - dateA;
+      }
+
+      // Sorting string
+      const valA = (a[key] ?? "").toString().toLowerCase();
+      const valB = (b[key] ?? "").toString().toLowerCase();
+      if (valA < valB) return direction === "asc" ? -1 : 1;
+      if (valA > valB) return direction === "asc" ? 1 : -1;
+      return 0;
+    });
+
+    return sorted;
+  }, [surveyData, sortConfig]);
+
+  const renderSortIcon = (key: keyof SurveyData) => {
+    if (sortConfig.key !== key) return null;
+    return sortConfig.direction === "asc" ? (
+      <ChevronUp className="inline w-4 h-4 ml-1" />
+    ) : (
+      <ChevronDown className="inline w-4 h-4 ml-1" />
+    );
+  };
+
   const handleEdit = (id: string) => {
-    // redirect ke halaman edit
     router.push(`/admin/survey/edit/${id}`);
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm("Yakin ingin menghapus survei ini?")) return;
-
     try {
       await fetch(`/api/surveys/${id}`, { method: "DELETE" });
       alert("Data berhasil dihapus");
-      // optionally refresh data
       window.location.reload();
     } catch (error) {
       console.error(error);
@@ -77,9 +128,7 @@ const SurveyTable: React.FC = () => {
   };
 
   const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
 
   if (loading) {
@@ -107,26 +156,46 @@ const SurveyTable: React.FC = () => {
       </div>
 
       {/* Table Header */}
-      <div className="grid grid-cols-[0.5fr_1fr_1fr_1fr_1fr] gap-4 pb-4 border-b border-white/20 text-white/90 font-medium text-[13px]">
+      <div className="grid grid-cols-[0.2fr_1fr_0.5fr_0.5fr_0.5fr] gap-4 pb-4 border-b border-white/20 text-white/90 font-medium text-[13px]">
         <div>No</div>
-        <div>Title</div>
-        <div>Last Modified</div>
-        <div>Username</div>
+
+        <div
+          onClick={() => handleSort("title")}
+          className="cursor-pointer select-none flex items-center"
+        >
+          Title {renderSortIcon("title")}
+        </div>
+
+        <div
+          onClick={() => handleSort("updated_at")}
+          className="cursor-pointer select-none flex items-center"
+        >
+          Last Modified {renderSortIcon("updated_at")}
+        </div>
+
+        <div
+          onClick={() => handleSort("username")}
+          className="cursor-pointer select-none flex items-center"
+        >
+          Username {renderSortIcon("username")}
+        </div>
+
         <div>Action</div>
       </div>
 
       {/* Table Body */}
       <div className="flex-1 overflow-auto">
-        {surveyData.length === 0 ? (
+        {sortedData.length === 0 ? (
           <div className="text-white/60 text-center py-8">
             No data available
           </div>
         ) : (
-          surveyData.map((item, index) => (
+          sortedData.map((item, index) => (
             <div
               key={item.id}
-              className="grid grid-cols-[0.5fr_1fr_1fr_1fr_1fr] gap-4 py-4 border-b border-white/10 text-white/80 hover:bg-white/5 transition-all text-sm"
+              className="grid grid-cols-[0.2fr_1fr_0.5fr_0.5fr_0.5fr] gap-4 py-4 border-b border-white/10 text-white/80 hover:bg-white/5 transition-all text-sm"
             >
+              {/* Nomor */}
               <div>{(currentPage - 1) * surveyData.length + (index + 1)}</div>
 
               {/* Title */}
@@ -134,6 +203,7 @@ const SurveyTable: React.FC = () => {
                 {item.title}
               </div>
 
+              {/* Last Modified */}
               <div>
                 {new Date(
                   item.updated_at || item.created_at
@@ -145,8 +215,8 @@ const SurveyTable: React.FC = () => {
                 {item.username ?? "-"}
               </div>
 
+              {/* Action Buttons */}
               <div className="flex items-center space-x-3">
-                {/* Tombol Edit */}
                 <button
                   onClick={() => handleEdit(item.id)}
                   className="px-3 py-1.5 text-sm rounded-lg bg-yellow-500/20 border border-yellow-500/40 text-yellow-400 hover:bg-yellow-500/30 transition-all"
@@ -154,7 +224,6 @@ const SurveyTable: React.FC = () => {
                   Edit
                 </button>
 
-                {/* Tombol Delete */}
                 <button
                   onClick={() => handleDelete(item.id)}
                   className="px-3 py-1.5 text-sm rounded-lg bg-red-500/20 border border-red-600/40 text-red-400 hover:bg-red-500/30 transition-all"
