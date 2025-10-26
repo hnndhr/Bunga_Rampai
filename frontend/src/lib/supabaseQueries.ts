@@ -11,11 +11,13 @@ export async function getSurveys({
   sortBy = "created_at",
   order = "desc",
   search = "",
+  limit
 }: {
   filterType?: string;
   sortBy?: string;
   order?: "asc" | "desc";
   search?: string;
+  limit?: number;
 }) {
   let query = supabase
     .from("survey_articles")
@@ -28,6 +30,10 @@ export async function getSurveys({
 
   if (search && search.trim() !== "") {
     query = query.ilike("title", `%${search}%`);
+  }
+
+  if (limit) {
+    query = query.limit(limit);
   }
 
   const { data, error } = await query;

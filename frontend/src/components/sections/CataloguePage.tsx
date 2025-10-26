@@ -1,6 +1,5 @@
 "use client";
 
-import { Search, Filter, Type } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import SurveyCard from "@/components/ui/SurveyPageCard";
 import FilterBar from "../ui/FilterBar";
@@ -84,15 +83,17 @@ export default function CataloguePage() {
           />
 
           {/* Catalog Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 ">
             {filteredSurveys.map((survey) => (
-              <SurveyCard
-                key={survey.slug}
-                title={survey.title}
-                image={survey.infographic_link}
-                altText={`Infografis ${survey.title}`}
-                slug={survey.slug}
-              />
+              <div className="transition-transform duration-300 ease-in-out hover:scale-105">
+                <SurveyCard
+                  key={survey.slug}
+                  title={survey.title}
+                  image={survey.infographic_link}
+                  altText={`Infografis ${survey.title}`}
+                  slug={survey.slug}
+                />
+              </div>
             ))}
           </div>
         </div>
