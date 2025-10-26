@@ -7,8 +7,26 @@ import * as bcrypt from 'bcrypt';
 export class AdminsService {
   constructor(private readonly supabase: SupabaseService) {}
 
+async validateAdmin(username: string, password: string) {
+  const supabase = this.supabase.client;
+
+  const { data: admin, error } = await supabase
+    .from('admins')
+    .select('*')
+    .eq('username', username)
+    .single();
+
+  if (error || !admin) return null;
+
+  const isMatch = await bcrypt.compare(password, admin.password);
+  if (!isMatch) return null;
+
+  return admin;
+}
+
+
   async findAll(limit: number, offset: number) {
-    const client = this.supabase.getClient();
+    const client = this.supabase.client;
 
     const { data, error } = await client
       .from('admins')
@@ -23,7 +41,7 @@ export class AdminsService {
     const newAdmin = { ...data, password: hashed};
 
     return this.supabase
-      .getClient()
+      .client
       .from('admins')
       .insert(newAdmin)
       .select();
@@ -35,7 +53,7 @@ export class AdminsService {
     }
 
     return this.supabase
-      .getClient()
+      .client
       .from('admins')
       .update(data)
       .eq('id', id)
@@ -44,7 +62,7 @@ export class AdminsService {
 
   async remove(id: string) {
     return this.supabase
-      .getClient()
+      .client
       .from('admins')
       .delete()
       .eq('id', id);

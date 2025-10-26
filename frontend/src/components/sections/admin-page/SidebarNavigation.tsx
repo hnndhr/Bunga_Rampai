@@ -34,10 +34,11 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   );
 
   const handleLogout = () => {
-    // kalau kamu mau tambahin logika hapus token dulu, bisa di sini
-    // localStorage.removeItem("admin_token");
+    // AKTIFKAN baris ini - Ini adalah bagian penting dari logout
+    localStorage.removeItem("admin_token");
 
-    router.push("/login-admin"); // redirect ke halaman login-admin
+    // Redirect ke halaman login-admin
+    router.push("/admin");
   };
 
   return (

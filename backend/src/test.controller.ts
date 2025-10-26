@@ -10,7 +10,7 @@ export class TestController {
   @Get('survey-articles')
   async connectSurvey() {
     const { data, error } = await this.supabase
-      .getClient()
+      .client
       .from('survey_articles')
       .select('*')
       .limit(5);
@@ -25,7 +25,7 @@ export class TestController {
     @Get('admins')
   async connectAdmins() {
     const { data, error } = await this.supabase
-      .getClient()
+      .client
       .from('admins')
       .select('*')
       .limit(5);
@@ -40,7 +40,7 @@ export class TestController {
     @Get('survey-article-blocks')
   async connectBlocks() {
     const { data, error } = await this.supabase
-      .getClient()
+      .client
       .from('survey_article_blocks')
       .select('*')
       .limit(5);
