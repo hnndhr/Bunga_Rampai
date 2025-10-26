@@ -34,10 +34,8 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   );
 
   const handleLogout = () => {
-    // AKTIFKAN baris ini - Ini adalah bagian penting dari logout
     localStorage.removeItem("admin_token");
 
-    // Redirect ke halaman login-admin
     router.push("/admin");
   };
 

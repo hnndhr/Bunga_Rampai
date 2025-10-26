@@ -1,17 +1,43 @@
 "use client";
 
-import React, { useState } from "react";
+import { useEffect, useState } from 'react';
+// import { useRouter } from 'next/navigation'; // Dihapus untuk memperbaiki error
+
+// Impor dari layout dashboard baru Anda
+// Pastikan path ini benar relatif terhadap file page.tsx ini
 import Sidebar from "./SidebarNavigation";
 import SurveyTable from "./SurveyTable";
 import AdminTable from "./AdminTable";
-import SurveyBlocksTable from "./SurveyBlocksTable";
 import SurveyLogs from "./LogsTable";
 
-const DashboardLayout: React.FC = () => {
-  const [currentView, setCurrentView] = useState<
-    "Logs" | "admins" | "survey"
-  >("Logs");
+// Tipe untuk view
+type AdminView = "Logs" | "admins" | "survey";
 
+export default function AdminDashboardPage() {
+  // const router = useRouter(); // Dihapus
+  
+  // State untuk view dari layout baru
+  const [currentView, setCurrentView] = useState<AdminView>("Logs");
+  
+  // State loading dari penjaga otentikasi
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Penjaga otentikasi
+  useEffect(() => {
+    // Ambil token dari localStorage
+    const token = localStorage.getItem("admin_token");
+
+    if (!token) {
+      // --- INI ADALAH PENJAGANYA ---
+      // Mengganti router.push dengan window.location.href
+      window.location.href = "/admin";
+    } else {
+      // Jika ADA token, izinkan halaman untuk tampil
+      setIsLoading(false);
+    }
+  }, []); // Dependency array dikosongkan
+
+  // Fungsi render konten dari layout baru
   const renderContent = () => {
     switch (currentView) {
       case "admins":
@@ -23,6 +49,17 @@ const DashboardLayout: React.FC = () => {
     }
   };
 
+  // Selama pemeriksaan token, tampilkan layar loading
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+        <p>Memeriksa otentikasi...</p>
+        {/* Anda bisa mengganti ini dengan komponen spinner/loading yang lebih bagus */}
+      </div>
+    );
+  }
+
+  // Jika lolos pemeriksaan (isLoading=false), tampilkan layout dashboard lengkap
   return (
     <div className="min-h-screen w-full relative overflow-hidden">
       {/* Background Image */}
@@ -45,6 +82,5 @@ const DashboardLayout: React.FC = () => {
       </div>
     </div>
   );
-};
+}
 
-export default DashboardLayout;
