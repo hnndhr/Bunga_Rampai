@@ -105,7 +105,7 @@
             const distance = Math.abs(diff);
             const t = Math.min(distance / half, 1);
 
-            x = diff * baseOffset;
+            x = diff * baseOffset * 1.5;
             scale = 1 - t * 0.3;
             opacity = 1 - t * 0.6;
             blur = `${t * 3}px`;
