@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config'; // ✅ tambah ini
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
 import { TestController } from './test.controller.js';
@@ -9,9 +9,9 @@ import { ArticlesModule } from './modules/articles/articles.module.js';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
     AdminsModule,
-    ArticlesModule
+    ArticlesModule,
   ],
   controllers: [AppController, TestController],
   providers: [AppService, SupabaseService],
