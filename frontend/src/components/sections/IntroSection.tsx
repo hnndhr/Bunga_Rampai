@@ -20,7 +20,7 @@ export default function IntroSection() {
       <div className="container mx-auto px-8 md:px-16 lg:px-32 relative z-10">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-16">
           {/* BAGIAN KIRI: Teks */}
-          <div className="lg:w-1/2 space-y-5 text-center lg:text-left">
+          <div className="lg:w-1/2 space-y-5 text-justify lg:text-justify">
             <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
               BUNGA RAMPAI
             </h2>
