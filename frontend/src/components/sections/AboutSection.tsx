@@ -55,7 +55,7 @@ export default function CatalogueSection() {
                     shadow-[0_4px_30px_rgba(0,0,0,0.2)]
                     backdrop-blur-[12px]
                     overflow-hidden
-                    transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]
+                    transition-all duration-500 ease-\[cubic-bezier(0.4,0,0.2,1)\]
                     hover:bg-[rgba(255,255,255,0.10)]
                     hover:shadow-[0_6px_40px_rgba(255,255,255,0.15)]
                   "

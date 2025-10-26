@@ -10,7 +10,7 @@ export default function LoginPage() {
   const handleLogin = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     // bisa tambahkan validasi login di sini
-    router.push("/admin-dashboard"); // pindah halaman
+    router.push("/admin/admin-dashboard"); // pindah halaman
   };
 
   return (
