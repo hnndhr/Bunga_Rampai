@@ -106,7 +106,7 @@
             const t = Math.min(distance / half, 1);
 
             x = diff * baseOffset * 1.5;
-            scale = 1 - t * 0.3;
+            scale = 1 - t * 0.2;
             opacity = 1 - t * 0.6;
             blur = `${t * 3}px`;
             zIndex = 10 - distance;
