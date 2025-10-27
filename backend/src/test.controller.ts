@@ -12,8 +12,7 @@ export class TestController {
     const { data, error } = await this.supabase
       .client
       .from('survey_articles')
-      .select('*')
-      .limit(5);
+      .select('*');
 
     if (error) {
       return { status: 'ERROR', error };
@@ -27,8 +26,7 @@ export class TestController {
     const { data, error } = await this.supabase
       .client
       .from('admins')
-      .select('*')
-      .limit(5);
+      .select('*');
 
     if (error) {
       return { status: 'ERROR', error };

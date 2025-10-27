@@ -4,7 +4,11 @@ import {
   Param,
   Post,
   Body,
-  Patch
+  Patch,
+  Delete,
+  HttpCode,
+  HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service.js';
 import { CreateArticleDto } from './dto/create-article.dto.js';
@@ -14,6 +18,24 @@ import { CreateBlockDto } from './dto/create-blocks.dto.js';
 @Controller('articles')
 export class ArticlesController {
   constructor(private readonly articlesService: ArticlesService) {}
+  
+  @Delete(':slug')
+  async deleteArticle(@Param('slug') slug: string) {
+    await this.articlesService.deleteArticleBySlug(slug);
+  }
+  
+  @Get()
+  async findAll(
+    @Query('page') page: string = '1',
+    @Query('limit') limit: string = '10',
+  ) {
+    const pageNumber = parseInt(page, 10) || 1;
+    const limitNumber = parseInt(limit, 10) || 10;
+    return this.articlesService.getSurveyArticlesWithBlocks(
+      pageNumber,
+      limitNumber,
+    );
+  }
 
   @Get(':slug')
   async getBySlug(@Param('slug') slug: string) {
@@ -33,11 +55,8 @@ export class ArticlesController {
     return this.articlesService.updateArticleBySlug(slug, dto);
   }
 
-  // @Delete(':slug')
-  // async deleteArticle(@Param('slug') slug: string) {
-  //   return this.articlesService.deleteArticleBySlug(slug);
-  // }
 
+  // --- Endpoint untuk Blocks (sudah benar) ---
   @Post(':slug/blocks')
   async createBlocks(
     @Param('slug') slug: string,
@@ -47,10 +66,7 @@ export class ArticlesController {
   }
 
   @Get(':slug/blocks')
-  async getBlocks(
-    @Param('slug') slug: string,
-    //@Body() blocks: CreateBlockDto[],
-  ) {
+  async getBlocks(@Param('slug') slug: string) {
     return this.articlesService.findBlocksBySlug(slug);
   }
 }

@@ -1,4 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { CreateArticleDto } from './dto/create-article.dto.js';
 import { CreateBlockDto } from './dto/create-blocks.dto.js';
@@ -54,6 +58,33 @@ export class ArticlesService {
     return {
       ...article,
       blocks: parsedBlocks,
+    };
+  }
+
+  async findAll(page: number = 1, limit: number = 10) {
+    const offset = (page - 1) * limit;
+
+    const { data, error, count } = await this.supabase
+      .from('survey_articles')
+      .select('*', { count: 'exact' })
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1);
+
+    if (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+
+    const totalPages = Math.ceil((count || 0) / limit);
+
+    return {
+      status: 'OK',
+      data,
+      meta: {
+        total: count || 0,
+        page,
+        limit,
+        totalPages,
+      },
     };
   }
 
@@ -256,7 +287,6 @@ export class ArticlesService {
   async getSurveyArticlesWithBlocks(page: number = 1, limit: number = 10) {
     const offset = (page - 1) * limit;
 
-    // Get survey articles
     const {
       data: articles,
       error: articlesError,
@@ -269,34 +299,44 @@ export class ArticlesService {
 
     if (articlesError) throw articlesError;
 
-    // Get blocks for each article
     const articlesWithBlocks = await Promise.all(
       (articles || []).map(async (article) => {
         const { data: blocks, error: blocksError } = await this.supabase
           .from('survey_article_blocks')
           .select('*')
-          .eq('slug_survey', article.slug) // ✅ Pakai slug sebagai foreign key
+          .eq('slug_survey', article.slug)
           .order('ordering', { ascending: true });
 
-        if (blocksError) {
-          console.error(
-            `Error fetching blocks for ${article.slug}:`,
-            blocksError,
-          );
-          return { ...article, blocks: [] };
-        }
+        if (blocksError) return { ...article, blocks: [] };
 
-        return { ...article, blocks: blocks || [] };
+        const parsed = (blocks || []).map((b: any) => {
+          let contentParsed = null;
+          try {
+            contentParsed = b.content ? JSON.parse(b.content) : null;
+          } catch {
+            contentParsed = b.content;
+          }
+          return {
+            id: b.id,
+            ordering: b.ordering,
+            block_type: b.block_type,
+            content: contentParsed,
+          };
+        });
+
+        return { ...article, blocks: parsed };
       }),
     );
-
-    const totalPages = Math.ceil((count || 0) / limit);
 
     return {
       status: 'OK',
       data: articlesWithBlocks,
-      totalPages,
-      currentPage: page,
+      meta: {
+        page,
+        limit,
+        totalPages: Math.ceil((count || 0) / limit),
+        total: count || 0,
+      },
     };
   }
 }

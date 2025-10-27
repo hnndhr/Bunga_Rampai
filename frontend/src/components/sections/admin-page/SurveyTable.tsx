@@ -30,6 +30,8 @@ interface BlockData {
   slug_survey: string;
 }
 
+const PAGE_LIMIT = 7;
+
 const SurveyTable: React.FC = () => {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
@@ -46,31 +48,57 @@ const SurveyTable: React.FC = () => {
     direction: "desc", // Default: terbaru ke terlama
   });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await fetch(
-          `http://localhost:3001/connect/survey-articles/?page=${currentPage}`,
-          { method: "GET" }
-        );
-        const res = await response.json();
+  const [confirmDelete, setConfirmDelete] = useState<{
+    open: boolean;
+    target?: string;
+  }>({ open: false });
 
-        if (res?.status === "OK" && Array.isArray(res.data)) {
-          setSurveyData(res.data);
-          setTotalPages(res.totalPages ?? 1);
-        } else {
-          setSurveyData([]);
-        }
-      } catch (err) {
-        console.error("Error fetching data:", err);
+  const fetchData = async (page: number) => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `http://localhost:3001/articles?page=${currentPage}&limit=${PAGE_LIMIT}`,
+        { method: "GET" }
+      );
+
+      const res = await response.json();
+
+      // Support beberapa shape response:
+      // 1) { status: 'OK', data: [...], meta: { totalPages, page, limit } }
+      // 2) { data: [...], meta: { totalPages, total, limit } }
+      // 3) direct array [...]
+      if (res == null) {
         setSurveyData([]);
-      } finally {
-        setLoading(false);
+        setTotalPages(1);
+      } else if (Array.isArray(res)) {
+        setSurveyData(res);
+        setTotalPages(1);
+      } else if (Array.isArray(res.data)) {
+        setSurveyData(res.data);
+        // try meta.totalPages, fallback to res.totalPages, fallback compute from meta.total/meta.limit
+        const totalPagesFromMeta =
+          res.meta?.totalPages ??
+          res.totalPages ??
+          (res.meta?.total && res.meta?.limit
+            ? Math.ceil(res.meta.total / res.meta.limit)
+            : undefined);
+        setTotalPages(totalPagesFromMeta ?? 1);
+      } else {
+        // unknown shape
+        setSurveyData([]);
+        setTotalPages(1);
       }
-    };
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      setSurveyData([]);
+      setTotalPages(1);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    fetchData();
+  useEffect(() => {
+    fetchData(currentPage);
   }, [currentPage]);
 
   // Fungsi untuk handle klik header (toggle arah sort)
@@ -100,7 +128,7 @@ const SurveyTable: React.FC = () => {
         return direction === "asc" ? dateA - dateB : dateB - dateA;
       }
 
-      // Sorting string
+      // Sorting string / number fallback
       const valA = (a[key] ?? "").toString().toLowerCase();
       const valB = (b[key] ?? "").toString().toLowerCase();
       if (valA < valB) return direction === "asc" ? -1 : 1;
@@ -124,12 +152,30 @@ const SurveyTable: React.FC = () => {
     router.push(`/admin/articles/${slug}/update-article/`);
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm("Yakin ingin menghapus survei ini?")) return;
+  // tahap 1: buka modal
+  const requestDelete = (slug: string) => {
+    setConfirmDelete({ open: true, target: slug });
+  };
+
+  // tahap 2: konfirmasi di modal
+  const confirmDeleteAction = async () => {
+    if (!confirmDelete.target) return;
+
     try {
-      await fetch(`/api/surveys/${id}`, { method: "DELETE" });
-      alert("Data berhasil dihapus");
-      window.location.reload();
+      const res = await fetch(
+        `http://localhost:3001/articles/${encodeURIComponent(
+          confirmDelete.target
+        )}`,
+        { method: "DELETE" }
+      );
+
+      if (!res.ok) {
+        const txt = await res.text().catch(() => "Delete failed");
+        throw new Error(txt);
+      }
+
+      await fetchData(currentPage);
+      setConfirmDelete({ open: false, target: undefined });
     } catch (error) {
       console.error(error);
       alert("Gagal menghapus data");
@@ -157,7 +203,7 @@ const SurveyTable: React.FC = () => {
           SURVEY MANAGEMENT
         </MontserratText>
         <button
-          onClick={() => (window.location.href = "/admin/articles/${id}/create-article")}
+          onClick={() => router.push("/admin/articles/create-article")}
           className="px-6 py-2 bg-white/20 backdrop-blur-md border border-white/30 rounded-lg text-white font-medium hover:bg-white/30 transition-all shadow-lg"
         >
           Create Survey
@@ -193,7 +239,7 @@ const SurveyTable: React.FC = () => {
       </div>
 
       {/* Table Body */}
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto max-h-[500px]">
         {sortedData.length === 0 ? (
           <div className="text-white/60 text-center py-8">
             No data available
@@ -204,8 +250,8 @@ const SurveyTable: React.FC = () => {
               key={item.id}
               className="grid grid-cols-[0.2fr_1fr_0.5fr_0.5fr_0.5fr] gap-4 py-4 border-b border-white/10 text-white/80 hover:bg-white/5 transition-all text-sm"
             >
-              {/* Nomor */}
-              <div>{(currentPage - 1) * surveyData.length + (index + 1)}</div>
+              {/* Nomor: gunakan PAGE_LIMIT agar nomor global konsisten */}
+              <div>{(currentPage - 1) * PAGE_LIMIT + (index + 1)}</div>
 
               {/* Title */}
               <div className="truncate overflow-hidden whitespace-nowrap text-ellipsis">
@@ -234,11 +280,37 @@ const SurveyTable: React.FC = () => {
                 </button>
 
                 <button
-                  onClick={() => handleDelete(item.id)}
+                  onClick={() => requestDelete(item.slug)}
                   className="px-3 py-1.5 text-sm rounded-lg bg-red-500/20 border border-red-600/40 text-red-400 hover:bg-red-500/30 transition-all"
                 >
                   Delete
                 </button>
+                {confirmDelete.open && (
+                  <div className="fixed inset-0 bg-transparent flex items-center justify-center z-50">
+                    <div className="bg-white dark:bg-neutral-800 rounded-xl p-6 max-w-sm w-full shadow-lg">
+                      <h2 className="text-lg font-semibold mb-2 text-gray-800 dark:text-gray-100">
+                        Konfirmasi Hapus
+                      </h2>
+                      <p className="text-gray-600 dark:text-gray-300 mb-6">
+                        Apakah kamu yakin ingin menghapus survei ini?
+                      </p>
+                      <div className="flex justify-end gap-3">
+                        <button
+                          className="px-4 py-2 rounded-lg  bg-gray-300 hover:bg-gray-400 transition"
+                          onClick={() => setConfirmDelete({ open: false })}
+                        >
+                          Batal
+                        </button>
+                        <button
+                          className="px-4 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white transition"
+                          onClick={confirmDeleteAction}
+                        >
+                          Hapus
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           ))

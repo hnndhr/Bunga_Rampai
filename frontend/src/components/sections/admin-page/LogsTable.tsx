@@ -7,7 +7,7 @@ import { MontserratText } from "@/components/ui/FontWrappers";
 interface SurveyData {
   id: string;
   title: string;
-  author_username: string | null;
+  username: string | null;
   created_at: string;
   updated_at: string | null;
 }
@@ -127,8 +127,8 @@ const LogsTable: React.FC = () => {
         <div className="cursor-pointer select-none" onClick={() => handleSort("title")}>
           Survey Title {renderSortArrow("title")}
         </div>
-        <div className="cursor-pointer select-none" onClick={() => handleSort("author_username")}>
-          Username {renderSortArrow("author_username")}
+        <div className="cursor-pointer select-none" onClick={() => handleSort("username")}>
+          Username {renderSortArrow("username")}
         </div>
         <div>Action</div>
       </div>
@@ -157,7 +157,7 @@ const LogsTable: React.FC = () => {
 
               {/* Username */}
               <div className="truncate overflow-hidden whitespace-nowrap text-ellipsis text-center">
-                {item.author_username ?? "-"}
+                {item.username ?? "-"}
               </div>
 
               {/* Action */}
