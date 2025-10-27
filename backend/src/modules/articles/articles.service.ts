@@ -57,6 +57,32 @@ export class ArticlesService {
     };
   }
 
+  async findBlocksBySlug(slug: string) {
+    const { data: blocks, error } = await this.supabase
+      .from('survey_article_blocks')
+      .select('*')
+      .eq('slug_survey', slug)
+      .order('ordering', { ascending: true });
+
+    if (error) throw error;
+
+    // Parse JSON content back
+    return (blocks || []).map((b: any) => {
+      let parsed: any = null;
+      try {
+        parsed = b.content ? JSON.parse(b.content) : null;
+      } catch {
+        parsed = b.content;
+      }
+      return {
+        id: b.id,
+        ordering: b.ordering,
+        block_type: b.block_type,
+        content: parsed,
+      };
+    });
+  }
+
   // Create article + blocks in one request. If blocks insert fails, rollback (delete article).
   async createArticleWithBlocks(dto: CreateArticleDto) {
     const { blocks, ...articlePayload } = dto;
@@ -78,7 +104,8 @@ export class ArticlesService {
       throw articleError;
     }
 
-    const insertedSlug = (articleData && articleData.slug) || articlePayload.slug;
+    const insertedSlug =
+      (articleData && articleData.slug) || articlePayload.slug;
     let insertedBlocks: any[] = [];
 
     // 2) Insert blocks bulk (if provided)
@@ -86,7 +113,8 @@ export class ArticlesService {
       const payload = blocks.map((b: CreateBlockDto, idx: number) => ({
         ordering: typeof b.ordering === 'number' ? b.ordering : idx + 1,
         block_type: b.block_type,
-        content: typeof b.content === 'string' ? b.content : JSON.stringify(b.content),
+        content:
+          typeof b.content === 'string' ? b.content : JSON.stringify(b.content),
         slug_survey: insertedSlug,
       }));
 
@@ -96,7 +124,10 @@ export class ArticlesService {
         .select();
 
       if (blocksError) {
-        this.logger.error('Failed to insert blocks; rolling back article', blocksError);
+        this.logger.error(
+          'Failed to insert blocks; rolling back article',
+          blocksError,
+        );
         // rollback: delete inserted article to keep consistency
         await this.supabase
           .from('survey_articles')
@@ -146,7 +177,10 @@ export class ArticlesService {
         const payload = blocks.map((b: CreateBlockDto, idx: number) => ({
           ordering: typeof b.ordering === 'number' ? b.ordering : idx + 1,
           block_type: b.block_type,
-          content: typeof b.content === 'string' ? b.content : JSON.stringify(b.content),
+          content:
+            typeof b.content === 'string'
+              ? b.content
+              : JSON.stringify(b.content),
           slug_survey: slug,
         }));
 
@@ -198,7 +232,8 @@ export class ArticlesService {
     const payload = blocks.map((b: CreateBlockDto, idx: number) => ({
       ordering: typeof b.ordering === 'number' ? b.ordering : idx + 1,
       block_type: b.block_type,
-      content: typeof b.content === 'string' ? b.content : JSON.stringify(b.content),
+      content:
+        typeof b.content === 'string' ? b.content : JSON.stringify(b.content),
       slug_survey: slug,
     }));
 
@@ -215,5 +250,53 @@ export class ArticlesService {
     }
 
     return { inserted: (data || []).length, data };
+  }
+
+  // GET survey articles with blocks
+  async getSurveyArticlesWithBlocks(page: number = 1, limit: number = 10) {
+    const offset = (page - 1) * limit;
+
+    // Get survey articles
+    const {
+      data: articles,
+      error: articlesError,
+      count,
+    } = await this.supabase
+      .from('survey_articles')
+      .select('*', { count: 'exact' })
+      .order('updated_at', { ascending: false })
+      .range(offset, offset + limit - 1);
+
+    if (articlesError) throw articlesError;
+
+    // Get blocks for each article
+    const articlesWithBlocks = await Promise.all(
+      (articles || []).map(async (article) => {
+        const { data: blocks, error: blocksError } = await this.supabase
+          .from('survey_article_blocks')
+          .select('*')
+          .eq('slug_survey', article.slug) // ✅ Pakai slug sebagai foreign key
+          .order('ordering', { ascending: true });
+
+        if (blocksError) {
+          console.error(
+            `Error fetching blocks for ${article.slug}:`,
+            blocksError,
+          );
+          return { ...article, blocks: [] };
+        }
+
+        return { ...article, blocks: blocks || [] };
+      }),
+    );
+
+    const totalPages = Math.ceil((count || 0) / limit);
+
+    return {
+      status: 'OK',
+      data: articlesWithBlocks,
+      totalPages,
+      currentPage: page,
+    };
   }
 }

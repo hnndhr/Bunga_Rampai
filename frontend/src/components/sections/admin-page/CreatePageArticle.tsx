@@ -181,7 +181,7 @@ export default function AdminArticleCreatePage() {
         return;
       }
 
-      const output = await editorRef.current?.save();
+      const output = await editorRef.current ?.save();
       const editorBlocks = (output?.blocks || []).map((b: any, i: number) =>
         mapEditorBlockToMyBlock(b, i + (infographicDesc ? 1 : 0))
       );
@@ -224,7 +224,7 @@ export default function AdminArticleCreatePage() {
       }
 
       setMessage(`Artikel dan ${blocksPayload.length} blok berhasil disimpan!`);
-      router.push("/surveytable");
+      //router.push("/admin/admin-dashboard");
     } catch (err: any) {
       setMessage(err.message || "Terjadi error saat menyimpan");
     } finally {

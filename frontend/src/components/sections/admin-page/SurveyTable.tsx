@@ -19,6 +19,15 @@ interface SurveyData {
   username: string | null;
   created_at: string;
   updated_at: string;
+  blocks?: BlockData[];
+}
+
+interface BlockData {
+  id: string;
+  ordering: number;
+  block_type: string;
+  content: string | object;
+  slug_survey: string;
 }
 
 const SurveyTable: React.FC = () => {
@@ -111,8 +120,8 @@ const SurveyTable: React.FC = () => {
     );
   };
 
-  const handleEdit = (id: string) => {
-    router.push(`/admin/survey/edit/${id}`);
+  const handleEdit = (slug: string) => {
+    router.push(`/admin/articles/${slug}/update-article/`);
   };
 
   const handleDelete = async (id: string) => {
@@ -148,7 +157,7 @@ const SurveyTable: React.FC = () => {
           SURVEY MANAGEMENT
         </MontserratText>
         <button
-          onClick={() => (window.location.href = "/admin/create-article")}
+          onClick={() => (window.location.href = "/admin/articles/${id}/create-article")}
           className="px-6 py-2 bg-white/20 backdrop-blur-md border border-white/30 rounded-lg text-white font-medium hover:bg-white/30 transition-all shadow-lg"
         >
           Create Survey
@@ -218,7 +227,7 @@ const SurveyTable: React.FC = () => {
               {/* Action Buttons */}
               <div className="flex items-center space-x-3">
                 <button
-                  onClick={() => handleEdit(item.id)}
+                  onClick={() => handleEdit(item.slug)}
                   className="px-3 py-1.5 text-sm rounded-lg bg-yellow-500/20 border border-yellow-500/40 text-yellow-400 hover:bg-yellow-500/30 transition-all"
                 >
                   Edit

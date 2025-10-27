@@ -4,8 +4,7 @@ import {
   Param,
   Post,
   Body,
-  Put,
-  Delete,
+  Patch
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service.js';
 import { CreateArticleDto } from './dto/create-article.dto.js';
@@ -26,7 +25,7 @@ export class ArticlesController {
     return this.articlesService.createArticleWithBlocks(dto);
   }
 
-  @Put(':slug')
+  @Patch(':slug')
   async updateArticle(
     @Param('slug') slug: string,
     @Body() dto: UpdateArticleDto,
@@ -45,5 +44,13 @@ export class ArticlesController {
     @Body() blocks: CreateBlockDto[],
   ) {
     return this.articlesService.createBlocksBulk(slug, blocks);
+  }
+
+  @Get(':slug/blocks')
+  async getBlocks(
+    @Param('slug') slug: string,
+    //@Body() blocks: CreateBlockDto[],
+  ) {
+    return this.articlesService.findBlocksBySlug(slug);
   }
 }
