@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
-import { Menu, X } from 'lucide-react';
-import Link from 'next/link';
-import Image from 'next/image';
-import clsx from 'clsx';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { Menu, X } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import clsx from "clsx";
+import { motion } from "framer-motion";
 
 const AnimatedTitle = ({ isScrolled }: { isScrolled: boolean }) => {
   const text = "BUNGA RAMPAI";
@@ -15,8 +15,16 @@ const AnimatedTitle = ({ isScrolled }: { isScrolled: boolean }) => {
     hidden: { transition: { staggerChildren: 0.02, staggerDirection: -1 } },
   };
   const childVariants = {
-    visible: { opacity: 1, y: 0, transition: { type: "spring" as const, damping: 12, stiffness: 200 } },
-    hidden: { opacity: 0, y: 40, transition: { type: "spring" as const, damping: 12, stiffness: 200 } },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { type: "spring" as const, damping: 12, stiffness: 200 },
+    },
+    hidden: {
+      opacity: 0,
+      y: 40,
+      transition: { type: "spring" as const, damping: 12, stiffness: 200 },
+    },
   };
 
   return (
@@ -30,7 +38,11 @@ const AnimatedTitle = ({ isScrolled }: { isScrolled: boolean }) => {
       animate={isScrolled ? "hidden" : "visible"}
     >
       {text.split("").map((char, index) => (
-        <motion.span key={index} variants={childVariants} className="inline-block">
+        <motion.span
+          key={index}
+          variants={childVariants}
+          className="inline-block"
+        >
           {char === " " ? "\u00A0" : char}
         </motion.span>
       ))}
@@ -45,8 +57,8 @@ export default function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const navItems = [
@@ -61,11 +73,17 @@ export default function Navbar() {
         className={clsx(
           "container mx-auto flex flex-col transition-all duration-700 ease-in-out",
           {
+            // Default style
             "px-6 py-4": !isScrolled,
+
+            // Style ketika discroll
             "bg-black/15 backdrop-blur-2xl border border-white/20 shadow-[0_4px_30px_rgba(0,0,0,0.1)] px-8 py-3 mt-3":
               isScrolled,
-            "rounded-2xl md:rounded-full": isScrolled,
-            "max-w-screen-md md:max-w-screen-sm": isScrolled,
+
+            // Logika rounded
+            "rounded-full md:rounded-full": isScrolled && !isMenuOpen, // scroll tapi menu TIDAK terbuka
+            "rounded-sm md:rounded-full": isScrolled && isMenuOpen, // scroll + menu terbuka
+            "max-w-screen-sm md:max-w-screen-sm": isScrolled,
           }
         )}
       >
@@ -82,7 +100,10 @@ export default function Navbar() {
                 />
               </div>
             </Link>
-            <Link href="/" className={clsx({ "pointer-events-none": isScrolled })}>
+            <Link
+              href="/"
+              className={clsx({ "pointer-events-none": isScrolled })}
+            >
               <AnimatedTitle isScrolled={isScrolled} />
             </Link>
           </div>
