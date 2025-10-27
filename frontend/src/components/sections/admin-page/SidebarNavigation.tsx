@@ -1,13 +1,14 @@
 "use client";
 
 import React from "react";
-import { BarChart3, Users, FileText } from "lucide-react";
+import { BarChart3, Users, FileText, PersonStanding, User } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { userAgent } from "next/server";
 
 interface SidebarNavigationProps {
-  onNavigate: (view: "Logs" | "admins" | "survey") => void;
-  currentView: "Logs" | "admins" | "survey";
+  onNavigate: (view: "Logs" | "admins" | "survey" | "profile") => void;
+  currentView: "Logs" | "admins" | "survey" | "profile";
 }
 
 const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
@@ -17,7 +18,7 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   const router = useRouter();
 
   const navItem = (
-    view: "Logs" | "admins" | "survey",
+    view: "Logs" | "admins" | "survey" | "profile",
     Icon: React.ElementType
   ) => (
     <div
@@ -51,6 +52,7 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
         {navItem("Logs", BarChart3)}
         {navItem("admins", Users)}
         {navItem("survey", FileText)}
+        {navItem("profile", User)}
       </div>
 
       {/* Tombol Logout */}

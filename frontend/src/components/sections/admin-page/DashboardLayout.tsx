@@ -11,7 +11,7 @@ import AdminTable from "./AdminTable";
 import SurveyLogs from "./LogsTable";
 
 // Tipe untuk view
-type AdminView = "Logs" | "admins" | "survey";
+type AdminView = "Logs" | "admins" | "survey" | "profile";
 
 export default function AdminDashboardPage() {
   // const router = useRouter(); // Dihapus
@@ -44,6 +44,8 @@ export default function AdminDashboardPage() {
         return <AdminTable />;
       case "survey":
         return <SurveyTable />;
+      case "profile"
+        :
       default:
         return <SurveyLogs />;
     }
