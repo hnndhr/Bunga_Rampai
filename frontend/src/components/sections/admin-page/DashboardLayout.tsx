@@ -9,6 +9,7 @@ import Sidebar from "./SidebarNavigation";
 import SurveyTable from "./SurveyTable";
 import AdminTable from "./AdminTable";
 import SurveyLogs from "./LogsTable";
+import ProfilePage from "./profilePage";
 
 // Tipe untuk view
 type AdminView = "Logs" | "admins" | "survey" | "profile";
@@ -44,8 +45,8 @@ export default function AdminDashboardPage() {
         return <AdminTable />;
       case "survey":
         return <SurveyTable />;
-      case "profile"
-        :
+      case "profile":
+        return <ProfilePage />;
       default:
         return <SurveyLogs />;
     }
