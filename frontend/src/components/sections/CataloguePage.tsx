@@ -5,6 +5,7 @@ import SurveyCard from "@/components/ui/SurveyPageCard";
 import FilterBar from "../ui/FilterBar";
 import { getSurveys } from "@/lib/supabaseQueries";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 //Catalogue -> Katalog survey
 
@@ -54,7 +55,7 @@ export default function CataloguePage() {
           <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0D1117] to-transparent"></div>
         </div>
         <Navbar />
-        <div className="absolute bottom-16 left-44 px-2 max-w-2xl text-start">
+        <div className="absolute bottom-16 md:left-44 px-2 max-w-2xl text-start">
           <h1 className="text-5xl font-bold text-white uppercase tracking-wider">
             Bunga Rampai
           </h1>
@@ -83,16 +84,20 @@ export default function CataloguePage() {
           />
 
           {/* Catalog Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 ">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredSurveys.map((survey) => (
-              <div className="transition-transform duration-300 ease-in-out hover:scale-105">
-                <SurveyCard
-                  key={survey.slug}
-                  title={survey.title}
-                  image={survey.infographic_link}
-                  altText={`Infografis ${survey.title}`}
-                  slug={survey.slug}
-                />
+              <div
+                key={survey.slug}
+                className="transition-transform duration-300 ease-in-out hover:scale-105"
+              >
+                <Link href={`/article/${survey.slug}`} passHref>
+                  <SurveyCard
+                    title={survey.title}
+                    image={survey.infographic_link}
+                    altText={`Infografis ${survey.title}`}
+                    slug={survey.slug}
+                  />
+                </Link>
               </div>
             ))}
           </div>

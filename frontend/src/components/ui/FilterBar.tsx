@@ -60,7 +60,7 @@ export default function FilterBar({
     <div className="flex flex-col md:flex-row gap-4 justify-between items-center w-full mb-10 relative">
       {/* Search Bar */}
       <div
-        className={`flex items-center flex-grow py-2.5 px-5 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]`}
+        className={`flex items-center flex-grow py-2.5 px-5 w-full rounded-full bg-white/10 backdrop-blur-xl border border-white/20 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]`}
       >
         <Search className="text-gray-300 mr-3" size={20} />
         <input

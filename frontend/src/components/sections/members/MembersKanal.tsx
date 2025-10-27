@@ -53,7 +53,7 @@ export default function MembersKanal() {
       role: "Staff",
       image: "/images/members/Thori_Bebas.jpg",
       imageBack: "/images/members/Thori_Kedirjenan.jpg",
-      desc: ""
+      desc: "Haloo aku thori prayoga, bisa dipanggil thori dari program studi D4 Keselamatan dan Kesehatan Kerja angkatan 2024. Aku dari Kalimantan Timur tepatnya dikota Bontang. Fun fact dari aku, aku gabisa makan pedes. Tinggi 170 cm, berat badan pengen nambah, umur masih akan bertambah."
     },
   ];
 

@@ -19,7 +19,7 @@ export default function Members() {
   return (
     <section
       id="Members"
-      className="relative bg-gray-900 py-20 min-h-screen transition-all duration-700"
+      className="relative bg-gray-900 py-20 min-h-screen transition-all duration-700 lazyload"
     >
       {sections[page - 1]}
 
