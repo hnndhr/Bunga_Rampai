@@ -8,11 +8,10 @@ import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
 
 export default function ProfilePage() {
-  // Contoh data awal — nanti bisa diganti dari Supabase / API
   const [profile, setProfile] = useState({
     name: 'Admin Bunga Rampai',
     username: 'admin123',
-    role: 'Administrator',
+    role: 'Admin',
   });
 
   const [newUsername, setNewUsername] = useState(profile.username);
@@ -21,7 +20,6 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     setIsSaving(true);
-    // Nanti di sini tambahkan fetch/update ke database
     setTimeout(() => {
       setProfile((prev) => ({ ...prev, username: newUsername }));
       setNewPassword('');
@@ -31,7 +29,8 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
+    <div className="h-screen flex items-center justify-center overflow-hidden">
+      {/* ↑ h-screen = tinggi penuh layar, overflow-hidden = hilangkan scroll */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -50,7 +49,9 @@ export default function ProfilePage() {
               <h1 className="text-3xl font-semibold tracking-wide">
                 Admin Profile
               </h1>
-              <p className="text-gray-300 text-sm">Manage your account details</p>
+              <p className="text-gray-300 text-sm">
+                Manage your account details
+              </p>
             </motion.div>
 
             {/* Profile Info */}

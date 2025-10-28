@@ -104,14 +104,14 @@ const LogsTable: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex-1 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6 flex items-center justify-center">
+      <div className="flex-1 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-8 flex items-center justify-center">
         <div className="text-white text-lg">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6 flex flex-col">
+    <div className="flex-1 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-8 flex flex-col">
       {/* Header Section */}
       <div className="flex justify-center items-center mb-8">
         <MontserratText className="text-2xl md:text-3xl font-bold text-white tracking-wider">

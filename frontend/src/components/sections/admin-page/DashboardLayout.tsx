@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 // import { useRouter } from 'next/navigation'; // Dihapus untuk memperbaiki error
 
 // Impor dari layout dashboard baru Anda
@@ -9,17 +9,21 @@ import Sidebar from "./SidebarNavigation";
 import SurveyTable from "./SurveyTable";
 import AdminTable from "./AdminTable";
 import SurveyLogs from "./LogsTable";
+<<<<<<< Updated upstream
 import ProfilePage from './ProfilePage';
+=======
+import ProfilePage from "./profilePage";
+>>>>>>> Stashed changes
 
 // Tipe untuk view
 type AdminView = "Logs" | "admin" | "survey" | "profile";
 
 export default function AdminDashboardPage() {
   // const router = useRouter(); // Dihapus
-  
+
   // State untuk view dari layout baru
   const [currentView, setCurrentView] = useState<AdminView>("Logs");
-  
+
   // State loading dari penjaga otentikasi
   const [isLoading, setIsLoading] = useState(true);
 
@@ -64,7 +68,7 @@ export default function AdminDashboardPage() {
 
   // Jika lolos pemeriksaan (isLoading=false), tampilkan layout dashboard lengkap
   return (
-    <div className="min-h-screen w-full relative overflow-hidden">
+    <div className="h-screen w-full relative overflow-hidden">
       {/* Background Image */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -76,14 +80,15 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 flex min-h-screen px-7">
+      <div className="relative z-10 flex h-full px-7">
         {/* Sidebar */}
         <Sidebar onNavigate={setCurrentView} currentView={currentView} />
 
         {/* Main Content Area */}
-        <div className="flex-1 p-8 flex flex-col">{renderContent()}</div>
+        <div className="flex-1 flex flex-col overflow-auto p-8">
+          {renderContent()}
+        </div>
       </div>
     </div>
   );
 }
-
