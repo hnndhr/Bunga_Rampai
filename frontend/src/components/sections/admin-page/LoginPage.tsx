@@ -14,7 +14,7 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   // URL backend Anda
-  const BACKEND_URL = "http://localhost:3001/connect/admins/login";
+  const BACKEND_URL = "http://localhost:3001/admins/login";
 
   // Fungsi untuk menangani submit formulir
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {

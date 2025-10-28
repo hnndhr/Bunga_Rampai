@@ -9,10 +9,10 @@ import Sidebar from "./SidebarNavigation";
 import SurveyTable from "./SurveyTable";
 import AdminTable from "./AdminTable";
 import SurveyLogs from "./LogsTable";
-import ProfilePage from "./profilePage";
+import ProfilePage from './profilePage';
 
 // Tipe untuk view
-type AdminView = "Logs" | "admins" | "survey" | "profile";
+type AdminView = "Logs" | "admin" | "survey" | "profile";
 
 export default function AdminDashboardPage() {
   // const router = useRouter(); // Dihapus
@@ -41,7 +41,7 @@ export default function AdminDashboardPage() {
   // Fungsi render konten dari layout baru
   const renderContent = () => {
     switch (currentView) {
-      case "admins":
+      case "admin":
         return <AdminTable />;
       case "survey":
         return <SurveyTable />;

@@ -1,4 +1,4 @@
-import LoginPage from "@/components/sections/AdminLoginPage";
+import LoginPage from "@/components/sections/admin-page/LoginPage";
 import React from "react";
 
 export default function HomePage() {

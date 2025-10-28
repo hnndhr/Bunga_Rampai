@@ -1,14 +1,21 @@
 "use client";
 
-import React from "react";
-import { BarChart3, Users, FileText, PersonStanding, User } from "lucide-react";
+import React, { useState, useEffect } from "react"; // 1. Import hook useState dan useEffect
+import { BarChart3, Users, FileText, User } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { userAgent } from "next/server";
+import { jwtDecode } from "jwt-decode"; // 2. Import library yang baru di-install
+
+// 3. (Opsional tapi sangat direkomendasikan) Buat interface untuk struktur token
+// Ini membuat kode lebih aman dan mudah dibaca. Pastikan properti 'role' ada.
+interface DecodedAdminToken {
+  role: string;
+  // Anda bisa tambahkan properti lain yang ada di token, misal: userId: number;
+}
 
 interface SidebarNavigationProps {
-  onNavigate: (view: "Logs" | "admins" | "survey" | "profile") => void;
-  currentView: "Logs" | "admins" | "survey" | "profile";
+  onNavigate: (view: "Logs" | "admin" | "survey" | "profile") => void;
+  currentView: "Logs" | "admin" | "survey" | "profile";
 }
 
 const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
@@ -17,8 +24,34 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
 }) => {
   const router = useRouter();
 
+  // 4. Buat state untuk menyimpan role pengguna
+  // Awalnya kita tidak tahu rolenya, jadi nilainya null
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  // 5. Gunakan useEffect untuk membaca token saat komponen pertama kali dimuat
+  // Ini hanya akan berjalan sekali saat sidebar muncul di layar.
+  useEffect(() => {
+    // Ambil token dari penyimpanan browser
+    const token = localStorage.getItem("admin_token");
+
+    // Jika token ada...
+    if (token) {
+      try {
+        // ...coba decode token tersebut
+        const decodedToken = jwtDecode<DecodedAdminToken>(token);
+        // Ambil 'role' dari dalam token dan simpan ke state
+        setUserRole(decodedToken.role);
+      } catch (error) {
+        // Jika tokennya rusak atau tidak valid, akan terjadi error
+        console.error("Token tidak valid:", error);
+        // Tindakan pengamanan: jika token bermasalah, paksa logout
+        handleLogout();
+      }
+    }
+  }, []); // Array kosong `[]` berarti "jalankan hanya sekali"
+
   const navItem = (
-    view: "Logs" | "admins" | "survey" | "profile",
+    view: "Logs" | "admin" | "survey" | "profile",
     Icon: React.ElementType
   ) => (
     <div
@@ -36,7 +69,6 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
 
   const handleLogout = () => {
     localStorage.removeItem("admin_token");
-
     router.push("/admin");
   };
 
@@ -50,7 +82,10 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
       {/* Navigasi */}
       <div className="bg-white/10 backdrop-blur-md rounded-full border border-white/30 shadow-lg p-2 flex flex-col space-y-4">
         {navItem("Logs", BarChart3)}
-        {navItem("admins", Users)}
+
+        {/* 6. INTI LOGIKA: Tampilkan item ini HANYA jika userRole adalah 'master' */}
+        {userRole === "master" && navItem("admin", Users)}
+
         {navItem("survey", FileText)}
         {navItem("profile", User)}
       </div>
@@ -65,7 +100,7 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
-        >
+        > 
           <path
             strokeLinecap="round"
             strokeLinejoin="round"

@@ -1,5 +1,5 @@
 // src/modules/admins/admins.service.ts
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { SupabaseService } from '../../common/supabase.service.js';
 import * as bcrypt from 'bcrypt';
 
@@ -7,23 +7,22 @@ import * as bcrypt from 'bcrypt';
 export class AdminsService {
   constructor(private readonly supabase: SupabaseService) {}
 
-async validateAdmin(username: string, password: string) {
-  const supabase = this.supabase.client;
+  async validateAdmin(username: string, password: string) {
+    const supabase = this.supabase.client;
 
-  const { data: admin, error } = await supabase
-    .from('admins')
-    .select('*')
-    .eq('username', username)
-    .single();
+    const { data: admin, error } = await supabase
+      .from('admins')
+      .select('*')
+      .eq('username', username)
+      .single();
 
-  if (error || !admin) return null;
+    if (error || !admin) return null;
 
-  const isMatch = await bcrypt.compare(password, admin.password);
-  if (!isMatch) return null;
+    const isMatch = await bcrypt.compare(password, admin.password);
+    if (!isMatch) return null;
 
-  return admin;
-}
-
+    return admin;
+  }
 
   async findAll(limit: number, offset: number) {
     const client = this.supabase.client;
@@ -38,13 +37,23 @@ async validateAdmin(username: string, password: string) {
 
   async create(data: any) {
     const hashed = await bcrypt.hash(data.password, 10);
-    const newAdmin = { ...data, password: hashed};
+    const newAdmin = { ...data, password: hashed };
 
-    return this.supabase
-      .client
+    return this.supabase.client.from('admins').insert(newAdmin).select();
+  }
+
+  async findById(id: string) {
+    const { data, error } = await this.supabase.client
       .from('admins')
-      .insert(newAdmin)
-      .select();
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error || !data) {
+      throw new NotFoundException('Admin tidak ditemukan');
+    }
+
+    return data;
   }
 
   async update(id: string, data: any) {
@@ -52,8 +61,7 @@ async validateAdmin(username: string, password: string) {
       data.password = await bcrypt.hash(data.password, 10);
     }
 
-    return this.supabase
-      .client
+    return this.supabase.client
       .from('admins')
       .update(data)
       .eq('id', id)
@@ -61,10 +69,6 @@ async validateAdmin(username: string, password: string) {
   }
 
   async remove(id: string) {
-    return this.supabase
-      .client
-      .from('admins')
-      .delete()
-      .eq('id', id);
+    return this.supabase.client.from('admins').delete().eq('id', id);
   }
 }

@@ -14,7 +14,7 @@ import { AdminsService } from './admins.service.js';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 import { AuthService } from '../auth/auth.services.js';
 
-@Controller('connect/admins')
+@Controller('admins')
 export class AdminsController {
   constructor(
     private readonly adminsService: AdminsService,
@@ -60,12 +60,17 @@ export class AdminsController {
     };
   }
 
-  @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   @Post('create')
   async createAdmin(@Body() body: any) {
     const { data, error } = await this.adminsService.create(body);
     if (error) return { status: 'ERROR', error };
     return { status: 'OK', data };
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return this.adminsService.findById(id);
   }
 
   @UseGuards(JwtAuthGuard)
