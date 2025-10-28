@@ -1,36 +1,111 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, User, ShieldCheck } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Button } from '@/components/ui/Button';
+import { jwtDecode } from 'jwt-decode';
+import { supabase } from '@/lib/supabaseClient';
+
+// ✅ Tipe token yang disimpan di localStorage (misalnya hasil login)
+interface DecodedToken {
+  id: string; // sesuai payload JWT kamu
+}
+
+// ✅ Struktur data admin dari tabel Supabase
+interface AdminProfile {
+  name: string;
+  username: string;
+  role: string;
+}
 
 export default function ProfilePage() {
-  const [profile, setProfile] = useState({
-    name: 'Admin Bunga Rampai',
-    username: 'admin123',
-    role: 'Admin',
-  });
-
-  const [newUsername, setNewUsername] = useState(profile.username);
+  const [profile, setProfile] = useState<AdminProfile | null>(null);
+  const [newUsername, setNewUsername] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [isSaving, setIsSaving] = useState(false);
 
+  // 🔹 Ambil data admin berdasarkan id dari token
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          console.error('Token not found');
+          return;
+        }
+
+        // Decode token dan ambil id
+        const decoded = jwtDecode<DecodedToken>(token);
+        const { id } = decoded;
+
+        // 🔹 Query berdasarkan kolom "id", bukan "id"
+        const { data, error } = await supabase
+          .from('admins')
+          .select('name, username, role')
+          .eq('id', id)
+          .single();
+
+        if (error) throw error;
+
+        setProfile(data);
+        setNewUsername(data.username);
+      } catch (err) {
+        console.error('Error fetching profile:', err);
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  // 🔹 Update username & password
   const handleSave = async () => {
+    if (!profile) return;
     setIsSaving(true);
-    setTimeout(() => {
-      setProfile((prev) => ({ ...prev, username: newUsername }));
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return;
+
+      const decoded = jwtDecode<DecodedToken>(token);
+      const { id } = decoded;
+
+      const { error } = await supabase
+        .from('admins')
+        .update({
+          username: newUsername,
+          ...(newPassword && { password: newPassword }),
+        })
+        .eq('id', id);
+
+      if (error) throw error;
+
+      setProfile((prev) =>
+        prev ? { ...prev, username: newUsername } : prev
+      );
       setNewPassword('');
-      setIsSaving(false);
       alert('Profile updated successfully!');
-    }, 1200);
+    } catch (err) {
+      console.error('Error updating profile:', err);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
+  // 🔹 Loading state
+  if (!profile) {
+    return (
+      <div className="h-screen flex items-center justify-center text-white">
+        Loading profile...
+      </div>
+    );
+  }
+
+  // 🔹 UI
   return (
     <div className="h-screen flex items-center justify-center overflow-hidden">
-      {/* ↑ h-screen = tinggi penuh layar, overflow-hidden = hilangkan scroll */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
@@ -39,20 +114,12 @@ export default function ProfilePage() {
       >
         <Card className="bg-white/10 backdrop-blur-2xl border border-white/20 shadow-2xl rounded-3xl overflow-hidden">
           <CardContent className="p-8 space-y-6 text-center text-white">
-            {/* Header */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-              className="space-y-2"
-            >
-              <h1 className="text-3xl font-semibold tracking-wide">
-                Admin Profile
-              </h1>
-              <p className="text-gray-300 text-sm">
-                Manage your account details
-              </p>
-            </motion.div>
+            <h1 className="text-3xl font-semibold tracking-wide">
+              Admin Profile
+            </h1>
+            <p className="text-gray-300 text-sm">
+              Manage your account details
+            </p>
 
             {/* Profile Info */}
             <div className="space-y-4">
@@ -72,20 +139,19 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* Editable Fields */}
-              <div className="space-y-3">
-                <div className="text-left">
+              {/* Update Inputs */}
+              <div className="text-left space-y-3">
+                <div>
                   <label className="text-sm text-gray-400">Username</label>
                   <Input
                     type="text"
                     value={newUsername}
                     onChange={(e) => setNewUsername(e.target.value)}
                     className="mt-1 bg-white/10 border border-white/20 text-white placeholder:text-gray-400 focus:ring-2 focus:ring-white/30"
-                    placeholder="Enter new username"
                   />
                 </div>
 
-                <div className="text-left">
+                <div>
                   <label className="text-sm text-gray-400">New Password</label>
                   <div className="relative">
                     <Lock
