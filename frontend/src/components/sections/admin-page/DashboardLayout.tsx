@@ -9,11 +9,7 @@ import Sidebar from "./SidebarNavigation";
 import SurveyTable from "./SurveyTable";
 import AdminTable from "./AdminTable";
 import SurveyLogs from "./LogsTable";
-<<<<<<< Updated upstream
-import ProfilePage from './ProfilePage';
-=======
 import ProfilePage from "./profilePage";
->>>>>>> Stashed changes
 
 // Tipe untuk view
 type AdminView = "Logs" | "admin" | "survey" | "profile";
