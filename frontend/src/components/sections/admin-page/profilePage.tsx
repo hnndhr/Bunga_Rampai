@@ -120,7 +120,7 @@ export default function ProfilePage() {
       console.log("Response data:", result);
 
       if (result.status === "ERROR") {
-        throw new Error(result.error?.message || "Failed to update profile");
+        throw new Error(result.error?.message || "Profil gagal diperbarui.");
       }
 
       // Update state dengan data dari response
@@ -134,11 +134,11 @@ export default function ProfilePage() {
 
       setNewPassword("");
       // 🆕 Ganti alert dengan notifikasi custom
-      showNotification("Profile updated successfully!", "success");
+      showNotification("Profil berhasil diperbarui!", "success");
     } catch (err) {
       console.error("Error updating profile:", err);
       // 🆕 Ganti alert dengan notifikasi custom
-      showNotification(err instanceof Error ? err.message : "Failed to update profile", "error");
+      showNotification(err instanceof Error ? err.message : "Profil gagal diperbarui.", "error");
     } finally {
       setIsSaving(false);
     }

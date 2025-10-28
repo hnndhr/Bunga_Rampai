@@ -67,7 +67,7 @@ export class AdminsController {
     return { status: 'OK', data };
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async deleteAdmin(@Param('id') id: string) {
     const { error } = await this.adminsService.remove(id);
