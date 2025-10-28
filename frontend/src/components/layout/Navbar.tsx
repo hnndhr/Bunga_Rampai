@@ -69,9 +69,11 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
-      <div
+      <motion.div
+        layout
+        transition={{ duration: 0.4, ease: "easeInOut" }}
         className={clsx(
-          "container mx-auto flex flex-col transition-all duration-700 ease-in-out",
+          "container mx-auto flex flex-col items-center transition-all duration-700 ease-in-out overflow-hidden",
           {
             // Default style
             "px-6 py-4": !isScrolled,
@@ -82,12 +84,12 @@ export default function Navbar() {
 
             // Logika rounded
             "rounded-full md:rounded-full": isScrolled && !isMenuOpen, // scroll tapi menu TIDAK terbuka
-            "rounded-sm md:rounded-full": isScrolled && isMenuOpen, // scroll + menu terbuka
+            "rounded-3xl md:rounded-full": isScrolled && isMenuOpen, // scroll + menu terbuka
             "max-w-screen-sm md:max-w-screen-sm": isScrolled,
           }
         )}
       >
-        <div className="flex items-center justify-between -space-x-16">
+        <div className="flex items-center justify-between w-full -space-x-16">
           {/* Logo & Title */}
           <div className="flex items-center">
             <Link href="/">
@@ -129,7 +131,17 @@ export default function Navbar() {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="md:hidden text-white p-2 hover:bg-white/10 rounded-full transition-colors"
+            className={clsx(
+              "md:hidden text-white p-2 hover:bg-white/10 transition-colors",
+              {
+                // Default state (belum scroll)
+                "rounded-full": !isScrolled,
+
+                // Saat discroll, bentuk berubah tergantung status menu
+                "rounded-full md:rounded-full": isScrolled && !isMenuOpen,
+                "rounded-sm md:rounded-full": isScrolled && isMenuOpen,
+              }
+            )}
             aria-label="Toggle menu"
           >
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -138,7 +150,13 @@ export default function Navbar() {
 
         {/* Mobile Dropdown */}
         {isMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 space-y-4 animate-fade-in text-center">
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.3 }}
+            className="md:hidden w-full mt-3 pb-4 space-y-4 text-center"
+          >
             {navItems.map((item) => (
               <Link
                 key={item.href}
@@ -153,9 +171,9 @@ export default function Navbar() {
                 {item.name}
               </Link>
             ))}
-          </div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
     </nav>
   );
 }
