@@ -42,7 +42,7 @@ export default function LoginPage() {
       // Login berhasil, 'data.token' seharusnya ada
       if (data.token) {
         // Simpan token di localStorage untuk sesi login
-        localStorage.setItem("admin_token", data.token);
+        localStorage.setItem("token", data.token);
         // Arahkan ke dashboard admin
         router.push("/admin/admin-dashboard");
       } else {

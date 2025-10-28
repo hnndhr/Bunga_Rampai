@@ -32,7 +32,7 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   // Ini hanya akan berjalan sekali saat sidebar muncul di layar.
   useEffect(() => {
     // Ambil token dari penyimpanan browser
-    const token = localStorage.getItem("admin_token");
+    const token = localStorage.getItem("token");
 
     // Jika token ada...
     if (token) {
@@ -68,7 +68,7 @@ const SidebarNavigation: React.FC<SidebarNavigationProps> = ({
   );
 
   const handleLogout = () => {
-    localStorage.removeItem("admin_token");
+    localStorage.removeItem("token");
     router.push("/admin");
   };
 
