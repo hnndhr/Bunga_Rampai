@@ -20,16 +20,16 @@ export default function InfographicIntro({ image, text }: Props) {
   }, [open]);
 
   return (
-    <section className="max-w-4xl mx-auto px-4 pt-12 md:pt-16 relative">
+    <section className="max-w-full sm:max-w-3xl md:max-w-4xl mx-auto px-2 md:px-4 pt-12 md:pt-16">
       <div className="relative">
         {showImage && (
-          <div className="md:float-left md:mr-6 mb-4 max-w-3xl">
+          <div className="md:float-left md:mr-6 mb-4">
             <Image
               src={image as string}
               alt="Infografis"
               width={800}
               height={842}
-              className="object-contain rounded-lg shadow-md aspect-[2828/4000] max-w-[400px] object-center cursor-zoom-in"
+              className="object-contain rounded-lg shadow-md aspect-[2828/4000] md:max-w-[400px] sm:max-w-[200px] object-center cursor-zoom-in"
               onClick={() => setOpen(true)}
             />
           </div>
