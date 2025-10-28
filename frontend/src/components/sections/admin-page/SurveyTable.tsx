@@ -203,7 +203,7 @@ const SurveyTable: React.FC = () => {
           SURVEY MANAGEMENT
         </MontserratText>
         <button
-          onClick={() => router.push("/admin/articles/create-article")}
+          onClick={() => router.push("/admin/articles/${slug}/create-article")}
           className="px-6 py-2 bg-white/20 backdrop-blur-md border border-white/30 rounded-lg text-white font-medium hover:bg-white/30 transition-all shadow-lg"
         >
           Create Survey
