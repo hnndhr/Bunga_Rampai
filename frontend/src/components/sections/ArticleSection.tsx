@@ -13,6 +13,8 @@ import {
 import { useRouter } from "next/navigation";
 import BlockRenderer from "./admin-page/BlocksRenderer";
 import InfographicIntro from "./InfographicIntro";
+import { motion } from "framer-motion";
+
 
 type Block = {
   id: string;
@@ -69,7 +71,54 @@ export default function ArticleSection({ slug }: { slug: string }) {
   }, [slug]);
 
   if (loading)
-    return <div className="text-center py-20">Memuat artikel...</div>;
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 to-slate-200 dark:from-gray-900 dark:to-gray-800 overflow-hidden">
+        {/* Background decorative blobs */}
+        <motion.div
+          className="absolute w-72 h-72 bg-blue-400/30 rounded-full blur-3xl -top-16 -left-16"
+          animate={{ x: [0, 30, -20, 0], y: [0, 20, -15, 0] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute w-96 h-96 bg-indigo-400/20 rounded-full blur-3xl -bottom-24 -right-24"
+          animate={{ x: [0, -30, 20, 0], y: [0, -20, 15, 0] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        {/* Shimmering skeleton card */}
+        <div className="w-full max-w-3xl mx-auto px-6 py-10 animate-pulse">
+          <div className="h-6 w-40 bg-gray-300/50 dark:bg-gray-700/50 rounded mb-8 mx-auto"></div>
+
+          {/* Hero image skeleton */}
+          <div className="w-full h-64 md:h-80 bg-gray-300/50 dark:bg-gray-700/50 rounded-2xl mb-8 relative overflow-hidden">
+            <motion.div
+              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
+              animate={{ x: ["-100%", "100%"] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            />
+          </div>
+
+          {/* Article title + text skeleton */}
+          <div className="space-y-4">
+            <div className="h-8 w-3/4 bg-gray-300/50 dark:bg-gray-700/50 rounded"></div>
+            <div className="h-6 w-1/2 bg-gray-300/50 dark:bg-gray-700/50 rounded"></div>
+            <div className="h-4 w-full bg-gray-300/50 dark:bg-gray-700/50 rounded"></div>
+            <div className="h-4 w-5/6 bg-gray-300/50 dark:bg-gray-700/50 rounded"></div>
+            <div className="h-4 w-4/5 bg-gray-300/50 dark:bg-gray-700/50 rounded"></div>
+          </div>
+        </div>
+
+        {/* Animated text below */}
+        <motion.p
+          className="mt-10 text-gray-600 dark:text-gray-400 text-sm tracking-wide font-medium"
+          animate={{ opacity: [0.6, 1, 0.6] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          Memuat artikel, mohon tunggu sebentar...
+        </motion.p>
+      </div>
+    );
+
   if (error)
     return <div className="text-center py-20 text-red-500">Error: {error}</div>;
   if (!article)
