@@ -46,12 +46,16 @@ export default function ProfilePage() {
           .from('admins')
           .select('name, username, role')
           .eq('id', id)
-          .single();
+          .maybeSingle();
 
         if (error) throw error;
 
-        setProfile(data);
-        setNewUsername(data.username);
+        if (data) {
+          setProfile(data);
+          setNewUsername(data.username);
+        } else {
+          console.error('No profile data returned');
+        }
       } catch (err) {
         console.error('Error fetching profile:', err);
       }

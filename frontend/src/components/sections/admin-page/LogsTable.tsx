@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import AdminPagination from "./Pagination";
 import { MontserratText } from "@/components/ui/FontWrappers";
+import { ArrowUp, ArrowDown } from "lucide-react";
 
 interface SurveyData {
   id: string;
@@ -26,7 +27,10 @@ const LogsTable: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
 
   // Tambahan: state untuk sorting
-  const [sortConfig, setSortConfig] = useState<{ key: keyof SurveyData; direction: "asc" | "desc" } | null>({
+  const [sortConfig, setSortConfig] = useState<{
+    key: keyof SurveyData;
+    direction: "asc" | "desc";
+  } | null>({
     key: "updated_at",
     direction: "desc", // default: terbaru ke terlama
   });
@@ -92,8 +96,30 @@ const LogsTable: React.FC = () => {
   };
 
   const renderSortArrow = (key: keyof SurveyData) => {
-    if (sortConfig?.key !== key) return null;
-    return sortConfig.direction === "asc" ? "↑" : "↓";
+    if (sortConfig?.key !== key)
+      return (
+        <div className="flex flex-col ml-1">
+          <ArrowUp size={10} className="text-white/40" />
+          <ArrowDown size={10} className="text-white/40" />
+        </div>
+      );
+
+    return (
+      <div className="flex flex-col ml-1">
+        <ArrowUp
+          size={10}
+          className={`${
+            sortConfig.direction === "asc" ? "text-white" : "text-white/40"
+          }`}
+        />
+        <ArrowDown
+          size={10}
+          className={`${
+            sortConfig.direction === "desc" ? "text-white" : "text-white/40"
+          }`}
+        />
+      </div>
+    );
   };
 
   const handlePageChange = (page: number) => {
@@ -121,15 +147,27 @@ const LogsTable: React.FC = () => {
 
       {/* Table Header */}
       <div className="grid grid-cols-[0.5fr_1fr_0.5fr_0.5fr] gap-4 pb-4 border-b border-white/20 text-white/90 font-medium text-[13px] text-center">
-        <div className="cursor-pointer select-none" onClick={() => handleSort("updated_at")}>
+        <div
+          className="flex justify-center items-center cursor-pointer select-none"
+          onClick={() => handleSort("updated_at")}
+        >
           Date {renderSortArrow("updated_at")}
         </div>
-        <div className="cursor-pointer select-none" onClick={() => handleSort("title")}>
+
+        <div
+          className="flex justify-center items-center cursor-pointer select-none"
+          onClick={() => handleSort("title")}
+        >
           Survey Title {renderSortArrow("title")}
         </div>
-        <div className="cursor-pointer select-none" onClick={() => handleSort("username")}>
+
+        <div
+          className="flex justify-center items-center cursor-pointer select-none"
+          onClick={() => handleSort("username")}
+        >
           Username {renderSortArrow("username")}
         </div>
+
         <div>Action</div>
       </div>
 
@@ -147,7 +185,9 @@ const LogsTable: React.FC = () => {
             >
               {/* Date */}
               <div className="text-center">
-                {new Date(item.updated_at || item.created_at).toLocaleDateString()}
+                {new Date(
+                  item.updated_at || item.created_at
+                ).toLocaleDateString()}
               </div>
 
               {/* Title */}
@@ -161,9 +201,7 @@ const LogsTable: React.FC = () => {
               </div>
 
               {/* Action */}
-              <div className="text-center">
-                {getActionLabel(item)}
-              </div>
+              <div className="text-center">{getActionLabel(item)}</div>
             </div>
           ))
         )}
