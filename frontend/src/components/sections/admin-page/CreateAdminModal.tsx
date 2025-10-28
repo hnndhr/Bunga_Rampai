@@ -32,7 +32,7 @@ export default function CreateAdminModal({
     setErrorMsg("");
 
     try {
-      const res = await fetch("http://localhost:3001/connect/admins/create", {
+      const res = await fetch("http://localhost:3001/admins/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

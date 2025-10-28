@@ -73,7 +73,6 @@ export class AdminsController {
     return this.adminsService.findById(id);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async updateAdmin(@Param('id') id: string, @Body() body: any) {
     const { data, error } = await this.adminsService.update(id, body);
