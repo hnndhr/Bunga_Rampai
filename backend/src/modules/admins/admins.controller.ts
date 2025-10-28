@@ -33,31 +33,18 @@ export class AdminsController {
     return { status: 'OK', token: result.token };
   }
 
-  @UseGuards(JwtAuthGuard)
+  //@UseGuards(JwtAuthGuard)
   @Get()
-  async getAdmins(@Query('page') page = 1, @Query('limit') limit = 5) {
-    const pageNum = Number(page);
-    const limitNum = Number(limit);
-    const offset = (pageNum - 1) * limitNum;
-
-    const { data, error } = await this.adminsService.findAll(limitNum, offset);
-
-    if (error) return { status: 'ERROR', error };
-
-    if (!data) {
-      return { status: 'OK', data: [], page: pageNum, totalPages: 1 };
-    }
-
-    const totalRows =
-      data?.length < limitNum ? offset + data.length : offset + limitNum;
-    const totalPages = Math.ceil(totalRows / limitNum) || 1;
-
-    return {
-      status: 'OK',
-      data,
-      page: pageNum,
-      totalPages,
-    };
+  async findAll(
+    @Query('page') page: string = '1', 
+    @Query('limit') limit: string = '10',
+  ) {
+    const pageNum = parseInt(page, 10) || 1;
+    const limitNum = parseInt(limit, 10) || 10;
+    return this.adminsService.findAll(
+      pageNum,
+      limitNum
+    )
   }
 
   //@UseGuards(JwtAuthGuard)

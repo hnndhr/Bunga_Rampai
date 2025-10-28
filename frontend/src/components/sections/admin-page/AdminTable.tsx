@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import React, { useState, useEffect } from "react";
 import AdminPagination from "./Pagination";
@@ -14,6 +14,8 @@ interface SurveyData {
   role: "master" | "admin";
 }
 
+const PAGE_LIMIT = 7;
+
 const AdminTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [surveyData, setSurveyData] = useState<SurveyData[]>([]);
@@ -23,29 +25,20 @@ const AdminTable: React.FC = () => {
   const [toastVisible, setToastVisible] = useState(false);
 
   // Sorting state
-  const [sortColumn, setSortColumn] = useState<keyof SurveyData>('name');
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [sortColumn, setSortColumn] = useState<keyof SurveyData>("name");
+  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
 
   const fetchData = async (page = currentPage) => {
     setLoading(true);
     try {
       const response = await fetch(
-        `http://localhost:3001/connect/admins/?page=${page}`,
-        { method: "GET" }
+        `http://localhost:3001/admins?page=${page}&limit=${PAGE_LIMIT}`
       );
       const res = await response.json();
 
       if (res?.status === "OK" && Array.isArray(res.data)) {
-        // Frontend sort
-        const sortedData = [...res.data].sort((a, b) => {
-          const valA = a[sortColumn];
-          const valB = b[sortColumn];
-          if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
-          if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
-          return 0;
-        });
-        setSurveyData(sortedData);
-        setTotalPages(res.totalPages ?? 1);
+        setSurveyData(res.data);
+        setTotalPages(res.meta?.totalPages ?? 1);
       } else {
         setSurveyData([]);
       }
@@ -58,8 +51,8 @@ const AdminTable: React.FC = () => {
   };
 
   useEffect(() => {
-    fetchData();
-  }, [currentPage, sortColumn, sortDirection]);
+    fetchData(currentPage);
+  }, [currentPage]);
 
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) setCurrentPage(page);
@@ -72,10 +65,10 @@ const AdminTable: React.FC = () => {
 
   const handleSort = (column: keyof SurveyData) => {
     if (sortColumn === column) {
-      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
     } else {
       setSortColumn(column);
-      setSortDirection('asc');
+      setSortDirection("asc");
     }
   };
 
@@ -91,7 +84,7 @@ const AdminTable: React.FC = () => {
     <div className="relative flex-1 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6 flex flex-col">
       {toastVisible && (
         <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-lg px-4 py-2 rounded-full text-white text-sm animate-slide-in">
-          ✅ Admin created successfully
+          Admin created successfully
         </div>
       )}
 
@@ -113,7 +106,7 @@ const AdminTable: React.FC = () => {
       <div className="grid grid-cols-[0.5fr_1fr_1fr_1fr_1fr_1fr] gap-4 pb-4 border-b border-white/20 text-white/90 font-medium text-[13px]">
         <div>No</div>
 
-        {['name', 'username', 'password', 'role'].map((col) => (
+        {["name", "username", "password", "role"].map((col) => (
           <div
             key={col}
             className="flex items-center gap-1 cursor-pointer select-none"
@@ -124,17 +117,17 @@ const AdminTable: React.FC = () => {
               <ArrowUp
                 size={10}
                 className={`${
-                  sortColumn === col && sortDirection === 'asc'
-                    ? 'text-white'
-                    : 'text-white/40'
+                  sortColumn === col && sortDirection === "asc"
+                    ? "text-white"
+                    : "text-white/40"
                 }`}
               />
               <ArrowDown
                 size={10}
                 className={`${
-                  sortColumn === col && sortDirection === 'desc'
-                    ? 'text-white'
-                    : 'text-white/40'
+                  sortColumn === col && sortDirection === "desc"
+                    ? "text-white"
+                    : "text-white/40"
                 }`}
               />
             </div>
@@ -147,14 +140,16 @@ const AdminTable: React.FC = () => {
       {/* Table Body */}
       <div className="flex-1 overflow-auto">
         {surveyData.length === 0 ? (
-          <div className="text-white/60 text-center py-8">No data available</div>
+          <div className="text-white/60 text-center py-8">
+            No data available
+          </div>
         ) : (
           surveyData.map((item, index) => (
             <div
               key={item.id}
               className="grid grid-cols-[0.5fr_1fr_1fr_1fr_1fr_1fr] gap-4 py-4 border-b border-white/10 text-white/80 hover:bg-white/5 transition-all text-sm"
             >
-              <div>{(currentPage - 1) * surveyData.length + (index + 1)}</div>
+              <div>{(currentPage - 1) * PAGE_LIMIT + (index + 1)}</div>
               <div className="truncate">{item.name}</div>
               <div className="truncate">{item.username}</div>
               <div className="truncate">{item.password}</div>

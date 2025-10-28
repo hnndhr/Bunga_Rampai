@@ -2,6 +2,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { SupabaseService } from '../../common/supabase.service.js';
 import * as bcrypt from 'bcrypt';
+import { SupabaseClient } from '@supabase/supabase-js';
+import { InternalServerErrorException } from '@nestjs/common';
 
 @Injectable()
 export class AdminsService {
@@ -24,15 +26,32 @@ export class AdminsService {
     return admin;
   }
 
-  async findAll(limit: number, offset: number) {
+  async findAll(page: number = 1, limit: number = 10) {
+    const offset = (page - 1) * limit;
     const client = this.supabase.client;
 
-    const { data, error } = await client
+    const { data, error, count } = await client
       .from('admins')
       .select('*', { count: 'exact' })
+      .order('created_at', { ascending: false })
       .range(offset, offset + limit - 1);
 
-    return { data, error };
+    if (error) {
+      throw new InternalServerErrorException(error.message);
+    }
+
+    const totalPages = Math.ceil((count || 0) / limit);
+
+    return {
+      status: 'OK',
+      data,
+      meta: {
+        total: count || 0,
+        page,
+        limit,
+        totalPages,
+      },
+    };
   }
 
   async create(data: any) {

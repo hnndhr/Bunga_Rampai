@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
+import { Toast } from "@/components/ui/Toast";
 
 interface CreateAdminModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void; // untuk refresh tabel setelah create
+  onSuccess: () => void;
 }
 
 export default function CreateAdminModal({
@@ -17,19 +18,21 @@ export default function CreateAdminModal({
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [errorMsg, setErrorMsg] = useState("");
+  const [toast, setToast] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
 
   if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !username || !password) {
-      setErrorMsg("Semua field wajib diisi");
+      setToast({ message: "Semua field wajib diisi", type: "error" });
       return;
     }
 
     setLoading(true);
-    setErrorMsg("");
 
     try {
       const res = await fetch("http://localhost:3001/admins/create", {
@@ -45,8 +48,12 @@ export default function CreateAdminModal({
 
       if (!res.ok) {
         const err = await res.json();
-        setErrorMsg(err.message || "Gagal membuat admin");
+        setToast({
+          message: err.message || "Gagal membuat admin",
+          type: "error",
+        });
       } else {
+        setToast({ message: "Admin berhasil dibuat", type: "success" });
         onSuccess();
         onClose();
         setName("");
@@ -55,73 +62,73 @@ export default function CreateAdminModal({
       }
     } catch (err) {
       console.error(err);
-      setErrorMsg("Terjadi kesalahan koneksi");
+      setToast({ message: "Terjadi kesalahan koneksi", type: "error" });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg">
-        <h2 className="text-xl font-semibold mb-4">Create Admin</h2>
+    <>
+      {toast && <Toast message={toast.message} type={toast.type} />}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm mb-1">Name</label>
-            <input
-              type="text"
-              className="w-full border px-3 py-2 rounded"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Nama lengkap"
-            />
-          </div>
+      <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+        <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg">
+          <h2 className="text-xl font-semibold mb-4">Create Admin</h2>
 
-          <div>
-            <label className="block text-sm mb-1">Username</label>
-            <input
-              type="text"
-              className="w-full border px-3 py-2 rounded"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Username"
-            />
-          </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label className="block text-sm mb-1">Name</label>
+              <input
+                type="text"
+                className="w-full border px-3 py-2 rounded"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Nama lengkap"
+              />
+            </div>
 
-          <div>
-            <label className="block text-sm mb-1">Password</label>
-            <input
-              type="password"
-              className="w-full border px-3 py-2 rounded"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-            />
-          </div>
+            <div>
+              <label className="block text-sm mb-1">Username</label>
+              <input
+                type="text"
+                className="w-full border px-3 py-2 rounded"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Username"
+              />
+            </div>
 
-          {errorMsg && (
-            <p className="text-sm text-red-500">{errorMsg}</p>
-          )}
+            <div>
+              <label className="block text-sm mb-1">Password</label>
+              <input
+                type="password"
+                className="w-full border px-3 py-2 rounded"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Password"
+              />
+            </div>
 
-          <div className="flex justify-end gap-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 border rounded"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-4 py-2 bg-black text-white rounded disabled:opacity-50"
-            >
-              {loading ? "Loading..." : "Create"}
-            </button>
-          </div>
-        </form>
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={onClose}
+                className="px-4 py-2 border rounded"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-4 py-2 bg-black text-white rounded disabled:opacity-50"
+              >
+                {loading ? "Loading..." : "Create"}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }

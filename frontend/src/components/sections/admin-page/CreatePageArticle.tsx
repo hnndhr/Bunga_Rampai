@@ -224,7 +224,7 @@ export default function AdminArticleCreatePage() {
       }
 
       setMessage(`Artikel dan ${blocksPayload.length} blok berhasil disimpan!`);
-      //router.push("/admin/admin-dashboard");
+      router.push("/admin/admin-dashboard");
     } catch (err: any) {
       setMessage(err.message || "Terjadi error saat menyimpan");
     } finally {
