@@ -61,15 +61,19 @@ export default function ProfilePage() {
 
         // 🔹 Query berdasarkan kolom "id", bukan "id"
         const { data, error } = await supabase
-          .from("admins")
-          .select("name, username, role")
-          .eq("id", id)
-          .single();
+          .from('admins')
+          .select('name, username, role')
+          .eq('id', id)
+          .maybeSingle();
 
         if (error) throw error;
 
-        setProfile(data);
-        setNewUsername(data.username);
+        if (data) {
+          setProfile(data);
+          setNewUsername(data.username);
+        } else {
+          console.error('No profile data returned');
+        }
       } catch (err) {
         console.error("Error fetching profile:", err);
       }

@@ -1,9 +1,10 @@
-"use client";
+'use client';
 
 import React, { useState, useEffect } from "react";
 import AdminPagination from "./Pagination";
 import { MontserratText } from "@/components/ui/FontWrappers";
 import CreateAdminModal from "./CreateAdminModal";
+import { ArrowUp, ArrowDown } from "lucide-react";
 
 interface SurveyData {
   id: string;
@@ -19,11 +20,12 @@ const AdminTable: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [totalPages, setTotalPages] = useState(1);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-
-  // ✅ Toast state
   const [toastVisible, setToastVisible] = useState(false);
 
-  // ✅ Fetch Data reusable
+  // Sorting state
+  const [sortColumn, setSortColumn] = useState<keyof SurveyData>('name');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+
   const fetchData = async (page = currentPage) => {
     setLoading(true);
     try {
@@ -34,7 +36,15 @@ const AdminTable: React.FC = () => {
       const res = await response.json();
 
       if (res?.status === "OK" && Array.isArray(res.data)) {
-        setSurveyData(res.data);
+        // Frontend sort
+        const sortedData = [...res.data].sort((a, b) => {
+          const valA = a[sortColumn];
+          const valB = b[sortColumn];
+          if (valA < valB) return sortDirection === 'asc' ? -1 : 1;
+          if (valA > valB) return sortDirection === 'asc' ? 1 : -1;
+          return 0;
+        });
+        setSurveyData(sortedData);
         setTotalPages(res.totalPages ?? 1);
       } else {
         setSurveyData([]);
@@ -49,18 +59,24 @@ const AdminTable: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-  }, [currentPage]);
+  }, [currentPage, sortColumn, sortDirection]);
 
   const handlePageChange = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setCurrentPage(page);
-    }
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
 
-  // ✅ Show toast (reusable)
   const showToast = () => {
     setToastVisible(true);
-    setTimeout(() => setToastVisible(false), 2500); // auto hide
+    setTimeout(() => setToastVisible(false), 2500);
+  };
+
+  const handleSort = (column: keyof SurveyData) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
   };
 
   if (loading) {
@@ -73,15 +89,13 @@ const AdminTable: React.FC = () => {
 
   return (
     <div className="relative flex-1 bg-white/10 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-6 flex flex-col">
-
-      {/* ✅ Toast */}
       {toastVisible && (
         <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-lg px-4 py-2 rounded-full text-white text-sm animate-slide-in">
           ✅ Admin created successfully
         </div>
       )}
 
-      {/* Header Section */}
+      {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div></div>
         <MontserratText className="text-2xl md:text-3xl font-bold text-white tracking-wider">
@@ -98,10 +112,35 @@ const AdminTable: React.FC = () => {
       {/* Table Header */}
       <div className="grid grid-cols-[0.5fr_1fr_1fr_1fr_1fr_1fr] gap-4 pb-4 border-b border-white/20 text-white/90 font-medium text-[13px]">
         <div>No</div>
-        <div>Nama</div>
-        <div>Username</div>
-        <div>Password</div>
-        <div>Role</div>
+
+        {['name', 'username', 'password', 'role'].map((col) => (
+          <div
+            key={col}
+            className="flex items-center gap-1 cursor-pointer select-none"
+            onClick={() => handleSort(col as keyof SurveyData)}
+          >
+            {col.charAt(0).toUpperCase() + col.slice(1)}
+            <div className="flex flex-col">
+              <ArrowUp
+                size={10}
+                className={`${
+                  sortColumn === col && sortDirection === 'asc'
+                    ? 'text-white'
+                    : 'text-white/40'
+                }`}
+              />
+              <ArrowDown
+                size={10}
+                className={`${
+                  sortColumn === col && sortDirection === 'desc'
+                    ? 'text-white'
+                    : 'text-white/40'
+                }`}
+              />
+            </div>
+          </div>
+        ))}
+
         <div>Action</div>
       </div>
 

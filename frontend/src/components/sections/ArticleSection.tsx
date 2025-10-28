@@ -78,7 +78,7 @@ export default function ArticleSection({ slug }: { slug: string }) {
   return (
     <main className="font-serif bg-white text-zinc-800">
       {/* ===== HERO SECTION ===== */}
-      <section className="relative w-full h-[300px] md:h-[300px] lg:h-[300px] bg-gray-900 overflow-hidden">
+      <section className="relative w-full h-[300px] bg-gray-900 overflow-hidden">
         {/* Background Image */}
         {article.header_image && (
           <Image
@@ -92,26 +92,26 @@ export default function ArticleSection({ slug }: { slug: string }) {
         <div className="absolute inset-0 bg-black/55" />
 
         {/* Back Button */}
-        <div className="absolute top-12 left-4 md:left-8 lg:left-20 z-30">
+        <div className="absolute top-10 left-3 sm:left-6 md:left-8 lg:left-20 z-30">
           <button
             onClick={() => router.back()}
             aria-label="Go back"
             className="flex items-center justify-center w-8 h-8 text-gray-300 hover:text-white transition-colors"
           >
-            <ArrowLeft className="w-7 h-7" />
+            <ArrowLeft className="w-6 sm:w-7 h-6 sm:h-7" />
           </button>
         </div>
 
         {/* Title Section */}
-        <div className="relative z-10 flex flex-col items-center justify-start h-full pt-24 px-8 md:px-32 text-center">
-          <h1 className="max-w-4xl text-2xl md:text-3xl lg:text-5xl font-abhaya text-white font-medium leading-tight tracking-wide">
+        <div className="relative z-10 flex flex-col items-center justify-start h-full pt-20 sm:pt-24 md:pt-28 lg:pt-32 px-4 sm:px-8 md:px-16 lg:px-32 text-center">
+          <h1 className="max-w-full text-xl sm:text-2xl md:text-3xl lg:text-5xl font-abhaya text-white font-medium leading-tight sm:leading-snug md:leading-tight lg:leading-tight tracking-wide">
             {article.title}
           </h1>
-          <hr className="w-full md:w-full border-t border-white mt-10" />
+          <hr className="w-full md:w-full border-t border-white my-6 sm:my-6 md:my-6" />
         </div>
 
         {/* Info Badges */}
-        <div className="absolute bottom-6 left-8 md:left-32 flex flex-wrap items-center gap-2 md:gap-3 z-20">
+        <div className="absolute bottom-4 sm:bottom-6 left-2 sm:left-4 md:left-8 lg:left-32 flex flex-wrap items-center gap-1 sm:gap-2 md:gap-3 z-20">
           {article.respondents && (
             <InfoBadge
               icon={<Users />}
@@ -162,10 +162,10 @@ export default function ArticleSection({ slug }: { slug: string }) {
       })()}
 
       {/* ===== ARTICLE BODY ===== */}
-      <article className=" max-w-4xl mx-auto px-4 pb-12 md:pb-16">
-        <section className="prose prose-xl prose-p:leading-relaxed prose-p:my-6 prose-headings:font-sans prose-headings:font-bold text-justify">
+      <article className="max-w-full sm:max-w-3xl md:max-w-4xl mx-auto px-2 md:px-4 pb-12 md:pb-16">
+        <section className="prose prose-xl prose-p:leading-relaxed prose-p:my-4 sm:prose-p:my-5 md:prose-p:my-6 prose-headings:font-sans prose-headings:font-bold text-justify">
           {article.blocks
-            ?.filter((b)=> b.block_type !== "infographic_desc")
+            ?.filter((b) => b.block_type !== "infographic_desc")
             .sort((a, b) => a.ordering - b.ordering)
             .map((block) => (
               <BlockRenderer key={block.id} block={block} />
@@ -188,19 +188,17 @@ function InfoBadge({
 }) {
   return (
     <div
-      className={`relative flex items-center gap-1.5 px-3 py-2 md:px-4 md:py-2 rounded-3xl
+      className={`relative flex items-center gap-1 px-2 sm:px-3 py-1.5 sm:py-2 rounded-3xl
+                  min-w-[100px] sm:min-w-[120px] md:min-w-[140px]
                   bg-gradient-to-br from-white/5 to-white/5 backdrop-blur-md border border-white/20
                   shadow-[inset_0_1px_1px_rgba(255,255,255,0.4),_0_4px_10px_rgba(0,0,0,0.25)]
-                  overflow-hidden transition-all duration-300 ${
-                    clickable
-                      ? "hover:from-white/25 hover:to-white/10 cursor-pointer"
-                      : ""
-                  }`}
+                  overflow-hidden transition-all duration-300
+                  hover:from-white/25 hover:to-white/10 cursor-pointer`}
     >
       <span className="absolute inset-0 bg-gradient-to-t from-transparent via-white/10 to-transparent opacity-60 rotate-12" />
-      <span className="text-white relative z-10 flex items-center gap-1.5 text-xs md:text-sm font-montserrat font-medium whitespace-nowrap">
+      <span className="text-white relative z-10 flex items-center gap-1 text-xs sm:text-sm md:text-base font-montserrat font-medium whitespace-nowrap truncate">
         {React.cloneElement(icon as React.ReactElement, {
-          className: "w-4 h-4 md:w-5 md:h-5 text-white",
+          className: "w-4 h-4 sm:w-5 sm:h-5 md:w-5 md:h-5 text-white",
         })}
         {text}
       </span>
