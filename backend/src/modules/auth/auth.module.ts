@@ -7,18 +7,21 @@ import { JwtStrategy } from './jwt.strategy.js';
 import { AuthService } from './auth.services.js';
 import { AdminsModule } from '../admins/admins.module.js';
 import { SupabaseModule } from '../../common/supabase.module.js';
+import { LimiterService } from '../../common/limiter.service.js';
+import { RedisModule } from '../../common/redis.module.js';
 
 @Module({
   imports: [
     forwardRef(() => AdminsModule),
     SupabaseModule,
     PassportModule,
+    RedisModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET || 'supersecretkey',
       signOptions: { expiresIn: '1d' },
     }),
   ],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, LimiterService],
   controllers: [AuthController],
   exports: [AuthService],
 })

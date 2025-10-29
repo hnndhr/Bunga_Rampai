@@ -1,8 +1,6 @@
 "use client";
 import { useState } from "react"; // Impor useState
 import { useRouter } from "next/navigation";
-// Impor 'MontserratText' dihapus karena menyebabkan error kompilasi (file tidak ditemukan)
-// import { MontserratText } from "../ui/FontWrappers";
 
 export default function LoginPage() {
   const router = useRouter();

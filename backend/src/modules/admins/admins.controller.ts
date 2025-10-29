@@ -1,4 +1,3 @@
-// src/modules/admins/admins.controller.ts
 import {
   Controller,
   Get,
@@ -8,46 +7,50 @@ import {
   Query,
   Param,
   Body,
-  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { AdminsService } from './admins.service.js';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
 import { AuthService } from '../auth/auth.services.js';
+import { LimiterService } from '../../common/limiter.service.js';
 
 @Controller('admins')
 export class AdminsController {
   constructor(
     private readonly adminsService: AdminsService,
     private readonly authService: AuthService,
+    private readonly limiterService: LimiterService,
   ) {}
 
   @Post('login')
-  async login(@Body() body: any) {
+  async login(@Body() body: any, @Req() req) {
     const { username, password } = body;
-    const result = await this.authService.login(username, password);
+    const ip = req.ip || req.headers['x-forwarded-for'] || 'unknown';
+
+    // 🔹 Cek dulu rate limit
+    await this.limiterService.checkLoginAttempt(username, ip);
+
+    const result = await this.authService.login(username, password, ip);
 
     if (!result) {
       return { status: 'ERROR', message: 'Invalid credentials' };
     }
 
+    // 🔹 Reset attempt setelah sukses login
+    await this.limiterService.resetLoginAttempt(username, ip);
+
     return { status: 'OK', token: result.token };
   }
 
-  //@UseGuards(JwtAuthGuard)
   @Get()
   async findAll(
-    @Query('page') page: string = '1', 
+    @Query('page') page: string = '1',
     @Query('limit') limit: string = '10',
   ) {
     const pageNum = parseInt(page, 10) || 1;
     const limitNum = parseInt(limit, 10) || 10;
-    return this.adminsService.findAll(
-      pageNum,
-      limitNum
-    )
+    return this.adminsService.findAll(pageNum, limitNum);
   }
 
-  //@UseGuards(JwtAuthGuard)
   @Post('create')
   async createAdmin(@Body() body: any) {
     const { data, error } = await this.adminsService.create(body);
@@ -67,7 +70,6 @@ export class AdminsController {
     return { status: 'OK', data };
   }
 
-  // @UseGuards(JwtAuthGuard)
   @Delete(':id')
   async deleteAdmin(@Param('id') id: string) {
     const { error } = await this.adminsService.remove(id);
