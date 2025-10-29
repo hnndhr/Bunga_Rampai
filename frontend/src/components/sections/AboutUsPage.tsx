@@ -8,9 +8,9 @@ import Members from "./members/Members-PHT";
 
 export default function AboutUsPage() {
   const images = [
-    "/images/1.jpg",
-    "/images/16.jpg",
-    "/images/13.jpg",
+    "https://ik.imagekit.io/hnndhr/Members/1.jpg?updatedAt=1761742340433",
+    "https://ik.imagekit.io/hnndhr/Members/16.jpg?updatedAt=1761742339285",
+    "https://ik.imagekit.io/hnndhr/Members/13.jpg?updatedAt=1761742340202",
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
