@@ -4,7 +4,6 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { AdminsService } from '../admins/admins.service.js';
 import { SupabaseService } from '../../common/supabase.service.js';
-import { LimiterService } from '../../common/limiter.service.js';
 
 @Injectable()
 export class AuthService {
@@ -12,17 +11,10 @@ export class AuthService {
     private adminsService: AdminsService,
     private jwtService: JwtService,
     private supabaseService: SupabaseService,
-    private limiterService: LimiterService,
   ) {}
 
-  async login(username: string, password: string, ip: string) {
-    // 🔒 Cek apakah user sudah melewati limit login
-    await this.limiterService.checkLoginAttempt(username, ip);
-
+  async login(username: string, password: string) {
     const admin = await this.validateUser(username, password);
-
-    // Jika berhasil login → reset counter
-    await this.limiterService.resetLoginAttempt(username, ip);
 
     const payload = {
       id: admin.id,
@@ -32,11 +24,13 @@ export class AuthService {
     };
 
     const token = this.jwtService.sign(payload);
+
     return { token };
   }
 
   async validateUser(username: string, password: string) {
     const supabase = this.supabaseService.client;
+    // ambil admin dari tabel 'admins'
     const { data: user, error } = await supabase
       .from('admins')
       .select('*')
@@ -47,6 +41,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid username or password');
     }
 
+    // cocokkan password (bcrypt)
     const passwordValid = await bcrypt.compare(password, user.password);
     if (!passwordValid) {
       throw new UnauthorizedException('Invalid username or password');
