@@ -25,7 +25,7 @@ type ArticleMeta = {
 export default function AdminArticleCreatePage() {
   const router = useRouter();
   const editorRef = useRef<EditorJS | null>(null);
-  const [meta, setMeta] = useState<ArticleMeta>({ title: "", slug: "" });
+  const [meta, setMeta] = useState<ArticleMeta>({ title: "", slug: "", header_image: "https://images.unsplash.com/photo-1513185041617-8ab03f83d6c5?ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&q=80&w=1170" });
   const [infographicDesc, setInfographicDesc] = useState<string>("");
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
@@ -175,6 +175,7 @@ export default function AdminArticleCreatePage() {
     }
 
     try {
+      console.log("Meta yang akan dikirim:", meta);
       const metaCreated = await createArticleMeta();
       if (!metaCreated) {
         setSaving(false);

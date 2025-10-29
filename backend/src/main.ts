@@ -9,7 +9,7 @@ async function bootstrap() {
   app.enableCors({
     origin: [
       'http://localhost:3000',
-      /\.vercel\.app$/, // regex: auto allow domain vercel
+      /\.vercel\.app$/, 
     ],
     credentials: true,
   });
