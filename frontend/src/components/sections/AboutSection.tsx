@@ -14,7 +14,7 @@ export default function CatalogueSection() {
           <div className="lg:w-1/2 w-full">
             <div className="w-full h-[220px] md:h-[320px] lg:h-[460px] rounded-2xl overflow-hidden shadow-xl">
               <img
-                src="/images/1.jpg"
+                src="https://ik.imagekit.io/hnndhr/Members/1.jpg?updatedAt=1761742340433"
                 alt="Member Kementerian Riset dan Data"
                 className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
               />
